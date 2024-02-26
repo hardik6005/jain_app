@@ -4,16 +4,11 @@ import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
 import 'package:jain_app/componenets/loader_widget.dart';
-import 'package:jain_app/screens/home_screen.dart';
-import 'package:jain_app/screens/member/add_member_screen.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
-import 'package:jain_app/utils/string_constants.dart';
 import 'package:sizer/sizer.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
 
 class JobListScreen extends StatefulWidget {
   const JobListScreen({Key? key}) : super(key: key);
@@ -69,9 +64,20 @@ class _JobListScreenState extends State<JobListScreen> {
 
   bool? termAccept = false;
 
-
-  List<String> name = ["Chetan Mehta", "Sahil", "Mayank Patel", "Krutik Gohel", "Sardar Patel"];
-  List<String> mobile = ["9945872376", "9845872376", "8845872376", "8145872376", "9045872376"];
+  List<String> name = [
+    "Chetan Mehta",
+    "Sahil",
+    "Mayank Patel",
+    "Krutik Gohel",
+    "Sardar Patel"
+  ];
+  List<String> mobile = [
+    "9945872376",
+    "9845872376",
+    "8845872376",
+    "8145872376",
+    "9045872376"
+  ];
 
   bool isLoading = true;
 
@@ -79,7 +85,7 @@ class _JobListScreenState extends State<JobListScreen> {
   void initState() {
     super.initState();
 
-    delay(2000).then((value){
+    delay(2000).then((value) {
       isLoading = false;
       setState(() {});
     });
@@ -93,17 +99,22 @@ class _JobListScreenState extends State<JobListScreen> {
         top: false,
         child: Scaffold(
           appBar: appBar(
-              context, "Jobs", Imagename.icBack, "", whiteIntColor,
-              leadingAction: () {
-                pop(context);
-              }, action: [
-              homeWidget(context)
-          ],),
-        body: commonShapeContainer(bodyView()),
-        backgroundColor: clrApp,
-        resizeToAvoidBottomInset: false,
+            context,
+            "Jobs",
+            Imagename.icBack,
+            "",
+            whiteIntColor,
+            leadingAction: () {
+              pop(context);
+            },
+            action: [homeWidget(context)],
+          ),
+          body: commonShapeContainer(bodyView()),
+          backgroundColor: clrApp,
+          resizeToAvoidBottomInset: false,
+        ),
       ),
-    ),);
+    );
   }
 
   Widget bodyView() {
@@ -120,75 +131,97 @@ class _JobListScreenState extends State<JobListScreen> {
           itemCount: address.length,
           itemBuilder: (context, index) => buildImageCard(index),
         )*/
-        (isLoading)?const LoaderWidget():ListView.builder(
-            itemCount: name.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return buildImageCard(index);
-            }),
+            (isLoading)
+                ? const LoaderWidget()
+                : ListView.builder(
+                    itemCount: name.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return buildImageCard(index);
+                    }),
       ),
     );
   }
 
-  Widget buildImageCard(int index) => Container(
-    margin: EdgeInsets.symmetric(vertical: 1.h, horizontal: 10)
-        .copyWith(top: (index == 0) ? 2.h : 1.h),
-    padding: EdgeInsets.only(top: 10),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      color: clrOrange4,
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 3.0,
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
-        sb(0.5.h),
-        TitleTextView(name[index], color: clrApp, fontFamily: FontName.nunitoSansBold, fontSize: f20,),
-        sb(1.h),
-        TitleTextView(mobile[index], color: blueColor, fontFamily: FontName.nunitoSansSemiBold,),
-        TitleTextView("Elitech systems", fontSize: f16),
-        sb(1.3.h),
-
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TitleTextView("Qualification : ", color: blackColor, fontFamily: FontName.nunitoSansBold,),
-            TitleTextView("Post Graduate")
-          ],
-        ),
-        sb(0.3.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TitleTextView("Job Type : ", color: blackColor, fontFamily: FontName.nunitoSansBold,),
-            TitleTextView("Offline")
-          ],
-        ),
-        sb(0.3.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TitleTextView("Location : ", color: blackColor, fontFamily: FontName.nunitoSansBold,),
-            TitleTextView("Ahmedabad City")
-          ],
-        ),
-        sb(1.h),
-
-        Container(
-          color: clrApp,
-          height: 6,
-        )
-      ],
-    ),
-  );
-
+  Widget buildImageCard(int index) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 1.h, horizontal: 10)
+          .copyWith(top: (index == 0) ? 2.h : 1.h),
+      padding: EdgeInsets.only(top: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+        color: clrOrange4,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 3.0,
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          sb(0.5.h),
+          TitleTextView(
+            name[index],
+            color: clrApp,
+            fontFamily: FontName.nunitoSansBold,
+            fontSize: f20,
+          ),
+          sb(1.h),
+          TitleTextView(
+            mobile[index],
+            color: blueColor,
+            fontFamily: FontName.nunitoSansSemiBold,
+          ),
+          TitleTextView("Elitech systems", fontSize: f16),
+          sb(1.3.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TitleTextView(
+                "Qualification : ",
+                color: blackColor,
+                fontFamily: FontName.nunitoSansBold,
+              ),
+              TitleTextView("Post Graduate")
+            ],
+          ),
+          sb(0.3.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TitleTextView(
+                "Job Type : ",
+                color: blackColor,
+                fontFamily: FontName.nunitoSansBold,
+              ),
+              TitleTextView("Offline")
+            ],
+          ),
+          sb(0.3.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TitleTextView(
+                "Location : ",
+                color: blackColor,
+                fontFamily: FontName.nunitoSansBold,
+              ),
+              TitleTextView("Ahmedabad City")
+            ],
+          ),
+          sb(1.h),
+          Container(
+            color: clrApp,
+            height: 6,
+          )
+        ],
+      ),
+    );
+  }
 }

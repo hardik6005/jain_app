@@ -1,18 +1,12 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:jain_app/componenets/custom_appbar.dart';
+import 'package:jain_app/componenets/custom_button.dart';
+import 'package:jain_app/componenets/custom_textfield.dart';
 import 'package:jain_app/screens/job/job_list_screen.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
-import 'package:jain_app/componenets/custom_appbar.dart';
-import 'package:jain_app/componenets/custom_button.dart';
-import 'package:jain_app/componenets/custom_lable.dart';
-import 'package:jain_app/componenets/custom_textfield.dart';
-import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
-import 'package:jain_app/utils/string_constants.dart';
-import 'package:jain_app/componenets/title_widget.dart';
-
 
 class JobSearchScreen extends StatefulWidget {
   const JobSearchScreen({Key? key}) : super(key: key);
@@ -45,8 +39,6 @@ class _JobSearchScreenState extends State<JobSearchScreen> {
   DateTime dateTemp = DateTime.now();
   String selectedDate = "";
 
-
-
   final subGotraKey = GlobalKey<DropdownSearchState<DropDownModel>>();
   final subShakhaKey = GlobalKey<DropdownSearchState<DropDownModel>>();
   final gotraKey = GlobalKey<DropdownSearchState<DropDownModel>>();
@@ -70,14 +62,13 @@ class _JobSearchScreenState extends State<JobSearchScreen> {
 
   bool? termAccept = false;
 
-
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -85,12 +76,17 @@ class _JobSearchScreenState extends State<JobSearchScreen> {
       child: SafeArea(
         top: false,
         child: Scaffold(
-          appBar: appBar(context, "Search Jobs",
-              Imagename.icBack, "", whiteIntColor, leadingAction: () {
-                pop(context);
-              },action: [
-                homeWidget(context)
-              ],),
+          appBar: appBar(
+            context,
+            "Search Jobs",
+            Imagename.icBack,
+            "",
+            whiteIntColor,
+            leadingAction: () {
+              pop(context);
+            },
+            action: [homeWidget(context)],
+          ),
           body: commonShapeContainer(bodyView()),
           backgroundColor: clrApp,
           resizeToAvoidBottomInset: false,
@@ -113,13 +109,15 @@ class _JobSearchScreenState extends State<JobSearchScreen> {
                 children: [
                   sb(30),
 
-
                   //Gender
                   CustomDropDownField(
                     context: context,
                     textFieldName: "Select Location",
                     isDropDownHint: "Select Location",
-                    list: [DropDownModel(name: "Ahmedabad"), DropDownModel(name: "Rajkot")],
+                    list: [
+                      DropDownModel(name: "Ahmedabad"),
+                      DropDownModel(name: "Rajkot")
+                    ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     onTap: () {},
@@ -135,7 +133,10 @@ class _JobSearchScreenState extends State<JobSearchScreen> {
                     context: context,
                     textFieldName: "Field/Category",
                     isDropDownHint: "Select Field/Category",
-                    list: [DropDownModel(name: "IT"), DropDownModel(name: "M.Com")],
+                    list: [
+                      DropDownModel(name: "IT"),
+                      DropDownModel(name: "M.Com")
+                    ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     onTap: () {},
@@ -151,7 +152,10 @@ class _JobSearchScreenState extends State<JobSearchScreen> {
                     context: context,
                     textFieldName: "Educational Qualification",
                     isDropDownHint: "Select Educational Qualification",
-                    list: [DropDownModel(name: "HSC"), DropDownModel(name: "SSC")],
+                    list: [
+                      DropDownModel(name: "HSC"),
+                      DropDownModel(name: "SSC")
+                    ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     onTap: () {},
@@ -161,7 +165,6 @@ class _JobSearchScreenState extends State<JobSearchScreen> {
                     },
                   ),
                   sb(10),
-
 
                   //Name
                   CustomTextField(
@@ -193,6 +196,4 @@ class _JobSearchScreenState extends State<JobSearchScreen> {
       ),
     );
   }
-
-
 }

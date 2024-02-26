@@ -4,7 +4,7 @@ import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
 import 'package:jain_app/componenets/loader_widget.dart';
-import 'package:jain_app/screens/home_screen.dart';
+import 'package:jain_app/screens/home/home_screen.dart';
 import 'package:jain_app/screens/member/add_member_screen.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';

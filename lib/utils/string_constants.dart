@@ -341,6 +341,8 @@ class AppConstants {
 
   static const String birthYear = "Birth Year";
   static const String selBirthYear = "Select birth year";
+
+  static const String tryAgain = "Try Again";
 }
 
 //Validation String

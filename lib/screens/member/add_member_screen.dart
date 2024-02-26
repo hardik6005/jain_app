@@ -1,17 +1,16 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jain_app/utils/app_colors.dart';
-import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_button.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
+import 'package:jain_app/componenets/title_widget.dart';
+import 'package:jain_app/utils/app_colors.dart';
+import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
-import 'package:jain_app/componenets/title_widget.dart';
-
 
 class AddMemberScreen extends StatefulWidget {
   const AddMemberScreen({Key? key}) : super(key: key);
@@ -21,6 +20,7 @@ class AddMemberScreen extends StatefulWidget {
 }
 
 class _AddMemberScreenState extends State<AddMemberScreen> {
+  TextEditingController controllerFormNo = TextEditingController();
   TextEditingController controllerName = TextEditingController();
   TextEditingController controllerFatherName = TextEditingController();
   TextEditingController controllerEmail = TextEditingController();
@@ -43,8 +43,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   //Date picker variable
   DateTime dateTemp = DateTime.now();
   String selectedDate = "";
-
-
 
   final subGotraKey = GlobalKey<DropdownSearchState<DropDownModel>>();
   final subShakhaKey = GlobalKey<DropdownSearchState<DropDownModel>>();
@@ -69,14 +67,16 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
   bool? termAccept = false;
 
-
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
+
+    controllerFormNo.text = "1990";
+    setState(() {});
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -84,12 +84,17 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       child: SafeArea(
         top: false,
         child: Scaffold(
-          appBar: appBar(context, "Create Member",
-              Imagename.icBack, "", whiteIntColor, leadingAction: () {
-                pop(context);
-              },action: [
-                homeWidget(context)
-              ],),
+          appBar: appBar(
+            context,
+            "Create Member",
+            Imagename.icBack,
+            "",
+            whiteIntColor,
+            leadingAction: () {
+              pop(context);
+            },
+            action: [homeWidget(context)],
+          ),
           body: commonShapeContainer(bodyView()),
           backgroundColor: clrApp,
           resizeToAvoidBottomInset: false,
@@ -121,13 +126,13 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     textFieldName: "Form No.",
                     hintText: "Enter Form No.",
                     numberOfLines: 1,
-                    controller: controllerName,
+                    enable: false,
+                    controller: controllerFormNo,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
 
                   sb(30),
-
 
                   const TitleWidget("Member Details"),
                   sb(10),
@@ -136,7 +141,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   CustomDropDownField(
                     context: context,
                     textFieldName: "Relation With HOF",
-                    list: [DropDownModel(name: "Sample 1"), DropDownModel(name: "Sample 2")],
+                    list: [
+                      DropDownModel(name: "Sample 1"),
+                      DropDownModel(name: "Sample 2")
+                    ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     onTap: () {},
@@ -186,9 +194,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       fontSize: f155,
                     ),
                     keboardType: textInputType(),
-                    inputFormatters: <TextInputFormatter>[
-                      mobileInputFormatter
-                    ],
+                    inputFormatters: <TextInputFormatter>[mobileInputFormatter],
                     isImage: true,
                     onSumitted: () {
                       if (controllerPhone.text.isNotEmpty) {
@@ -203,21 +209,22 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       setState(() {});
                     },
                   ),
-                  // validationText(
-                  //   controllerPhone.text.isNotEmpty &&
-                  //       state.validPhone! &&
-                  //       !isValidPhone(controllerPhone.text),
-                  //   ValidationConst.enterValidPhone,
-                  // ),
+                  validationText(
+                    controllerPhone.text.isNotEmpty &&
+                        /*state.validPhone! &&*/
+                        !isValidPhone(controllerPhone.text),
+                    ValidationConst.enterValidPhone,
+                  ),
                   sb(10),
-
-
 
                   //Gender
                   CustomDropDownField(
                     context: context,
                     textFieldName: AppConstants.selectGender,
-                    list: [DropDownModel(name: "Male"), DropDownModel(name: "Female")],
+                    list: [
+                      DropDownModel(name: "Male"),
+                      DropDownModel(name: "Female")
+                    ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     onTap: () {},
@@ -231,7 +238,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   //Marital Status
                   CustomDropDownField(
                     context: context,
-                    list: [DropDownModel(name: "Single"), DropDownModel(name: "Married")],
+                    list: [
+                      DropDownModel(name: "Single"),
+                      DropDownModel(name: "Married")
+                    ],
                     textFieldName: AppConstants.selectMaritalStatus,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
@@ -251,9 +261,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       ..text = selectedDate == ""
                           ? ""
                           : selectedDate.toFormatDate(
-                        defaultFormat:
-                        DateFormate.dateToFormatddMMMMYYYY,
-                      ),
+                              defaultFormat: DateFormate.dateToFormatddMMMMYYYY,
+                            ),
                     isSuffixImage: true,
                     suffixImage: Imagename.dateIcon,
                     textInputAction: TextInputAction.next,
@@ -288,7 +297,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     onChange: (v) {},
                   ),
                   sb(10),
-
 
                   //Father Name
                   CustomTextField(
@@ -338,33 +346,69 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   ),
                   sb(10),
 
-                  //Native address
-                  nativeAddress(),
+                  //Gender
+                  CustomDropDownField(
+                    context: context,
+                    textFieldName: "Location",
+                    list: [
+                      DropDownModel(name: "In India"),
+                      DropDownModel(name: "Out of India")
+                    ],
+                    isSuffixImage: true,
+                    suffixImage: Imagename.downArrow,
+                    onTap: () {},
+                    onChangeInt: (v) {
+                      // registerBloc.add(DropDownIDsEvent(genderId: v));
+                      // authBloc.add(EmailEvent(controllerEmail.text.trim()));
+                    },
+                  ),
+                  sb(10),
 
-                  //Permanant Address
-                  permanantAddress(),
+                  CustomDropDownField(
+                    context: context,
+                    textFieldName: "State",
+                    isDropDownHint: "Select State",
+                    list: [
+                      DropDownModel(name: "Gujarat"),
+                      DropDownModel(name: "Maharastra")
+                    ],
+                    isSuffixImage: true,
+                    suffixImage: Imagename.downArrow,
+                    onTap: () {},
+                    onChangeInt: (v) {
+                      // registerBloc.add(DropDownIDsEvent(genderId: v));
+                      // authBloc.add(EmailEvent(controllerEmail.text.trim()));
+                    },
+                  ),
+                  sb(10),
 
-                  //Present Address
-                  presentAddress(),
+                  CustomTextField(
+                    context: context,
+                    textFieldName: "City Name",
+                    hintText: "Enter city name",
+                    numberOfLines: 1,
+                    controller: controllerFatherName,
+                    textInputAction: TextInputAction.next,
+                    onChange: (v) {},
+                  ),
+                  sb(10),
 
-                  sb(20),
-
-                  //Privacy Agree
+                  /*  //Privacy Agree
                   termWidget1(AppConstants.agreeTerm, termAccept!, (v) {
                     setState(() {
                       termAccept = !termAccept!;
                     });
                   }),
-
+*/
                   spaceHeight(context),
 
-                  sb(100)
+                  sb(50)
                 ],
               ),
             ),
           ),
           Button(
-            title: "Submit",
+            title: "Create Member",
             fontColor: whiteColor,
             backgroundColor: clrApp,
             ontap: () {
@@ -492,8 +536,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   setState(() {});
                 }
 
-                if(v.length==6){
-                  delay(300).then((value)async{
+                if (v.length == 6) {
+                  delay(300).then((value) async {
                     if (controllerAddressPR.text.isNotEmpty) {
                       unFocus(context);
                       // await presentAddressCall();
@@ -649,8 +693,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
               setState(() {});
             }
 
-            if(v.length==6){
-              delay(300).then((value)async{
+            if (v.length == 6) {
+              delay(300).then((value) async {
                 if (controllerPincodeP.text.isNotEmpty) {
                   unFocus(context);
                   // await permenentAddressCall();
@@ -734,7 +778,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           controller: controllerAddressN,
           textInputAction: TextInputAction.next,
           onSumitted: () {},
-          onChange: (v) async{
+          onChange: (v) async {
             // authBloc.add(EmailEvent(controllerEmail.text.trim()));
           },
         ),
@@ -769,18 +813,17 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
               // await nativeAddressCall();
             }
           },
-
           isSuffixImage: true,
           textInputAction: TextInputAction.done,
-          onChange: (v) async{
+          onChange: (v) async {
             if (isNativeShow) {
               isNativeShow = false;
               // clearNativeAdd();
               setState(() {});
             }
 
-            if(v.length==6){
-              delay(300).then((value)async{
+            if (v.length == 6) {
+              delay(300).then((value) async {
                 if (controllerPincodeN.text.isNotEmpty) {
                   unFocus(context);
                   // await nativeAddressCall();
@@ -856,6 +899,4 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       ],
     );
   }
-
-
 }

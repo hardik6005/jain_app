@@ -2,15 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:jain_app/screens/business/business_list_screen.dart';
-import 'package:jain_app/screens/home_slider_widget.dart';
+import 'package:jain_app/screens/home/widget/home_slider_widget.dart';
 import 'package:jain_app/screens/job/search_job_screen.dart';
+import 'package:jain_app/screens/matrimonial/matri_list_screen.dart';
 import 'package:jain_app/screens/member/add_member_screen.dart';
 import 'package:jain_app/screens/member/member_list_screen.dart';
-import 'package:jain_app/screens/slider_model.dart';
+import 'package:jain_app/screens/home/model/slider_model.dart';
+import 'package:jain_app/screens/profile/view_profile_screen.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/componenets/cache_network_image.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
-import 'package:jain_app/screens/drawer_screen.dart';
+import 'package:jain_app/screens/home/drawer_screen.dart';
 import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/string_constants.dart';
 import 'package:sizer/sizer.dart';
@@ -209,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          // callNextScreen(context, const ViewProfileScreen());
+                          callNextScreen(context, const ViewProfileScreen());
                         },
                         child: commonClipOval(
                           "",
@@ -286,14 +288,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     isDisable: false,
                     AppConstants.matromonial,
                         () {
-                      // callNextScreen(context, const MatrimonialScreen());
+                      callNextScreen(context, const MatriListScreen());
                     },
                   ),
                 ),
 
               ],
             ),
-            sb(20),
+            sb(30),
             Row(
               children: [
                 Expanded(
@@ -307,13 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 sbw(20),
                 Expanded(
-                  child: commonItemView(
-                    Imagename.icNews,
-                    AppConstants.news,
-                        () {
-                      // callNextScreen(context, const NewsScreen());
-                    },
-                  ),
+                  child: Container(),
                 ),
                 sbw(20),
                 Expanded(

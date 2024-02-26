@@ -8,11 +8,17 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
-import 'package:jain_app/screens/home_screen.dart';
+import 'package:jain_app/screens/home/home_screen.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
+
+
 
 //Standard Font Size
 double f24 = 24;
@@ -358,6 +364,36 @@ Widget termWidget1(String title, bool selected, Function(bool) onTap) {
   );
 }
 
+//Agree Term Common Widget
+Widget termWidget(String title, bool selected, Function(bool) onTap) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 7),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Checkbox(
+          visualDensity: const VisualDensity(horizontal: -4.0, vertical: -4.0),
+          checkColor: whiteColor,
+          fillColor: (selected)?MaterialStateProperty.all<Color>(blackColor):MaterialStateProperty.all<Color>(whiteColor),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+          value: selected,
+          onChanged: (v) {
+            onTap(v!);
+          },
+        ),
+        sbw(10),
+        Expanded(
+          child: TitleTextView(
+            title,
+            fontSize: f14,
+          ),
+        )
+      ],
+    ),
+  );
+}
+
 Widget commonClipOval(String profilePic, double radius,
     {Color? backColor, placeHolder, double? padding}) {
   return ClipOval(
@@ -433,3 +469,46 @@ Widget noDataView() {
     ),
   );
 }
+
+Future<void> pickeFileWidget(List<PickerModel> pickerModel, String str) async {
+  if (str == TAG.document) {
+    FileType _pickingType = FileType.custom;
+    final FilePickerResult? photo = await FilePicker.platform.pickFiles(
+      type: _pickingType,
+      allowedExtensions: ["pdf"],
+    );
+    if (photo != null) {
+      pickerModel.clear();
+      pickerModel.add(
+          PickerModel(TAG.document, photo.paths[0]!, photo.names[0]!, "pdf"));
+    }
+  }
+}
+
+//Browse picker modes
+Future<void> pickerModesWidget(
+    ImagePicker picker, List<PickerModel> pickerModel, String str) async {
+  if (str == TAG.camera) {
+    final XFile? photo = await picker.pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      pickerModel.clear();
+      pickerModel.add(PickerModel(
+          TAG.camera, photo.path, photo.name, photo.mimeType ?? ""));
+    }
+  } else if (str == TAG.gallery) {
+    final XFile? photo = await picker.pickImage(source: ImageSource.gallery);
+    if (photo != null) {
+      pickerModel.clear();
+      pickerModel.add(PickerModel(TAG.gallery, photo.path, photo.name,
+          photo.mimeType != null ? photo.mimeType! : ""));
+    }
+  }
+}
+
+//Check internet connnection
+Future<ConnectivityResult> checkConnection() async {
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  return connectivityResult;
+}
+
+
