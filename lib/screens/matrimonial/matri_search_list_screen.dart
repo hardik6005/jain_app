@@ -3,12 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
-import 'package:jain_app/screens/business/add_business_screen.dart';
-import 'package:jain_app/screens/home/home_screen.dart';
-import 'package:jain_app/screens/matrimonial/add_matrimonial_profile.dart';
-import 'package:jain_app/screens/matrimonial/circle_image_view.dart';
-import 'package:jain_app/screens/matrimonial/search_matri_screen.dart';
-import 'package:jain_app/screens/member/add_member_screen.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
@@ -85,17 +79,22 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
         top: false,
         child: Scaffold(
           appBar: appBar(
-              context, "Matched Profiles", Imagename.icBack, "", whiteIntColor,
-              leadingAction: () {
-                pop(context);
-              }, action: [
-              homeWidget(context)
-          ],),
-        body: commonShapeContainer(bodyView()),
-        backgroundColor: clrOrange4,
-        resizeToAvoidBottomInset: false,
+            context,
+            "Matched Profiles",
+            Imagename.icBack,
+            "",
+            whiteIntColor,
+            leadingAction: () {
+              pop(context);
+            },
+            action: [homeWidget(context)],
+          ),
+          body: commonShapeContainer(bodyView()),
+          backgroundColor: clrOrange4,
+          resizeToAvoidBottomInset: false,
+        ),
       ),
-    ),);
+    );
   }
 
   Widget bodyView() {
@@ -118,9 +117,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
   }
 
   Widget listItemView(int index) {
-
-    final image =  NetworkImage(StaticList.url);
-
+    final image = NetworkImage(StaticList.url);
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 1.h, horizontal: 10)
@@ -148,14 +145,49 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  radius: 55,
-                  backgroundColor: clrApp,
-                  child: CircleAvatar(
-                    backgroundImage: image as ImageProvider,
-                    radius: 50,
-                    backgroundColor: clrApp,
-                  ),
+                Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 55,
+                      backgroundColor: clrApp,
+                      child: CircleAvatar(
+                        backgroundImage: image as ImageProvider,
+                        radius: 50,
+                        backgroundColor: clrApp,
+                      ),
+                    ),
+                    sb(15),
+                    Row(
+                      children: [
+                        Container(
+                          height: 30,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4)),
+                              color: clrApp),
+                          padding: EdgeInsets.all(5),
+                          child: Image.asset(
+                            Imagename.show,
+                            color: whiteColor,
+                          ),
+                        ),
+                        sbw(10),
+                        Container(
+                          height: 30,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4)),
+                              color: clrApp),
+                          padding: EdgeInsets.all(5),
+                          child: Image.asset(
+                            Imagename.icContact,
+                            color: whiteColor,
+                            height: 25,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
                 sbw(10),
                 Expanded(
@@ -165,135 +197,151 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TitleTextView(
-                            "IT Infotech",
-                            fontFamily: FontName.nunitoSansBold,
+                            "Avani Nitin Shah",
+                            fontFamily: FontName.nunitoSansExtraBold,
                             fontWeight: FontWeight.w600,
-                            fontSize: f18,
+                            fontSize: f20,
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(5)),
-                              color: (index == 0)
-                                  ? greenColor
-                                  : (index == 1)
-                                  ? redColor
-                                  : (index == 2)
-                                  ? redColor
-                                  : (index == 3)
-                                  ? greenColor
-                                  : (index == 4)
-                                  ? redColor
-                                  : (index == 5)
-                                  ? greenColor
-                                  : greenColor,
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                            child: TitleTextView(
-                              (index == 0)
-                                  ? "Active"
-                                  : (index == 1)
-                                  ? "Rejected"
-                                  : (index == 2)
-                                  ? "Rejected"
-                                  : (index == 3)
-                                  ? "Active"
-                                  : (index == 4)
-                                  ? "Rejected"
-                                  : (index == 5)
-                                  ? "Active"
-                                  : "Active",
-                              color: whiteColor,
-                              fontFamily: FontName.nunitoSansBold,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )
                         ],
                       ),
                       sb(2.h),
-                      Row(
-                        children: [
-                          Image.asset(
-                            Imagename.icUser1,
-                            height: 15,
-                          ),
-                          sbw(2.w),
-                          TitleTextView("Harry Grey", fontFamily: FontName.nunitoSansBold, ),
-                        ],
-                      ),
-                      sb(2.h),
-                      Row(
-                        children: [
-                          Image.asset(
-                            Imagename.icMobile,
-                            height: 15,
-                          ),
-                          sbw(2.w),
-                          TitleTextView((index == 0)
-                              ? "9976236745"
-                              : (index == 1)
-                              ? "9978836745"
-                              : (index == 2)
-                              ? "9856236745"
-                              : (index == 3)
-                              ? "8876236745"
-                              : (index == 4)
-                              ? "8976236745"
-                              : (index == 5)
-                              ? "8976336745"
-                              : "8076236745", fontFamily: FontName.nunitoSansSemiBold,),
-                        ],
-                      ),
-                      sb(1.h),
                       Row(
                         children: [
                           Expanded(
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Image.asset(
-                                  Imagename.icCateogry,
-                                  height: 15,
+                                TitleTextView(
+                                  "Age : ",
+                                  fontFamily: FontName.nunitoSansBold,
                                 ),
-                                sbw(2.w),
-                                TitleTextView(" IT Services", fontFamily: FontName.nunitoSansSemiBold,),
+                                Expanded(
+                                  child: TitleTextView(
+                                    "24",
+                                    fontFamily: FontName.nunitoSansRegular,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              callNextScreen(context, AddMemberScreen());
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                                  color: clrApp),
-                              padding: EdgeInsets.all(5),
-                              child: Image.asset(
-                                Imagename.icEdit,
-                                color: whiteColor,
-                                height: 13,
-                              ),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TitleTextView(
+                                  "Weight : ",
+                                  fontFamily: FontName.nunitoSansBold,
+                                ),
+                                Expanded(
+                                  child: TitleTextView(
+                                    "50",
+                                    fontFamily: FontName.nunitoSansRegular,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          sbw(10),
-                          GestureDetector(
-                            onTap: () {
-                              callNextScreen(context, MatriSearchScreen());
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                                  color: clrAppLight1),
-                              padding: EdgeInsets.all(5),
-                              child: Image.asset(
-                                Imagename.icSearch,
-                                color: whiteColor,
-                                height: 13,
-                              ),
-                            ),
-                          )
                         ],
                       ),
-                      sb(1.h),
+                      sb(0.9.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TitleTextView(
+                            "Height : ",
+                            fontFamily: FontName.nunitoSansBold,
+                          ),
+                          Expanded(
+                            child: TitleTextView(
+                              "5ft; 0inch; (1.52 mts)",
+                              fontFamily: FontName.nunitoSansRegular,
+                            ),
+                          ),
+                        ],
+                      ),
+                      sb(0.9.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TitleTextView(
+                            "Marital Status : ",
+                            fontFamily: FontName.nunitoSansBold,
+                          ),
+                          Expanded(
+                            child: TitleTextView(
+                              "Never Married",
+                              fontFamily: FontName.nunitoSansRegular,
+                            ),
+                          ),
+                        ],
+                      ),
+                      sb(0.9.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TitleTextView(
+                            "Mother Tongue : ",
+                            fontFamily: FontName.nunitoSansBold,
+                          ),
+                          Expanded(
+                            child: TitleTextView(
+                              "Gujarati",
+                              fontFamily: FontName.nunitoSansRegular,
+                            ),
+                          ),
+                        ],
+                      ),
+                      sb(0.9.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TitleTextView(
+                            "Location : ",
+                            fontFamily: FontName.nunitoSansBold,
+                          ),
+                          Expanded(
+                            child: TitleTextView(
+                              "Ahmedabad",
+                              fontFamily: FontName.nunitoSansRegular,
+                            ),
+                          ),
+                        ],
+                      ),
+                      sb(0.9.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TitleTextView(
+                            "Education Type : ",
+                            fontFamily: FontName.nunitoSansBold,
+                          ),
+                          Expanded(
+                            child: TitleTextView(
+                              "Bachelors",
+                              fontFamily: FontName.nunitoSansRegular,
+                            ),
+                          ),
+                        ],
+                      ),
+                      sb(0.9.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TitleTextView(
+                            "Education Field : ",
+                            fontFamily: FontName.nunitoSansBold,
+                          ),
+                          Expanded(
+                            child: TitleTextView(
+                              "Advertising/ Marketing",
+                              fontFamily: FontName.nunitoSansRegular,
+                            ),
+                          ),
+                        ],
+                      ),
+                      sb(2.h),
                     ],
                   ),
                 )

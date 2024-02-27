@@ -127,7 +127,7 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
                     .width,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(7)),
-                    color: clrApp),
+                    color: clrOrange),
                 margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(14),
                 child: Row(
@@ -287,7 +287,7 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  callNextScreen(context, AddMemberScreen());
+                  callNextScreen(context, AddBusinessScreen());
                 },
                 child: Container(
                   decoration: BoxDecoration(

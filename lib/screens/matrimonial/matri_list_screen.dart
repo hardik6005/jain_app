@@ -129,7 +129,7 @@ class _MatriListScreenState extends State<MatriListScreen> {
                     .width,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(7)),
-                    color: clrApp),
+                    color: clrOrange),
                 margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(14),
                 child: Row(

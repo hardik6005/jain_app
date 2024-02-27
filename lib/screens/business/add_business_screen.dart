@@ -331,7 +331,7 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
           Button(
             title: "Create Business Directory",
             fontColor: whiteColor,
-            backgroundColor: clrApp,
+            backgroundColor: clrOrange,
             ontap: () {
               unFocus(context);
               pop(context);

@@ -66,7 +66,7 @@ class Button extends StatelessWidget {
                 fontFamily: FontName.nunitoSansRegular,
                 decoration: TextDecoration.none,
                 fontWeight: fontWeight ?? FontWeight.normal,
-                fontSize: fontSize ?? 15,
+                fontSize: fontSize ?? f17,
                 color: fontColor == null ? blackColor : fontColor!),
           ),
         ),

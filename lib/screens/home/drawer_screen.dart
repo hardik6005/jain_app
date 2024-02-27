@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:jain_app/screens/business/business_list_screen.dart';
+import 'package:jain_app/screens/job/job_list_screen.dart';
+import 'package:jain_app/screens/matrimonial/matri_list_screen.dart';
 import 'package:jain_app/screens/member/add_member_screen.dart';
 import 'package:jain_app/screens/member/member_list_screen.dart';
+import 'package:jain_app/screens/profile/edit_profile_screen.dart';
+import 'package:jain_app/screens/profile/update_password_screen.dart';
 import 'package:jain_app/utils/string_constants.dart';
 
 
@@ -74,6 +79,7 @@ class DrawerScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         pop(context);
+                        callNextScreen(context, JobListScreen());
                       },
                       child: Container(
                         padding: EdgeInsets.only(top: 10),
@@ -97,6 +103,7 @@ class DrawerScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         pop(context);
+                        callNextScreen(context, BusinessListScreen());
                       },
                       child: Container(
                         padding: EdgeInsets.only(top: 10),
@@ -120,6 +127,8 @@ class DrawerScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         pop(context);
+                        callNextScreen(context, MatriListScreen());
+
                       },
                       child: Container(
                         padding: EdgeInsets.only(top: 10),
@@ -143,6 +152,8 @@ class DrawerScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         pop(context);
+                        callNextScreen(context, EditProfileScreen());
+
                       },
                       child: Container(
                         padding: EdgeInsets.only(top: 10),
@@ -166,6 +177,7 @@ class DrawerScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         pop(context);
+                        callNextScreen(context, UpdatePasswordScreen());
                       },
                       child: Container(
                         padding: EdgeInsets.only(top: 10),

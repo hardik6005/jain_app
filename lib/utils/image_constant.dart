@@ -66,4 +66,5 @@ class Imagename {
   static String icMember = "assets/images/member.png";
   static String icUser1 = "assets/images/user.png";
   static String icCateogry = "assets/images/ic_category.png";
+  static String icContact = "assets/images/ic_contact.png";
 }

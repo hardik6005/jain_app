@@ -82,7 +82,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       child: SafeArea(
         top: false,
         child: Scaffold(
-          appBar: appBar(context, AppConstants.editProfile, Imagename.icBack,
+          appBar: appBar(context, "Update Profile", Imagename.icBack,
               "", whiteIntColor, leadingAction: () {
             pop(context);
           }),
