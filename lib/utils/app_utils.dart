@@ -2,9 +2,12 @@
 import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
@@ -13,12 +16,6 @@ import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
-
-
-
 
 //Standard Font Size
 double f24 = 24;
@@ -318,6 +315,26 @@ okAlert(BuildContext context, String msg,
   }
 }
 
+//Show ok Alert dialog
+okCancelAlert(BuildContext context, String msg,
+    {Function? onTap, bool? isDismiss = true}) async {
+  final result = await showOkCancelAlertDialog(
+    context: context,
+    title: AppConstants.appTitle,
+    message: msg.replaceAll(":", ""),
+    onWillPop: () => Future.value(isDismiss),
+    barrierDismissible: true,
+    okLabel: "Yes",
+    cancelLabel: "No"
+  );
+
+  if (result.name == "ok") {
+    if (onTap != null) {
+      onTap();
+    }
+  }
+}
+
 Widget homeWidget(BuildContext context) {
   return GestureDetector(
     onTap: () {
@@ -345,7 +362,9 @@ Widget termWidget1(String title, bool selected, Function(bool) onTap) {
         Checkbox(
           visualDensity: const VisualDensity(horizontal: -4.0, vertical: -4.0),
           checkColor: whiteColor,
-          fillColor: (selected)?MaterialStateProperty.all<Color>(blackColor):MaterialStateProperty.all<Color>(whiteColor),
+          fillColor: (selected)
+              ? MaterialStateProperty.all<Color>(blackColor)
+              : MaterialStateProperty.all<Color>(whiteColor),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
           value: selected,
           onChanged: (v) {
@@ -375,7 +394,9 @@ Widget termWidget(String title, bool selected, Function(bool) onTap) {
         Checkbox(
           visualDensity: const VisualDensity(horizontal: -4.0, vertical: -4.0),
           checkColor: whiteColor,
-          fillColor: (selected)?MaterialStateProperty.all<Color>(blackColor):MaterialStateProperty.all<Color>(whiteColor),
+          fillColor: (selected)
+              ? MaterialStateProperty.all<Color>(blackColor)
+              : MaterialStateProperty.all<Color>(whiteColor),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
           value: selected,
           onChanged: (v) {
@@ -510,5 +531,3 @@ Future<ConnectivityResult> checkConnection() async {
   var connectivityResult = await (Connectivity().checkConnectivity());
   return connectivityResult;
 }
-
-

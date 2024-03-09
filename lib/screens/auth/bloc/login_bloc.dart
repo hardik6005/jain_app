@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:jain_app/main.dart';
 import 'package:jain_app/screens/auth/data/login_repository.dart';
 import 'package:jain_app/screens/auth/data/login_repository.dart';
 import 'package:jain_app/screens/auth/model/forgot_request_model.dart';
+import 'package:jain_app/screens/auth/model/login_model.dart';
 import 'package:jain_app/screens/auth/model/success_model.dart';
 import 'package:jain_app/screens/auth/model/user_data_model.dart';
+import 'package:jain_app/screens/home/home_screen.dart';
 import 'package:jain_app/utils/app_preference.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/string_constants.dart';
@@ -49,11 +52,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   validationEvent(ValidationEvent event, emit) async {
     String validationText = "";
     bool isValidate = true;
-    if (event.memberId == "555555555555") {
+    if (event.birthYear!.isEmpty) {
+      validationText = "${AppConstants.pleaseSelect} ${AppConstants.birthYear}";
+    }else if (event.mobile == "555555555555") {
       validationText = "${AppConstants.pleaseEnter} ${AppConstants.memberId}";
-    } else if (event.memberId.toString().length < 5) {
+    } else if (event.mobile.toString().length < 10) {
       validationText =
-          "${AppConstants.pleaseEnter} ${AppConstants.validmemberId}";
+          "${AppConstants.pleaseEnter} ${AppConstants.validPhone}";
     } else if (event.password!.isEmpty) {
       validationText = "${AppConstants.pleaseEnter} ${AppConstants.password}";
     } else {
@@ -62,8 +67,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       add(
         LoginAPIEvent(
           context: event.context,
-          memberId: event.memberId,
+          phone: event.mobile,
           password: event.password,
+          birthYear: event.birthYear,
         ),
       );
     }
@@ -76,19 +82,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   //Login API event
   loginAPIEvent(LoginAPIEvent event, emit) async {
     emit(state.copyWith(loginCallState: ApiCallState.busy));
-    final result = await _repository.loginAPI(event.memberId!, event.password!);
-    result.when(success: (UserDataModel model) {
+    final result = await _repository.loginAPI(event.phone!, event.password!, event.birthYear!);
+    result.when(success: (LoginModel model) async{
       String jsonModel = json.encode(model);
-      AppPreference.instance.savePref(jsonModel, Pref.userData);
-      AppPreference.instance.savePref(model.data!.token!, Pref.myToken);
+      // AppPreference.instance.savePref(jsonModel, Pref.userData);
+      AppPreference.instance.savePref(model.token!, Pref.myToken);
       // getUserData();
       emit(state.copyWith(loginDataModel: model));
-
-      // if (state.loginDataModel!.data!.profileUpdated == "0") {
-      //   callNextScreenAndClearStack(event.context!, const AddProfileScreen());
-      // } else {
-      //   add(GetProfileAPIEvent());
-      // }
 
       emit(state.copyWith(loginCallState: ApiCallState.success));
       emit(state.copyWith(loginCallState: ApiCallState.none));
@@ -185,11 +185,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final result = await _repository.getProfilePI();
     result.when(success: (UserDataModel model) {
       String jsonModel = json.encode(model);
+      userDataModel = model;
       AppPreference.instance.savePref(jsonModel, Pref.userData);
-      emit(state.copyWith(loginDataModel: model));
-      // getUserData();
+      emit(state.copyWith(userDataModel: model));
       emit(state.copyWith(getProfileCallState: ApiCallState.success));
       emit(state.copyWith(getProfileCallState: ApiCallState.none));
+      emit(state.copyWith(loginCallState: ApiCallState.success));
+      emit(state.copyWith(loginCallState: ApiCallState.none));
     }, failure: (failure) {
       emit(state.copyWith(getProfileCallState: ApiCallState.failure));
       okAlert(GlobalVariable.navState.currentContext!, failure.toString());

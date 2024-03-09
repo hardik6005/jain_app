@@ -7,18 +7,20 @@ class LoginState {
   final ApiCallState? resetPassCallState;
   final int? page;
   final bool? validEmail;
-  final UserDataModel? loginDataModel;
+  final LoginModel? loginDataModel;
+  final UserDataModel? userDataModel;
   final String? successMsg;
 
   LoginState({
     this.loginCallState = ApiCallState.none,
     this.forgotCallState = ApiCallState.none,
-    this.getProfileCallState = ApiCallState.busy,
+    this.getProfileCallState = ApiCallState.none,
     this.resetPassCallState = ApiCallState.none,
     this.page = 0,
     this.validEmail = false,
     this.loginDataModel,
     this.successMsg,
+    this.userDataModel,
   });
 
   List<Object> get props => [
@@ -29,6 +31,7 @@ class LoginState {
         validEmail!,
         loginDataModel!,
         successMsg!,
+    userDataModel!,
       ];
 
   LoginState copyWith({
@@ -38,8 +41,10 @@ class LoginState {
     ApiCallState? getProfileCallState,
     int? page,
     bool? validEmail,
-    UserDataModel? loginDataModel,
+    LoginModel? loginDataModel,
     String? successMsg,
+    UserDataModel? userDataModel,
+
   }) {
     return LoginState(
       loginCallState: loginCallState ?? this.loginCallState,
@@ -50,6 +55,7 @@ class LoginState {
       loginDataModel: loginDataModel ?? this.loginDataModel,
       getProfileCallState: getProfileCallState ?? this.getProfileCallState,
       successMsg: successMsg ?? this.successMsg,
+      userDataModel: userDataModel ?? this.userDataModel,
     );
   }
 }

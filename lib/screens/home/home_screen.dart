@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:jain_app/screens/business/business_list_screen.dart';
@@ -54,48 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _synthesizeText();
-  }
-
-  Future<void> _synthesizeText() async {
-    final String endpoint =
-        'https://texttospeech.googleapis.com/v1/text:synthesize';
-    final String text = 'Hello, world!'; // Te// xt to synthesize
-
-    final requestBody = {
-      "audioConfig": {
-        "audioEncoding": "LINEAR16",
-        "effectsProfileId": [
-          "small-bluetooth-speaker-class-device"
-        ],
-        "pitch": 0,
-        "speakingRate": 1
-      },
-      "input": {
-        "text": "Failed with status code: 400"
-      },
-      "voice": {
-        "languageCode": "en-US",
-        "name": "en-US-Standard-A"
-      }
-    };
-
-    final response = await http.post(
-      Uri.parse('$endpoint?key=${"AIzaSyB-guHweEQyBN7F5CvQeABugg21lvAbysw"}'),
-      // headers: <String, String>{
-      //   'Content-Type': 'application/json',
-      // },
-      body: jsonEncode(requestBody),
-    );
-
-    if (response.statusCode == 200) {
-      // Request was successful
-      print('Audio content: ${response.body}');
-    } else {
-      // Request failed
-      print('Failed with status code: ${response.statusCode}');
-      print('Error message: ${response.body}');
-    }
   }
 
 
@@ -125,7 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget bodyView() {
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        okCancelAlert(context, "Are you sure you want to exit?", onTap: (){
+          exit(0);
+        });
+        return true;
+      },
       child: Container(
         color: clrApp,
         child: Column(

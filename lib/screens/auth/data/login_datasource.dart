@@ -8,12 +8,13 @@ class LoginDataSource extends HttpActions {
   LoginDataSource();
 
   // loginAPI API
-  Future<HttpResponse?> loginAPI(String memberId, String password) async {
+  Future<HttpResponse?> loginAPI(String phone, String password, String birthYear) async {
     final response = await postMethod(
-      URLS.mobileLogin,
+      URLS.memberLogin,
       data: {
-        PARAMS.memberId: memberId,
+        PARAMS.phone_number: phone,
         PARAMS.password: password,
+        PARAMS.birth_year: birthYear,
       },
     );
     return response;

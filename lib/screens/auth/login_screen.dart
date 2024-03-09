@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jain_app/componenets/custom_dialogue.dart';
-import 'package:jain_app/screens/auth/register_screen.dart';
-import 'package:jain_app/utils/app_colors.dart';
-import 'package:jain_app/utils/app_utils.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jain_app/componenets/custom_button.dart';
+import 'package:jain_app/componenets/custom_dialogue.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
-import 'package:jain_app/utils/font_constants.dart';
+import 'package:jain_app/screens/auth/bloc/login_bloc.dart';
+import 'package:jain_app/screens/auth/data/login_datasource.dart';
+import 'package:jain_app/screens/auth/data/login_repository.dart';
+import 'package:jain_app/screens/auth/register_screen.dart';
 import 'package:jain_app/screens/home/home_screen.dart';
+import 'package:jain_app/utils/app_colors.dart';
+import 'package:jain_app/utils/app_utils.dart';
+import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
 import 'package:sizer/sizer.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-
 
 class LoginScreen extends StatefulWidget {
   final bool? fromMain;
@@ -36,32 +37,56 @@ class _LoginScreenState extends State<LoginScreen> {
   DateTime dateTemp = DateTime.now();
   String selectedDate = "";
 
+  LoginBloc loginBloc = LoginBloc(
+    repository: LoginRepository(
+      dataSource: LoginDataSource(),
+    ),
+  );
+
   @override
   void initState() {
     super.initState();
+    controllerMemberId.text = "9876543210";
+    controllerPassword.text = "Elitech123*";
+    controllerBirth.text = "1990";
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: whiteColor,
-      child: SafeArea(
-        bottom: false,
-        child: Scaffold(
-          // appBar: noAppBar(false, otherColor: whiteColor, loaderTimeColor: clrApp),
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-          ),
-          body: bodyView(),
-          backgroundColor: whiteColor,
-          resizeToAvoidBottomInset: false,
-        ),
-      ),
+    return BlocListener<LoginBloc, LoginState>(
+      bloc: loginBloc,
+      listener: (context, state) {
+        if (state.loginCallState == ApiCallState.success) {
+          loginBloc.add(GetProfileAPIEvent());
+        }
+        if(state.getProfileCallState==ApiCallState.success){
+          callNextScreenAndClearStack(context, const HomeScreen());
+        }
+      },
+      child: BlocBuilder<LoginBloc, LoginState>(
+          bloc: loginBloc,
+          builder: ((context, state) {
+            return Container(
+              color: whiteColor,
+              child: SafeArea(
+                bottom: false,
+                child: Scaffold(
+                  // appBar: noAppBar(false, otherColor: whiteColor, loaderTimeColor: clrApp),
+                  appBar: AppBar(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                  ),
+                  body: bodyView(state),
+                  backgroundColor: whiteColor,
+                  resizeToAvoidBottomInset: false,
+                ),
+              ),
+            );
+          })),
     );
   }
 
-  Widget bodyView() {
+  Widget bodyView(LoginState state) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -80,7 +105,10 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 // sb(s.s200),
 
-                Image.asset(Imagename.appLogo, width: 70.w,),
+                Image.asset(
+                  Imagename.appLogo,
+                  width: 70.w,
+                ),
 
                 sb(2.h),
 
@@ -120,8 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 sb(10),
 
                 Container(
-                  padding:
-                  EdgeInsets.symmetric(vertical: 30, horizontal: 15),
+                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 15),
                   decoration: BoxDecoration(
                       borderRadius: radius(10),
                       color: whiteColor,
@@ -149,9 +176,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ..text = selectedDate == ""
                               ? ""
                               : selectedDate.toFormatDate(
-                            defaultFormat:
-                            DateFormate.dateToFormatddMMMMYYYY,
-                          ),
+                                  defaultFormat:
+                                      DateFormate.dateToFormatddMMMMYYYY,
+                                ),
                         isSuffixImage: true,
                         suffixImage: Imagename.dateIcon,
                         textInputAction: TextInputAction.next,
@@ -159,12 +186,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         onSumitted: () {},
                         onTap: () {
                           bottomPicker(context, child: DatePickerView(
-                                (d) {
+                            (d) {
                               dateTemp = d;
                             },
                           ), onTap: () {
                             setState(() {
                               selectedDate = dateTemp.toString();
+                              controllerBirth.text = selectedDate;
                             });
                           });
                         },
@@ -174,12 +202,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       sb(2.h),
 
-
                       //Email password textfields
                       CustomTextField(
                         context: context,
                         textFieldName: "Mobile No",
                         hintText: "Mobile No",
+                        enable: state.loginCallState != ApiCallState.busy,
                         numberOfLines: 1,
                         controller: controllerMemberId,
                         isSuffixImage: true,
@@ -200,11 +228,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         context: context,
                         textFieldName: AppConstants.password,
                         hintText: AppConstants.enterpassword,
+                        enable: state.loginCallState != ApiCallState.busy,
                         numberOfLines: 1,
                         controller: controllerPassword,
                         textInputAction: TextInputAction.done,
-                        suffixImage:
-                        passHide ? Imagename.show : Imagename.hide,
+                        suffixImage: passHide ? Imagename.show : Imagename.hide,
                         isObsecure: passHide,
                         onSumitted: () {
                           FocusManager.instance.primaryFocus!.unfocus();
@@ -238,20 +266,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       Button(
                         title: AppConstants.signIn,
                         fontColor: whiteColor,
+                        isLoading: state.loginCallState==ApiCallState.busy||state.getProfileCallState==ApiCallState.busy,
                         backgroundColor: clrApp,
                         ontap: () {
                           unFocus(context);
-                          callNextScreen(context, const HomeScreen());
+                          // callNextScreen(context, const HomeScreen());
 
-                          // loginBloc.add(
-                          //   ValidationEvent(
-                          //     memberId: controllerMemberId.text.isEmpty
-                          //         ? "555555555555"
-                          //         : controllerMemberId.text,
-                          //     password: controllerPassword.text,
-                          //     context: context,
-                          //   ),
-                          // );
+                          loginBloc.add(
+                            ValidationEvent(
+                              mobile: controllerMemberId.text.isEmpty
+                                  ? "555555555555"
+                                  : controllerMemberId.text,
+                              password: controllerPassword.text,
+                              birthYear: controllerBirth.text,
+                              context: context,
+                            ),
+                          );
                         },
                       ),
                       sb(5),
@@ -270,11 +300,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontFamily: FontName.nunitoSansRegular,
                     ),
                     GestureDetector(
-                      onTap: () async{
+                      onTap: () async {
                         unFocus(context);
                         callNextScreen(context, const RegisterScreen());
                         // if (!await launchUrl(Uri.parse("https://jainmahasangh.tolobolo.com/public/jain-vasti-ganatri"))) {
-                          // throw Exception('Could not launch $_url');
+                        // throw Exception('Could not launch $_url');
                         // }
                       },
                       child: TitleTextView(
@@ -287,7 +317,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     )
                   ],
                 ),
-
 
                 sb(100),
 

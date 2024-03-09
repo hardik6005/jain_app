@@ -1,23 +1,25 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jain_app/componenets/browse_dialog.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_button.dart';
-import 'package:jain_app/componenets/custom_dialogue.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
 import 'package:jain_app/componenets/loader_widget_main.dart';
-import 'package:jain_app/componenets/title_widget.dart';
+import 'package:jain_app/main.dart';
+import 'package:jain_app/screens/home/home_screen.dart';
 import 'package:jain_app/screens/matrimonial/circle_image_view.dart';
+import 'package:jain_app/screens/profile/bloc/profile_bloc.dart';
+import 'package:jain_app/screens/profile/data/profile_datasource.dart';
+import 'package:jain_app/screens/profile/data/profile_repository.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
 import 'package:sizer/sizer.dart';
-import 'package:image_picker/image_picker.dart';
-
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -27,19 +29,11 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  TextEditingController controllerOtherInfo = TextEditingController();
+  TextEditingController controllerName = TextEditingController();
+  TextEditingController controllerAddress = TextEditingController();
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPhone = TextEditingController();
-
-  //Permanant Address
-  TextEditingController controllerAddressP = TextEditingController();
-
-  //Present Address
-  TextEditingController controllerAddressPR = TextEditingController();
-
-  TextEditingController controllerPincodeN = TextEditingController();
-  TextEditingController controllerPincodePR = TextEditingController();
-  TextEditingController controllerPincodeP = TextEditingController();
+  String urlProfile = "";
 
   bool passHide = true;
 
@@ -51,50 +45,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   ImagePicker picker = ImagePicker();
   List<PickerModel> pickerModelList = [];
 
-  final distictPRKey = GlobalKey<DropdownSearchState<String>>();
-  final statePRKey = GlobalKey<DropdownSearchState<String>>();
-  final distictNKey = GlobalKey<DropdownSearchState<String>>();
-  final stateNKey = GlobalKey<DropdownSearchState<String>>();
-  final distictPKey = GlobalKey<DropdownSearchState<String>>();
-  final statePKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictPKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictPRKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictNKey = GlobalKey<DropdownSearchState<String>>();
-  final villageNKey = GlobalKey<DropdownSearchState<String>>();
-  final villagePKey = GlobalKey<DropdownSearchState<String>>();
-  final villagePRKey = GlobalKey<DropdownSearchState<String>>();
-
-  bool isNativeShow = false;
-  bool isPresentShow = false;
-  bool isPermenentShow = false;
-
   bool isLoading = false;
+
+  ProfileBloc profileBloc = ProfileBloc(
+    repository: ProfileRepository(
+      dataSource: ProfileDataSource(),
+    ),
+  );
 
   @override
   void initState() {
     super.initState();
+    controllerName.text = userDataModel.data!.name ?? "";
+    controllerEmail.text = userDataModel.data!.email ?? "";
+    controllerPhone.text = userDataModel.data!.phoneNumber ?? "";
+    controllerAddress.text = userDataModel.data!.address ?? "";
+    urlProfile = userDataModel.data!.profilePic ?? "";
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: whiteColor,
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
-          appBar: appBar(context, "Update Profile", Imagename.icBack,
-              "", whiteIntColor, leadingAction: () {
-            pop(context);
-          }),
-          body: commonShapeContainer(bodyView()),
-          backgroundColor: clrApp,
-          resizeToAvoidBottomInset: false,
-        ),
-      ),
+    return BlocListener<ProfileBloc, ProfileState>(
+      bloc: profileBloc,
+      listener: (context, state) {
+        if(state.getProfileCallState==ApiCallState.success){
+          callNextScreenAndClearStack(context, const HomeScreen());
+        }
+
+        if(state.saveProfileCallState==ApiCallState.success){
+          // callNextScreenAndClearStack(context, const HomeScreen());
+          profileBloc.add(GetProfileAPIEvent());
+        }
+      },
+      child: BlocBuilder<ProfileBloc, ProfileState>(
+          bloc: profileBloc,
+          builder: ((context, state) {
+            return Container(
+              color: whiteColor,
+              child: SafeArea(
+                top: false,
+                child: Scaffold(
+                  appBar: appBar(context, "Update Profile", Imagename.icBack,
+                      "", whiteIntColor, leadingAction: () {
+                    pop(context);
+                  }),
+                  body: commonShapeContainer(bodyView(state)),
+                  backgroundColor: clrApp,
+                  resizeToAvoidBottomInset: false,
+                ),
+              ),
+            );
+          })),
     );
   }
 
-  Widget bodyView() {
+  Widget bodyView(ProfileState state) {
     return LoaderWidgetMain(
       isLoading: /* state.editProfileCallState == ApiCallState.busy ||*/
           isLoading,
@@ -125,7 +130,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 value: (str) async {
                                   //value!(str);
                                   pop(context);
-                                  await pickerModesWidget(picker, pickerModelList, str);
+                                  await pickerModesWidget(
+                                      picker, pickerModelList, str);
                                   setState(() {});
                                 },
                               ),
@@ -134,7 +140,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: DisplayImage(
                             imagePath: pickerModelList.isNotEmpty
                                 ? pickerModelList[0].path
-                                : StaticList.url,
+                                : urlProfile.isNotEmpty
+                                    ? urlProfile
+                                    : StaticList.url,
                             onPressed: () {},
                           ),
                         ),
@@ -142,7 +150,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
 
                     sb(1.5.h),
-
 
                     //Contact No.
                     CustomTextField(
@@ -191,7 +198,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       textFieldName: "Name",
                       hintText: "Enter Name",
                       numberOfLines: 1,
-                      controller: controllerOtherInfo,
+                      controller: controllerName,
                       textInputAction: TextInputAction.next,
                       onChange: (v) {},
                     ),
@@ -204,7 +211,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       hintText: AppConstants.enterEmail,
                       numberOfLines: 1,
                       controller: controllerEmail,
-                      enable: false,
                       textInputAction: TextInputAction.next,
                       onSumitted: () {
                         if (controllerEmail.text.isNotEmpty) {
@@ -228,6 +234,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     sb(1.5.h),
 
+                    //Other Information
+                    CustomTextField(
+                      context: context,
+                      textFieldName: "Address",
+                      hintText: "Enter Address",
+                      numberOfLines: 1,
+                      controller: controllerAddress,
+                      textInputAction: TextInputAction.next,
+                      onChange: (v) {},
+                    ),
+                    sb(1.5.h),
 
                     spaceHeight(context),
 
@@ -240,36 +257,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               title: AppConstants.saveProfile,
               fontColor: whiteColor,
               backgroundColor: clrOrange,
+              isLoading: state.saveProfileCallState==ApiCallState.busy || state.getProfileCallState==ApiCallState.busy,
               ontap: () {
                 // registerBloc.add(RegisterAPI());
                 unFocus(context);
-                // registerBloc.add(
-                //   EditProfileEvent(
-                //     requestModel: EditProfileRequestModel(
-                //       mobileNo: controllerPhone.text,
-                //       emailId: controllerEmail.text,
-                //       maritalStatusId: state.maritalIdModel!.id.toString(),
-                //       dob: selectedDate != ""
-                //           ? selectedDate.toFormatDate(
-                //               defaultFormat: DateFormate.dateToFormatyyyyMMdd)
-                //           : "",
-                //       presentAddress: controllerAddressPR.text,
-                //       presentDistict: state.distictIdPR,
-                //       presentState: state.stateIdPR,
-                //       presentSubDistict: state.subDistictIdPR,
-                //       presentVillage: state.villageIdPR,
-                //       permanentAddress: controllerAddressP.text,
-                //       permanentDistict: state.distictIdP,
-                //       permanentState: state.stateIdPR,
-                //       permanentSubDistict: state.subDistictIdP,
-                //       permanentVillage: state.villageIdP,
-                //       memberId: userDataModel!.data!.memberId!,
-                //       otherInformation: controllerOtherInfo.text,
-                //       permanentPincode: controllerPincodeP.text,
-                //       presentPincode: controllerPincodePR.text,
-                //     ),
-                //   ),
-                // );
+                profileBloc.add(
+                  ValidationEvent(
+                    address: controllerAddress.text,
+                    name: controllerName.text,
+                    email: controllerEmail.text,
+                    image: pickerModelList.isNotEmpty?pickerModelList[0].path:"",
+                  ),
+                );
               },
             ),
             sb(10)

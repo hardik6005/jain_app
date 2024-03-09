@@ -26,25 +26,29 @@ class ResetAPIEvent extends LoginEvent {
 
 //Validation Event
 class ValidationEvent extends LoginEvent {
-  String? memberId;
+  String? mobile;
   String? password;
+  String? birthYear;
   BuildContext? context;
   ValidationEvent({
-    this.memberId,
+    this.mobile,
     this.password,
     this.context,
+    this.birthYear,
   });
 }
 
 //Validation Event
 class LoginAPIEvent extends LoginEvent {
   BuildContext? context;
-  String? memberId;
+  String? phone;
   String? password;
+  String? birthYear;
   LoginAPIEvent({
     this.context,
-    this.memberId,
+    this.phone,
     this.password,
+    this.birthYear,
   });
 }
 

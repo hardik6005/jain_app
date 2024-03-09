@@ -111,7 +111,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                   children: [
                     sb(1.h),
                     TitleTextView(
-                      "Harry Gray",
+                      userDataModel.data?.name??"-",
                       fontSize: f24,
                       fontFamily: FontName.nunitoSansBold,
                       textAlign: TextAlign.center,
@@ -121,8 +121,8 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                     sb(0.5.h),
                     const TitleWidget(AppConstants.basicInfo),
                     sb(0.5.h),
-                    commonItem(AppConstants.phone, "+91 1234567890"),
-                    commonItem(AppConstants.email, "test@gmail.com"),
+                    commonItem(AppConstants.phone, "+91 ${userDataModel.data?.phoneNumber??"-"}"),
+                    commonItem(AppConstants.email, userDataModel.data?.email??"-"),
 
                     sb(2.5.h),
 
@@ -136,7 +136,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                             backgroundColor: clrOrange,
                             ontap: () {
                               // registerBloc.add(RegisterAPI());
-                              callNextScreen(context, EditProfileScreen());
+                              callNextScreen(context, const EditProfileScreen());
 
                             },
                           ),
@@ -195,7 +195,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
               flexibleSpace: FlexibleSpaceBar(
                 collapseMode: CollapseMode.parallax,
                 background: CacheNetworkImage(
-                  "",
+                  userDataModel.data!.profilePic??"",
                   imageHeight: MediaQuery.of(context).size.width,
                   placeHolderImage: Imagename.icProfileImage,
                 ),

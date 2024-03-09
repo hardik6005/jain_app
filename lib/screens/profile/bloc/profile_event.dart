@@ -6,6 +6,25 @@ abstract class ProfileEvent {
   List<Object> get props => [];
 }
 
+
+//Validation Event
+class ValidationEvent extends ProfileEvent {
+  String? mobile;
+  String? name;
+  String? email;
+  String? image;
+  String? address;
+  BuildContext? context;
+  ValidationEvent({
+    this.mobile,
+    this.name,
+    this.context,
+    this.email,
+    this.image,
+    this.address,
+  });
+}
+
 //Variable Event
 class VariableEvent extends ProfileEvent {
   final String? gender;
@@ -26,23 +45,6 @@ class AddressSelectEvent extends ProfileEvent {
   });
 }
 
-//Validation Event
-class ValidationEvent extends ProfileEvent {
-  final bool? validEmailO;
-  final bool? validPhoneO;
-  final bool? validPhoneH;
-  ValidationEvent({
-    this.validEmailO,
-    this.validPhoneH,
-    this.validPhoneO,
-  });
-}
-
-//Save Profile API
-class SaveProfileAPI extends ProfileEvent {
-  ProfileRequestModel requestModel;
-  SaveProfileAPI(this.requestModel);
-}
 
 //Dynamic DropDown API
 class DropDownIDsEvent extends ProfileEvent {
@@ -53,3 +55,9 @@ class DropDownIDsEvent extends ProfileEvent {
     this.educationId,
   });
 }
+
+//GetProfile API Event
+class GetProfileAPIEvent extends ProfileEvent {
+  GetProfileAPIEvent();
+}
+

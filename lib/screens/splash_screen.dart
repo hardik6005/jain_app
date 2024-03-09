@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jain_app/componenets/custom_dialogue.dart';
+import 'package:jain_app/main.dart';
 import 'package:jain_app/screens/auth/login_screen.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
@@ -31,7 +32,11 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     
     delay(1800).then((value){
-      callNextScreenAndClearStack(context, LoginScreen());
+      if(userDataModel.data!=null){
+        callNextScreenAndClearStack(context, HomeScreen());
+      }else{
+        callNextScreenAndClearStack(context, LoginScreen());
+      }
     });
     
   }

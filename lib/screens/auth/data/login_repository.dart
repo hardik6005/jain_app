@@ -2,6 +2,7 @@ import 'package:jain_app/http_common/api_result.dart';
 import 'package:jain_app/http_common/app_http.dart';
 import 'package:jain_app/screens/auth/data/login_datasource.dart';
 import 'package:jain_app/screens/auth/model/forgot_request_model.dart';
+import 'package:jain_app/screens/auth/model/login_model.dart';
 import 'package:jain_app/screens/auth/model/success_model.dart';
 import 'package:jain_app/screens/auth/model/user_data_model.dart';
 import 'package:jain_app/utils/string_constants.dart';
@@ -15,15 +16,15 @@ class LoginRepository {
   final LoginDataSource _dataSource;
 
   //Repository for Register API
-  Future<ApiResult<UserDataModel>> loginAPI(
-      String memberId, String password) async {
+  Future<ApiResult<LoginModel>> loginAPI(
+      String phone, String password, String birthYear) async {
     try {
-      final result = await _dataSource.loginAPI(memberId, password);
+      final result = await _dataSource.loginAPI(phone, password, birthYear);
 
       if (result!.statusCode == 200) {
-        UserDataModel response = UserDataModel.fromJson(result.data);
-        if (!response.error!) {
-          return checkResponseStatusCode<UserDataModel>(result, response);
+        LoginModel response = LoginModel.fromJson(result.data);
+        if (response.status??false) {
+          return checkResponseStatusCode<LoginModel>(result, response);
         } else {
           return ApiResult.failure(error: response.message!);
         }
@@ -87,7 +88,7 @@ class LoginRepository {
 
       if (result!.statusCode == 200) {
         UserDataModel response = UserDataModel.fromJson(result.data);
-        if (!response.error!) {
+        if (response.status??false) {
           return checkResponseStatusCode<UserDataModel>(result, response);
         } else {
           return ApiResult.failure(error: response.message!);

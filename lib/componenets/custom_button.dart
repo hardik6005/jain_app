@@ -5,7 +5,6 @@ import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
 
-
 class Button extends StatelessWidget {
   Function()? ontap;
   String? title;
@@ -18,6 +17,7 @@ class Button extends StatelessWidget {
   bool? isShadow = true;
   bool? isDisable = false;
   double? height;
+  bool? isLoading;
 
   Button({
     Key? key,
@@ -32,6 +32,7 @@ class Button extends StatelessWidget {
     this.isShadow,
     this.isDisable = false,
     this.height,
+    this.isLoading = false,
   }) : super(key: key);
 
   @override
@@ -58,17 +59,24 @@ class Button extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Align(
           alignment: Alignment.center,
-          child: Text(
-            title!,
-            textScaleFactor: 1.0,
-            textAlign: textAlign ?? TextAlign.center,
-            style: TextStyle(
-                fontFamily: FontName.nunitoSansRegular,
-                decoration: TextDecoration.none,
-                fontWeight: fontWeight ?? FontWeight.normal,
-                fontSize: fontSize ?? f17,
-                color: fontColor == null ? blackColor : fontColor!),
-          ),
+          child: (isLoading!)
+              ? SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                      color: whiteColor, strokeWidth: 3),
+                )
+              : Text(
+                  title!,
+                  textScaleFactor: 1.0,
+                  textAlign: textAlign ?? TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: FontName.nunitoSansRegular,
+                      decoration: TextDecoration.none,
+                      fontWeight: fontWeight ?? FontWeight.normal,
+                      fontSize: fontSize ?? f17,
+                      color: fontColor == null ? blackColor : fontColor!),
+                ),
         ),
       ),
     );

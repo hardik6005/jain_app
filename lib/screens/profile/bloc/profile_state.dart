@@ -2,6 +2,7 @@ part of 'profile_bloc.dart';
 
 class ProfileState {
   final ApiCallState? saveProfileCallState;
+  final ApiCallState? getProfileCallState;
   final int? page;
   final bool? hasNextPage;
   final bool? isLoadMoreRunning;
@@ -23,6 +24,7 @@ class ProfileState {
 
   ProfileState({
     this.saveProfileCallState = ApiCallState.none,
+    this.getProfileCallState = ApiCallState.none,
     this.page = 0,
     this.hasNextPage = true,
     this.isLoadMoreRunning = false,
@@ -42,6 +44,7 @@ class ProfileState {
 
   List<Object> get props => [
         saveProfileCallState!,
+        getProfileCallState!,
         page!,
         hasNextPage!,
         isLoadMoreRunning!,
@@ -61,6 +64,7 @@ class ProfileState {
 
   ProfileState copyWith({
     ApiCallState? saveProfileCallState,
+    ApiCallState? getProfileCallState,
     int? page,
     bool? hasNextPage,
     bool? isLoadMoreRunning,
@@ -80,6 +84,7 @@ class ProfileState {
   }) {
     return ProfileState(
       saveProfileCallState: saveProfileCallState ?? this.saveProfileCallState,
+      getProfileCallState: getProfileCallState ?? this.getProfileCallState,
       page: page ?? this.page,
       hasNextPage: hasNextPage ?? this.hasNextPage,
       isLoadMoreRunning: isLoadMoreRunning ?? this.isLoadMoreRunning,

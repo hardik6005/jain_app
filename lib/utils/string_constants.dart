@@ -60,8 +60,9 @@ class BasicConfig {
 
 // //Labels
 class AppConstants {
-  static const String appTitle = "Rawat Rajput";
-  static const String ok = "OK";
+  static const String appTitle = "Jain App";
+  static const String ok = "Okay";
+  static const String cancel = "Cancle";
   static const String nointernet = "No Internet";
   static const String somethingwentwrong = "Something went wrong";
   static const String memberId = "Member Id";
@@ -107,7 +108,7 @@ class AppConstants {
   static const String search = "Search...";
   static const String enterOtherInfo = "Enter other information";
   static const String phone = "Phone :";
-  static const String validPhone = "Valid Phone";
+  static const String validPhone = "Valid Mobile No.";
   static const String homeNumber = "Home Number :";
   static const String officeNumber = "Office Number :";
   static const String enterPhone = "Enter phone";
@@ -131,7 +132,7 @@ class AppConstants {
   static const String enterdistrictN = "Enter district";
   static const String subDistrictN = "Sub District :";
   static const String entersubDistrictN = "Enter sub district";
-  static const String addressN = "Address :";
+  static const String addressN = "Address";
   static const String enterAddressN = "Enter address";
   static const String pleaseSelect = "Please select";
   static const String pleaseSearch = "Please search";
@@ -143,7 +144,6 @@ class AppConstants {
   static const String sameNative = "Same As Native Address";
   static const String samePermanant = "Same As Permanent Address";
 
-  static const String cancel = "Cancel";
   static const String select = "Select";
 
   //Profile Screen

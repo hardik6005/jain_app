@@ -12,6 +12,7 @@ import 'package:jain_app/http_common/api_result.dart';
 import 'package:jain_app/main.dart';
 import 'package:jain_app/screens/no_internet_screen/no_internet_screen.dart';
 import 'package:jain_app/utils/api_constant.dart';
+import 'package:jain_app/utils/app_preference.dart';
 
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/string_constants.dart';
@@ -90,7 +91,7 @@ class HttpActions {
         HttpResponse resp = HttpResponse(response.statusCode);
         if (enCodedStr.isNotEmpty) {
           resp.data = jsonDecode(utf8.decode(response.bodyBytes));
-          if (resp.data["error"] && resp.data["code"] != 200) {
+          if (resp.statusCode != 200) {
             await Navigator.push(
               GlobalVariable.navState.currentContext!,
               MaterialPageRoute(
@@ -468,7 +469,7 @@ class HttpActions {
     //Get Token
     String token = /*await AppPreference.instance.getPref(Pref.deviceToken);*/"";
     String deviceId = /*await AppPreference.instance.getPref(Pref.deviceId);*/"";
-    String myToken = /*await AppPreference.instance.getPref(Pref.myToken);*/"";
+    String myToken = await AppPreference.instance.getPref(Pref.myToken);"";
 
     print("BAREAR_TOKEN---" + myToken);
 
@@ -484,14 +485,14 @@ class HttpActions {
     // headers["Accept"] = "*/*";
     // headers["Accept-Encoding"] = "gzip, deflate, br";
     // headers["Connection"] = "keep-alive";
-    headers[PARAMS.deviceId] = deviceId != "" ? deviceId : "1234";
+    // headers[PARAMS.deviceId] = deviceId != "" ? deviceId : "1234";
     // headers[PARAMS.deviceType] = device["device"];
-    headers[PARAMS.deviceToken] = token;
+    // headers[PARAMS.deviceToken] = token;
     // headers["brand"] = device["brand"];
     // headers["model"] = device["model"];
-    headers["is-mobile"] = "true";
+    // headers["is-mobile"] = "true";
     // headers["app-version"] = version;
-    if (token.isNotEmpty) {
+    if (myToken.isNotEmpty) {
       headers["Authorization"] = "Bearer $myToken";
     }
 

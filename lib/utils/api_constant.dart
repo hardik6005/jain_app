@@ -2,9 +2,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class URLS {
   /* Client End Server*/
-  static String baseUrl = "${dotenv.env['BASE_URL']!}/api/v1/";
+  static String baseUrl = "${dotenv.env['BASE_URL']!}/public/api/";
   static String imageUrl = dotenv.env['IMAGE_URL']!;
-  static String addressUrl = "https://api.postalpincode.in/pincode/";
+
+  //APIs
+  static String memberLogin = "member-login";
+  static String getProfile = "profile";
 
   //DropDown
   static String dynamicValue = "dynamicValue";
@@ -17,7 +20,6 @@ class URLS {
   static String memberSocialProfile = "memberSocialProfile";
   static String memberBusinessProfile = "memberBusinessProfile";
   static String matrimonialProfile = "matrimonialProfile";
-  static String getProfile = "getProfile";
   static String memberProfile = "memberProfile";
   static String memberProfileEdit = "memberProfileEdit";
   static String getSocialProfile = "getSocialProfile";
@@ -120,7 +122,6 @@ class PARAMS {
 
   //Login PARAM
   static String memberId = "member_id";
-  static String password = "password";
   static String otp = "otp";
   static String passwordConfirmation = "password_confirmation";
 
@@ -259,4 +260,9 @@ class PARAMS {
   static String communityId = "community_id";
   static String mainBranchId = "main_branch_id";
   static String subBranchId = "sub_branch_id";
+
+  //This App
+  static String phone_number = "phone_number";
+  static String password = "password";
+  static String birth_year = "birth_year";
 }
