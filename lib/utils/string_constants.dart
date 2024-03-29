@@ -15,43 +15,13 @@ class Pref {
   static String deviceToken = "DEVICE_TOKEN";
   static String deviceId = "DEVICE_ID";
   static String longPress = "LONG_PRESS";
-  static String isTutorialSeen = "IS_TUTORIAL_SCREEN";
-  static String nonAuthorizedModules = "NONAUTHORIZED_MODULES";
-  static String isHideNote = "IS_HIDE_NOTE";
-  static String authUserLoginArray = "AUTH_USER_LOGIN_ARRAY";
-  static String homeLastVisitDate = "HOME_LAST_VISIT_DATE";
-  static String eulaAcceptedVersion = "EULA_ACCEPTED_VERSIONS";
-  static String isUserLogin = "IS_USER_LOGIN";
 
-  //Filter Preference
-  static String isFromFilterResult = "IS_FROM_FILTER_RESULT";
-  static String isFromFeedbackFilter = "IS_FROM_FEEDBACK_FILTER";
-  static String filterName = "FILTER_NAME";
-  static String appliedFilterResultValues = "APPLIED_FILTER_RESULT_VALUES";
-  static String appliedFilterValues = "APPLIED_FILTER_VALUES";
-  static String isFromFilter = "IS_FROM_FILTER";
-  static String feedbackSortType = "FEEDBACK_SORT_TYPE";
-  static String followupSortType = "FOLLOWUP_SORT_TYPE";
-
-  //Notes Preference
-  static String appliedFilterValuesNotes = "APPLIED_FILTER_VALUES_NOTES";
-  static String notesSortType = "NOTES_SORT_TYPE";
-  static String reminderSortType = "REMINDER_SORT_TYPE";
-  static String shareFilter = "SELECTED_NOTE_SHARE_FILTER";
-  static String tagsFilter = "SELECTED_NOTE_TAGS_FILTER";
-  static String attachmentFilter = "SELECTED_NOTE_ATTACHMENT_FILTER";
-  static String typeFilter = "SELECTED_NOTE_TYPE_FILTER";
-
-  //Team member filter
-  static String selectedMemberId = "SELECTED_MEMBER_ID";
 
   static String userData = "USER_DATA";
   static String myToken = "MY_TOKEN";
 
-  static String filterData = "FILTER_DATA";
-  static String businessFilter = "BUSINESS_FILTER_DATA";
-  static String matriFilter = "MATRI_FILTER_DATA";
-  static String dashboardImage = "DashboardImages";
+  static String dropDownJson = "dropDownJson";
+
 }
 
 class BasicConfig {
@@ -96,6 +66,7 @@ class AppConstants {
   static const String surname = "Surname :";
   static const String padvi = "Padvi :";
   static const String name = "Name :";
+  static const String fullname = "Full Name :";
   static const String nameSocialIns = "Name Of Social Institute :";
   static const String placeByPincode = "Institue Place By Pincode";
   static const String email = "Email :";

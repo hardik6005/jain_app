@@ -17,6 +17,8 @@ import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
 
+import '../main.dart';
+
 //Standard Font Size
 double f24 = 24;
 double f23 = 23;
@@ -441,12 +443,6 @@ List<String> memberDirectoryCommItem = [
   "Rawat Rajput",
   "Raghuvanshi Dal"
 ];
-List<String> memberDirectoryStateItem = ["Gujara", "Bajarang Dal"];
-List<DropDownModel> relationSideList = [
-  DropDownModel(name: "Father Side", id: 1),
-  DropDownModel(name: "Mother Side", id: 2),
-  DropDownModel(name: "In-Lows Side", id: 3)
-];
 
 List<String> businessfilters = [
   "Address",
@@ -478,6 +474,7 @@ Widget noDataView() {
           Image.asset(
             Imagename.icNoData,
             height: 50,
+            color: clrApp,
           ),
           sb(7),
           TitleTextView(
@@ -530,4 +527,15 @@ Future<void> pickerModesWidget(
 Future<ConnectivityResult> checkConnection() async {
   var connectivityResult = await (Connectivity().checkConnectivity());
   return connectivityResult;
+}
+
+getDropDown(String name){
+  List<DropDownModel> relationHofDD = [];
+  Map relationHOD = dropDownJson[name]??{};
+  relationHOD.forEach((key, value) {
+    if(key.toString().isNotEmpty) {
+      relationHofDD.add(DropDownModel(id: key, name: value));
+    }
+  });
+  return relationHofDD;
 }

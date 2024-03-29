@@ -1,11 +1,15 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
 import 'package:jain_app/componenets/loader_widget.dart';
-import 'package:jain_app/screens/home/home_screen.dart';
+import 'package:jain_app/screens/home/bloc/home_bloc.dart';
+import 'package:jain_app/screens/home/data/home_datasource.dart';
+import 'package:jain_app/screens/home/data/home_repository.dart';
 import 'package:jain_app/screens/member/add_member_screen.dart';
+import 'package:jain_app/screens/member/model/member_list_model.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
@@ -67,40 +71,54 @@ class _MemberListScreenState extends State<MemberListScreen> {
 
   bool? termAccept = false;
 
-  bool isLoading = true;
+
+  HomeBloc profileBloc = HomeBloc(
+    repository: HomeRepository(
+      dataSource: HomeDataSource(),
+    ),
+  );
 
   @override
   void initState() {
     super.initState();
-
-    delay(2000).then((value){
-      isLoading = false;
-      setState(() {});
-    });
+    profileBloc.add(GetMemberAPIEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: whiteColor,
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
-          appBar: appBar(
-              context, "Member Directory", Imagename.icBack, "", whiteIntColor,
-              leadingAction: () {
-                pop(context);
-              }, action: [
-              homeWidget(context)
-          ],),
-        body: commonShapeContainer(bodyView()),
-        backgroundColor: clrApp,
-        resizeToAvoidBottomInset: false,
-      ),
-    ),);
+    return BlocListener<HomeBloc, HomeState>(
+      bloc: profileBloc,
+      listener: (context, state) {},
+      child: BlocBuilder<HomeBloc, HomeState>(
+          bloc: profileBloc,
+          builder: ((context, state) {
+            return Container(
+              color: whiteColor,
+              child: SafeArea(
+                top: false,
+                child: Scaffold(
+                  appBar: appBar(
+                    context,
+                    "Member Directory",
+                    Imagename.icBack,
+                    "",
+                    whiteIntColor,
+                    leadingAction: () {
+                      pop(context);
+                    },
+                    action: [homeWidget(context)],
+                  ),
+                  body: commonShapeContainer(bodyView(state)),
+                  backgroundColor: clrApp,
+                  resizeToAvoidBottomInset: false,
+                ),
+              ),
+            );
+          })),
+    );
   }
 
-  Widget bodyView() {
+  Widget bodyView(HomeState state) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5),
       child: Stack(
@@ -108,12 +126,19 @@ class _MemberListScreenState extends State<MemberListScreen> {
           Column(
             children: [
               Expanded(
-                child: (isLoading)?const LoaderWidget():ListView.builder(
-                    itemCount: 10,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return listItemView(index);
-                    }),
+                child: (state.getMemberCallState == ApiCallState.busy)
+                    ? const LoaderWidget()
+                    : (state.memberListModel != null &&
+                            state.memberListModel!.data != null &&
+                            state.memberListModel!.data!.isNotEmpty)
+                        ? ListView.builder(
+                            itemCount: state.memberListModel!.data!.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final model = state.memberListModel!.data![index];
+                              return listItemView(model, index);
+                            })
+                        : noDataView(),
               ),
               sb(7.h),
             ],
@@ -122,13 +147,14 @@ class _MemberListScreenState extends State<MemberListScreen> {
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
               onTap: () {
-                callNextScreen(context, AddMemberScreen());
+                callNextScreenWithResult(context, AddMemberScreen()).then((value){
+                  if(value!=null && value=="true"){
+                    profileBloc.add(GetMemberAPIEvent());
+                  }
+                });
               },
               child: Container(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(7)),
                     color: clrOrange),
@@ -161,7 +187,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
     );
   }
 
-  Widget listItemView(int index) {
+  Widget listItemView(Member member, int index) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 1.h, horizontal: 10)
           .copyWith(top: (index == 0) ? 2.h : 1.h),
@@ -184,19 +210,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TitleTextView(
-                (index == 0)
-                    ? "Elitech Head"
-                    : (index == 1)
-                    ? "John Doe"
-                    : (index == 2)
-                    ? "James Dean"
-                    : (index == 3)
-                    ? "Carry Jackson"
-                    : (index == 4)
-                    ? "Dean Switson"
-                    : (index == 5)
-                    ? "Martin Chain"
-                    : "Lalit roy",
+                member.fullName,
                 fontFamily: FontName.nunitoSansBold,
                 fontWeight: FontWeight.w600,
                 fontSize: f18,
@@ -207,32 +221,32 @@ class _MemberListScreenState extends State<MemberListScreen> {
                   color: (index == 0)
                       ? greenColor
                       : (index == 1)
-                      ? redColor
-                      : (index == 2)
-                      ? redColor
-                      : (index == 3)
-                      ? greenColor
-                      : (index == 4)
-                      ? redColor
-                      : (index == 5)
-                      ? greenColor
-                      : greenColor,
+                          ? redColor
+                          : (index == 2)
+                              ? redColor
+                              : (index == 3)
+                                  ? greenColor
+                                  : (index == 4)
+                                      ? redColor
+                                      : (index == 5)
+                                          ? greenColor
+                                          : greenColor,
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 child: TitleTextView(
                   (index == 0)
                       ? "Active"
                       : (index == 1)
-                      ? "Inactive"
-                      : (index == 2)
-                      ? "Inactive"
-                      : (index == 3)
-                      ? "Active"
-                      : (index == 4)
-                      ? "Inactive"
-                      : (index == 5)
-                      ? "Active"
-                      : "Active",
+                          ? "Inactive"
+                          : (index == 2)
+                              ? "Inactive"
+                              : (index == 3)
+                                  ? "Active"
+                                  : (index == 4)
+                                      ? "Inactive"
+                                      : (index == 5)
+                                          ? "Active"
+                                          : "Active",
                   color: whiteColor,
                   fontFamily: FontName.nunitoSansBold,
                   fontWeight: FontWeight.w600,
@@ -248,19 +262,10 @@ class _MemberListScreenState extends State<MemberListScreen> {
                 height: 15,
               ),
               sbw(2.w),
-              TitleTextView((index == 0)
-                  ? "9976236745"
-                  : (index == 1)
-                  ? "9978836745"
-                  : (index == 2)
-                  ? "9856236745"
-                  : (index == 3)
-                  ? "8876236745"
-                  : (index == 4)
-                  ? "8976236745"
-                  : (index == 5)
-                  ? "8976336745"
-                  : "8076236745", fontFamily: FontName.nunitoSansSemiBold,),
+              TitleTextView(
+                member.mobileNo??"",
+                fontFamily: FontName.nunitoSansSemiBold,
+              ),
             ],
           ),
           sb(1.h),
@@ -274,7 +279,10 @@ class _MemberListScreenState extends State<MemberListScreen> {
                       height: 15,
                     ),
                     sbw(2.w),
-                    TitleTextView("Head of Family", fontFamily: FontName.nunitoSansSemiBold,),
+                    TitleTextView(
+                      member.relationWithHod??"",
+                      fontFamily: FontName.nunitoSansSemiBold,
+                    ),
                   ],
                 ),
               ),
@@ -286,19 +294,9 @@ class _MemberListScreenState extends State<MemberListScreen> {
                       height: 15,
                     ),
                     sbw(2.w),
-                    TitleTextView((index == 0)
-                        ? "Male"
-                        : (index == 1)
-                        ? "Female"
-                        : (index == 2)
-                        ? "Male"
-                        : (index == 3)
-                        ? "Female"
-                        : (index == 4)
-                        ? "Male"
-                        : (index == 5)
-                        ? "Female"
-                        : "Male", fontFamily: FontName.nunitoSansSemiBold),
+                    TitleTextView(
+                        member.gender??"",
+                        fontFamily: FontName.nunitoSansSemiBold),
                   ],
                 ),
               ),

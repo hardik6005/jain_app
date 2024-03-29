@@ -8,6 +8,11 @@ class URLS {
   //APIs
   static String memberLogin = "member-login";
   static String getProfile = "profile";
+  static String members = "members";
+  static String business_directory = "member-business-directory/list";
+  static String matrimonial = "matrimonial";
+  static String dropdowns = "dropdowns";
+  static String createMember = "create-member";
 
   //DropDown
   static String dynamicValue = "dynamicValue";

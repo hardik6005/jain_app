@@ -1,11 +1,17 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_button.dart';
+import 'package:jain_app/componenets/custom_dialogue.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
 import 'package:jain_app/componenets/title_widget.dart';
+import 'package:jain_app/screens/member/bloc/member_bloc.dart';
+import 'package:jain_app/screens/member/data/member_datasource.dart';
+import 'package:jain_app/screens/member/data/member_repository.dart';
+import 'package:jain_app/screens/member/model/member_request_model.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
@@ -22,21 +28,17 @@ class AddMemberScreen extends StatefulWidget {
 class _AddMemberScreenState extends State<AddMemberScreen> {
   TextEditingController controllerFormNo = TextEditingController();
   TextEditingController controllerName = TextEditingController();
-  TextEditingController controllerFatherName = TextEditingController();
-  TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPhone = TextEditingController();
-  TextEditingController controllerPincodeN = TextEditingController();
-  TextEditingController controllerPincodePR = TextEditingController();
-  TextEditingController controllerPincodeP = TextEditingController();
-
-  //Native Address
-  TextEditingController controllerAddressN = TextEditingController();
-
-  //Permanant Address
-  TextEditingController controllerAddressP = TextEditingController();
-
-  //Present Address
-  TextEditingController controllerAddressPR = TextEditingController();
+  TextEditingController controllerDOB = TextEditingController();
+  TextEditingController controllerAdhar = TextEditingController();
+  TextEditingController controllerSpecial1 = TextEditingController();
+  TextEditingController controllerSpecial2 = TextEditingController();
+  TextEditingController controllerSpecial3 = TextEditingController();
+  TextEditingController controllerSpecialAct = TextEditingController();
+  TextEditingController controllerCity = TextEditingController();
+  TextEditingController controllerDesignation = TextEditingController();
+  TextEditingController controllerReligious = TextEditingController();
+  TextEditingController controllerEletcion = TextEditingController();
 
   bool passHide = true;
 
@@ -69,9 +71,43 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
   bool isLoading = false;
 
+  List<DropDownModel> relationHofDD = [];
+  String relationHOF = "";
+  List<DropDownModel> maritalStatusDD = [];
+  String maritalStatus = "";
+  List<DropDownModel> bloodGroupDD = [];
+  String bloodGroup = "";
+  List<DropDownModel> eduQualificaDD = [];
+  String eduQualifica = "";
+  List<DropDownModel> profiessionDD = [];
+  String profiession = "";
+  List<DropDownModel> stateDD = [];
+  String state = "";
+  List<DropDownModel> countryDD = [];
+  String country = "";
+  List<DropDownModel> cityDD = [];
+  String city = "";
+  String gender = "";
+  String location = "";
+
+  MemberBloc memberBloc = MemberBloc(
+    repository: MemberRepository(
+      dataSource: MemberDataSource(),
+    ),
+  );
+
   @override
   void initState() {
     super.initState();
+
+    relationHofDD = getDropDown("relationWithHOFDropDown");
+    maritalStatusDD = getDropDown("maritalStatusDropDown");
+    bloodGroupDD = getDropDown("memberbloodGroupDropDown");
+    eduQualificaDD = getDropDown("educationalQualificationDropDown");
+    profiessionDD = getDropDown("professions");
+    stateDD = getDropDown("states");
+    countryDD = getDropDown("countries");
+    cityDD = getDropDown("cities");
 
     controllerFormNo.text = "1990";
     setState(() {});
@@ -79,31 +115,48 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: whiteColor,
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
-          appBar: appBar(
-            context,
-            "Create Member",
-            Imagename.icBack,
-            "",
-            whiteIntColor,
-            leadingAction: () {
-              pop(context);
-            },
-            action: [homeWidget(context)],
-          ),
-          body: commonShapeContainer(bodyView()),
-          backgroundColor: clrApp,
-          resizeToAvoidBottomInset: false,
-        ),
-      ),
+    return BlocListener<MemberBloc, MemberState>(
+      bloc: memberBloc,
+      listener: (context, state) {
+        if (state.memberCallState == ApiCallState.success) {
+          okAlert(
+              GlobalVariable.navState.currentContext!,
+              isDismiss: false,
+              "Member created successfully.", onTap: () {
+            pop(context, data: "true");
+          });
+        }
+      },
+      child: BlocBuilder<MemberBloc, MemberState>(
+          bloc: memberBloc,
+          builder: ((context, state) {
+            return Container(
+              color: whiteColor,
+              child: SafeArea(
+                top: false,
+                child: Scaffold(
+                  appBar: appBar(
+                    context,
+                    "Create Member",
+                    Imagename.icBack,
+                    "",
+                    whiteIntColor,
+                    leadingAction: () {
+                      pop(context);
+                    },
+                    action: [homeWidget(context)],
+                  ),
+                  body: commonShapeContainer(bodyView(state)),
+                  backgroundColor: clrApp,
+                  resizeToAvoidBottomInset: false,
+                ),
+              ),
+            );
+          })),
     );
   }
 
-  Widget bodyView() {
+  Widget bodyView(MemberState statee) {
     return Container(
       color: whiteColor,
       margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -141,14 +194,14 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   CustomDropDownField(
                     context: context,
                     textFieldName: "Relation With HOF",
-                    list: [
-                      DropDownModel(name: "Sample 1"),
-                      DropDownModel(name: "Sample 2")
-                    ],
+                    list: relationHofDD,
+                    showSearch: false,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     onTap: () {},
                     onChangeInt: (v) {
+                      relationHOF = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(genderId: v));
                       // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
@@ -158,22 +211,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   //Name
                   CustomTextField(
                     context: context,
-                    textFieldName: AppConstants.name,
+                    textFieldName: AppConstants.fullname,
                     hintText: AppConstants.enterName,
                     numberOfLines: 1,
                     controller: controllerName,
-                    textInputAction: TextInputAction.next,
-                    onChange: (v) {},
-                  ),
-                  sb(10),
-
-                  //Father Name
-                  CustomTextField(
-                    context: context,
-                    textFieldName: AppConstants.fatherName,
-                    hintText: AppConstants.enterName,
-                    numberOfLines: 1,
-                    controller: controllerFatherName,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -222,13 +263,16 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     context: context,
                     textFieldName: AppConstants.selectGender,
                     list: [
-                      DropDownModel(name: "Male"),
-                      DropDownModel(name: "Female")
+                      DropDownModel(name: "Male", id: "Male"),
+                      DropDownModel(name: "Female", id: "Female")
                     ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     onTap: () {},
                     onChangeInt: (v) {
+                      print("DSDSDSDSD : ${v}");
+                      gender = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(genderId: v));
                       // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
@@ -238,14 +282,14 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   //Marital Status
                   CustomDropDownField(
                     context: context,
-                    list: [
-                      DropDownModel(name: "Single"),
-                      DropDownModel(name: "Married")
-                    ],
+                    list: maritalStatusDD,
                     textFieldName: AppConstants.selectMaritalStatus,
                     isSuffixImage: true,
+                    showSearch: false,
                     suffixImage: Imagename.downArrow,
                     onChangeInt: (v) {
+                      maritalStatus = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(maritalId: v));
                     },
                   ),
@@ -269,21 +313,108 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     enable: false,
                     onSumitted: () {},
                     onTap: () {
-                      // bottomPicker(context, child: DatePickerView(
-                      //       (d) {
-                      //     dateTemp = d;
-                      //   },
-                      // ), onTap: () {
-                      //   setState(() {
-                      //     selectedDate = dateTemp.toString();
-                      //   });
-                      // });
+                      bottomPicker(context, child: DatePickerView(
+                        (d) {
+                          dateTemp = d;
+                        },
+                      ), onTap: () {
+                        setState(() {
+                          selectedDate = dateTemp.toString();
+                        });
+                      });
                     },
                     onChange: (v) {
                       // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
                   ),
+                  sb(10),
 
+                  //Gender
+                  CustomDropDownField(
+                    context: context,
+                    textFieldName: "Blood Group",
+                    list: bloodGroupDD,
+                    isSuffixImage: true,
+                    suffixImage: Imagename.downArrow,
+                    onTap: () {},
+                    onChangeInt: (v) {
+                      bloodGroup = v;
+                      setState(() {});
+                      // registerBloc.add(DropDownIDsEvent(genderId: v));
+                      // authBloc.add(EmailEvent(controllerEmail.text.trim()));
+                    },
+                  ),
+                  sb(10),
+
+                  //Gender
+                  CustomDropDownField(
+                    context: context,
+                    textFieldName: "Educational Qualification",
+                    list: eduQualificaDD,
+                    isSuffixImage: true,
+                    suffixImage: Imagename.downArrow,
+                    onTap: () {},
+                    onChangeInt: (v) {
+                      eduQualifica = v;
+                      setState(() {});
+                      // registerBloc.add(DropDownIDsEvent(genderId: v));
+                      // authBloc.add(EmailEvent(controllerEmail.text.trim()));
+                    },
+                  ),
+                  sb(10),
+
+                  //Father Name
+                  CustomTextField(
+                    context: context,
+                    textFieldName: "Religious Education",
+                    hintText: "Enter Religious Education",
+                    numberOfLines: 1,
+                    controller: controllerReligious,
+                    textInputAction: TextInputAction.next,
+                    onChange: (v) {},
+                  ),
+                  sb(10),
+
+                  //Gender
+                  CustomDropDownField(
+                    context: context,
+                    textFieldName: "Profession",
+                    list: profiessionDD,
+                    isSuffixImage: true,
+                    suffixImage: Imagename.downArrow,
+                    onTap: () {},
+                    onChangeInt: (v) {
+                      profiession = v;
+                      setState(() {});
+                      // registerBloc.add(DropDownIDsEvent(genderId: v));
+                      // authBloc.add(EmailEvent(controllerEmail.text.trim()));
+                    },
+                  ),
+                  sb(10),
+
+                  //Father Name
+                  CustomTextField(
+                    context: context,
+                    textFieldName: "Designation",
+                    hintText: "Enter Designation",
+                    numberOfLines: 1,
+                    controller: controllerDesignation,
+                    textInputAction: TextInputAction.next,
+                    onChange: (v) {},
+                  ),
+                  sb(10),
+
+                  //Father Name
+                  CustomTextField(
+                    context: context,
+                    textFieldName: "Election Card Number",
+                    hintText: "Enter Election Card Number",
+                    numberOfLines: 1,
+                    controller: controllerEletcion,
+                    textInputAction: TextInputAction.next,
+                    keboardType: TextInputType.phone,
+                    onChange: (v) {},
+                  ),
                   sb(10),
 
                   //Father Name
@@ -292,8 +423,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     textFieldName: "Aadhar Card Number",
                     hintText: "Enter Aadhar Card Number",
                     numberOfLines: 1,
-                    controller: controllerFatherName,
+                    controller: controllerAdhar,
                     textInputAction: TextInputAction.next,
+                    keboardType: TextInputType.phone,
                     onChange: (v) {},
                   ),
                   sb(10),
@@ -304,7 +436,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     textFieldName: "Special Group 1",
                     hintText: "Enter Special Group 1",
                     numberOfLines: 1,
-                    controller: controllerFatherName,
+                    controller: controllerSpecial1,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -316,7 +448,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     textFieldName: "Special Group 2",
                     hintText: "Enter Special Group 2",
                     numberOfLines: 1,
-                    controller: controllerFatherName,
+                    controller: controllerSpecial2,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -328,7 +460,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     textFieldName: "Special Group 3",
                     hintText: "Enter Special Group 3",
                     numberOfLines: 1,
-                    controller: controllerFatherName,
+                    controller: controllerSpecial3,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -340,7 +472,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     textFieldName: "Special Activity",
                     hintText: "Enter Special Activity",
                     numberOfLines: 1,
-                    controller: controllerFatherName,
+                    controller: controllerSpecialAct,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -351,13 +483,15 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     context: context,
                     textFieldName: "Location",
                     list: [
-                      DropDownModel(name: "In India"),
-                      DropDownModel(name: "Out of India")
+                      DropDownModel(name: "In India", id: "In India"),
+                      DropDownModel(name: "Out of India", id: "Out of India")
                     ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     onTap: () {},
                     onChangeInt: (v) {
+                      location = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(genderId: v));
                       // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
@@ -366,30 +500,48 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
                   CustomDropDownField(
                     context: context,
-                    textFieldName: "State",
-                    isDropDownHint: "Select State",
-                    list: [
-                      DropDownModel(name: "Gujarat"),
-                      DropDownModel(name: "Maharastra")
-                    ],
+                    textFieldName: "Country",
+                    isDropDownHint: "Select Country",
+                    list: countryDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     onTap: () {},
                     onChangeInt: (v) {
-                      // registerBloc.add(DropDownIDsEvent(genderId: v));
-                      // authBloc.add(EmailEvent(controllerEmail.text.trim()));
+                      country = v;
+                      setState(() {});
                     },
                   ),
                   sb(10),
 
-                  CustomTextField(
+                  CustomDropDownField(
                     context: context,
-                    textFieldName: "City Name",
-                    hintText: "Enter city name",
-                    numberOfLines: 1,
-                    controller: controllerFatherName,
-                    textInputAction: TextInputAction.next,
-                    onChange: (v) {},
+                    textFieldName: "State",
+                    isDropDownHint: "Select State",
+                    list: stateDD,
+                    isSuffixImage: true,
+                    showSearch: false,
+                    suffixImage: Imagename.downArrow,
+                    onTap: () {},
+                    onChangeInt: (v) {
+                      state = v;
+                      setState(() {});
+                    },
+                  ),
+                  sb(10),
+
+                  CustomDropDownField(
+                    context: context,
+                    textFieldName: "City",
+                    isDropDownHint: "Select City",
+                    list: cityDD,
+                    showSearch: false,
+                    isSuffixImage: true,
+                    suffixImage: Imagename.downArrow,
+                    onTap: () {},
+                    onChangeInt: (v) {
+                      city = v;
+                      setState(() {});
+                    },
                   ),
                   sb(10),
 
@@ -411,492 +563,47 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
             title: "Create Member",
             fontColor: whiteColor,
             backgroundColor: clrOrange,
+            isLoading: statee.memberCallState == ApiCallState.busy,
             ontap: () {
               unFocus(context);
-              pop(context);
+              // pop(context);
+
+              memberBloc.add(
+                AddMemberEvent(
+                  request: MemberRequest(
+                    address: state,
+                    aadhar_card_no: controllerAdhar.text,
+                    blood_group: bloodGroup,
+                    city: city,
+                    state_id: state,
+                    country_id: country,
+                    designation: profiession,
+                    dob: selectedDate,
+                    educational_qualification: eduQualifica,
+                    election_card_no: controllerEletcion.text,
+                    form_no: controllerFormNo.text,
+                    full_name: controllerName.text,
+                    gender: gender,
+                    location: location,
+                    marital_status: maritalStatus,
+                    mobile_no: controllerPhone.text,
+                    number_of_family_members: "",
+                    profession: profiession,
+                    relation_with_hod: relationHOF,
+                    religious_education: controllerReligious.text,
+                    social_group1: controllerSpecial1.text,
+                    social_group2: controllerSpecial2.text,
+                    social_group3: controllerSpecial3.text,
+                    special_activity: controllerSpecialAct.text,
+                    // country_id:
+                  ),
+                ),
+              );
             },
           ),
           sb(10)
         ],
       ),
-    );
-  }
-
-  //
-  //Present address widget
-  Widget presentAddress() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        sb(20),
-        const TitleWidget(AppConstants.presAddress),
-        Row(
-          children: [
-            Checkbox(
-              visualDensity:
-                  const VisualDensity(horizontal: -4.0, vertical: -4.0),
-              checkColor: whiteColor,
-              fillColor: MaterialStateProperty.all<Color>(whiteColor),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2)),
-              value: false,
-              onChanged: (v) {
-                // registerBloc.add(
-                //   AddressSelectEvent(
-                //     sameAsNative1: !state.sameAsNative1!,
-                //   ),
-                // );
-
-                // sameAsNativePRMethod(state);
-              },
-            ),
-            TitleTextView(
-              AppConstants.sameNative,
-              fontSize: 12,
-            )
-          ],
-        ),
-        Row(
-          children: [
-            Checkbox(
-              visualDensity:
-                  const VisualDensity(horizontal: -4.0, vertical: -4.0),
-              checkColor: whiteColor,
-              fillColor: MaterialStateProperty.all<Color>(whiteColor),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2)),
-              value: false,
-              onChanged: (v) {
-                // registerBloc.add(AddressSelectEvent(
-                //   sameAsPermanant: !state.sameAsPermanant!,
-                // ));
-                //
-                // sameAsPermanentPRMethod(state);
-              },
-            ),
-            TitleTextView(
-              AppConstants.samePermanant,
-              fontSize: 12,
-            )
-          ],
-        ),
-        sb(10),
-        Column(
-          children: [
-            CustomTextField(
-              context: context,
-              textFieldName: AppConstants.addressN,
-              hintText: AppConstants.enterAddressN,
-              numberOfLines: 3,
-              height: 10,
-              controller: controllerAddressPR,
-              textInputAction: TextInputAction.next,
-              onSumitted: () {},
-              onChange: (v) {
-                // authBloc.add(EmailEvent(controllerEmail.text.trim()));
-              },
-            ),
-            sb(10),
-            CustomTextField(
-              context: context,
-              textFieldName: AppConstants.searchPincode,
-              hintText: AppConstants.search,
-              numberOfLines: 1,
-              fillColor: clrAppLight4,
-              controller: controllerPincodePR,
-              suffixImage: Imagename.icSearch,
-              keboardType: TextInputType.phone,
-              style: TextStyle(
-                color: blackColor,
-                fontSize: f155,
-                fontFamily: FontName.nunitoSansBold,
-              ),
-              maxLenght: 11,
-              inputFormatters: [
-                UpperCaseTextFormatter(),
-              ],
-              onSuffixTap: () async {
-                if (controllerPincodePR.text.isNotEmpty) {
-                  unFocus(context);
-                  // await presentAddressCall();
-                }
-              },
-              onSumitted: () async {
-                if (controllerPincodePR.text.isNotEmpty) {
-                  unFocus(context);
-                  // await presentAddressCall();
-                }
-              },
-              isSuffixImage: true,
-              textInputAction: TextInputAction.done,
-              onChange: (v) {
-                if (isPresentShow) {
-                  isPresentShow = false;
-                  // clearPresentAdd(state);
-                  setState(() {});
-                }
-
-                if (v.length == 6) {
-                  delay(300).then((value) async {
-                    if (controllerAddressPR.text.isNotEmpty) {
-                      unFocus(context);
-                      // await presentAddressCall();
-                    }
-                  });
-                }
-              },
-            ),
-            if (isPresentShow) ...[
-              sb(10),
-              SingleDropDownField(
-                context: context,
-                fieldKey: statePRKey,
-                textFieldName: AppConstants.stateN,
-                isSuffixImage: true,
-                suffixImage: Imagename.downArrow,
-                // selectedItem: state.stateIdPR,
-                isSubType: true,
-                onChange: (v) {
-                  // registerBloc.add(DropDownIDsEvent(stateIdPR: v));
-                },
-              ),
-              sb(10),
-              SingleDropDownField(
-                context: context,
-                fieldKey: distictPRKey,
-                textFieldName: AppConstants.districtN,
-                isSuffixImage: true,
-                suffixImage: Imagename.downArrow,
-                // selectedItem: state.distictIdPR,
-                isSubType: true,
-                onChange: (v) {
-                  // registerBloc.add(DropDownIDsEvent(distictIdPR: v));
-                },
-              ),
-              sb(10),
-              SingleDropDownField(
-                context: context,
-                fieldKey: subDistictPRKey,
-                textFieldName: AppConstants.subDistrictN,
-                isSuffixImage: true,
-                suffixImage: Imagename.downArrow,
-                isSubType: true,
-                // selectedItem: state.subDistictIdPR,
-                onChange: (v) {
-                  // registerBloc.add(DropDownIDsEvent(subDistictIdPR: v));
-                },
-              ),
-              sb(10),
-              SingleDropDownField(
-                context: context,
-                fieldKey: villagePRKey,
-                textFieldName: AppConstants.villageN,
-                isSuffixImage: true,
-                suffixImage: Imagename.downArrow,
-                isSubType: true,
-                // selectedItem: state.villageIdPR,
-                onChange: (v) {
-                  // registerBloc.add(DropDownIDsEvent(villageIdPR: v));
-                },
-              ),
-            ]
-          ],
-        )
-      ],
-    );
-  }
-
-  //Permanant address widget
-  Widget permanantAddress() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        sb(10),
-        const TitleWidget(AppConstants.permAddress),
-        Row(
-          children: [
-            Checkbox(
-              visualDensity:
-                  const VisualDensity(horizontal: -4.0, vertical: -4.0),
-              checkColor: whiteColor,
-              fillColor: MaterialStateProperty.all<Color>(whiteColor),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2)),
-              value: false,
-              onChanged: (v) {
-                // registerBloc.add(
-                //   AddressSelectEvent(
-                //     sameAsNative: !state.sameAsNative!,
-                //   ),
-                // );
-
-                // sameAsNativeMethod(state);
-              },
-            ),
-            TitleTextView(
-              AppConstants.sameNative,
-              fontSize: 12,
-            )
-          ],
-        ),
-        sb(10),
-        CustomTextField(
-          context: context,
-          textFieldName: AppConstants.addressN,
-          hintText: AppConstants.enterAddressN,
-          numberOfLines: 3,
-          height: 10,
-          controller: controllerAddressP,
-          textInputAction: TextInputAction.next,
-          onSumitted: () {},
-          onChange: (v) {
-            // authBloc.add(EmailEvent(controllerEmail.text.trim()));
-          },
-        ),
-        sb(10),
-        CustomTextField(
-          context: context,
-          textFieldName: AppConstants.searchPincode,
-          hintText: AppConstants.search,
-          numberOfLines: 1,
-          fillColor: clrAppLight4,
-          controller: controllerPincodeP,
-          suffixImage: Imagename.icSearch,
-          keboardType: TextInputType.phone,
-          style: TextStyle(
-            color: blackColor,
-            fontSize: f155,
-            fontFamily: FontName.nunitoSansBold,
-          ),
-          maxLenght: 11,
-          inputFormatters: [
-            UpperCaseTextFormatter(),
-          ],
-          onSuffixTap: () async {
-            if (controllerPincodeP.text.isNotEmpty) {
-              unFocus(context);
-              // await permenentAddressCall();
-            }
-          },
-          onSumitted: () async {
-            if (controllerPincodeP.text.isNotEmpty) {
-              unFocus(context);
-              // await permenentAddressCall();
-            }
-          },
-          isSuffixImage: true,
-          textInputAction: TextInputAction.done,
-          onChange: (v) {
-            if (isPermenentShow) {
-              isPermenentShow = false;
-              // clearPermenentAdd(state);
-              setState(() {});
-            }
-
-            if (v.length == 6) {
-              delay(300).then((value) async {
-                if (controllerPincodeP.text.isNotEmpty) {
-                  unFocus(context);
-                  // await permenentAddressCall();
-                }
-              });
-            }
-          },
-        ),
-        if (isPermenentShow) ...[
-          sb(10),
-          SingleDropDownField(
-            context: context,
-            fieldKey: statePKey,
-            textFieldName: AppConstants.stateN,
-            isSuffixImage: true,
-            suffixImage: Imagename.downArrow,
-            // selectedItem: state.stateIdP,
-            isSubType: true,
-            onChange: (v) {
-              // registerBloc.add(DropDownIDsEvent(stateIdP: v));
-            },
-          ),
-          sb(10),
-          SingleDropDownField(
-            context: context,
-            fieldKey: distictPKey,
-            textFieldName: AppConstants.districtN,
-            isSuffixImage: true,
-            suffixImage: Imagename.downArrow,
-            // selectedItem: state.distictIdP,
-            isSubType: true,
-            onChange: (v) {
-              // registerBloc.add(DropDownIDsEvent(distictIdP: v));
-            },
-          ),
-          sb(10),
-          SingleDropDownField(
-            context: context,
-            fieldKey: subDistictPKey,
-            textFieldName: AppConstants.subDistrictN,
-            isSuffixImage: true,
-            suffixImage: Imagename.downArrow,
-            isSubType: true,
-            // selectedItem: state.subDistictIdP,
-            onChange: (v) {
-              // registerBloc.add(DropDownIDsEvent(subDistictIdP: v));
-            },
-          ),
-          sb(10),
-          SingleDropDownField(
-            context: context,
-            fieldKey: villagePKey,
-            textFieldName: AppConstants.villageN,
-            isSuffixImage: true,
-            suffixImage: Imagename.downArrow,
-            isSubType: true,
-            // selectedItem: state.villageIdP,
-            onChange: (v) {
-              // registerBloc.add(DropDownIDsEvent(villageIdP: v));
-            },
-          ),
-        ]
-      ],
-    );
-  }
-
-  //Native address widget
-  Widget nativeAddress() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        sb(10),
-        const TitleWidget(AppConstants.nativeAddress),
-        sb(10),
-        CustomTextField(
-          context: context,
-          textFieldName: AppConstants.addressN,
-          hintText: AppConstants.enterAddressN,
-          numberOfLines: 3,
-          height: 10,
-          controller: controllerAddressN,
-          textInputAction: TextInputAction.next,
-          onSumitted: () {},
-          onChange: (v) async {
-            // authBloc.add(EmailEvent(controllerEmail.text.trim()));
-          },
-        ),
-        sb(10),
-        CustomTextField(
-          context: context,
-          textFieldName: AppConstants.searchPincode,
-          hintText: AppConstants.search,
-          numberOfLines: 1,
-          fillColor: clrAppLight4,
-          controller: controllerPincodeN,
-          suffixImage: Imagename.icSearch,
-          keboardType: TextInputType.phone,
-          style: TextStyle(
-            color: blackColor,
-            fontSize: f155,
-            fontFamily: FontName.nunitoSansBold,
-          ),
-          maxLenght: 6,
-          inputFormatters: [
-            UpperCaseTextFormatter(),
-          ],
-          onSuffixTap: () async {
-            if (controllerPincodeN.text.isNotEmpty) {
-              unFocus(context);
-              // await nativeAddressCall();
-            }
-          },
-          onSumitted: () async {
-            if (controllerPincodeN.text.isNotEmpty) {
-              unFocus(context);
-              // await nativeAddressCall();
-            }
-          },
-          isSuffixImage: true,
-          textInputAction: TextInputAction.done,
-          onChange: (v) async {
-            if (isNativeShow) {
-              isNativeShow = false;
-              // clearNativeAdd();
-              setState(() {});
-            }
-
-            if (v.length == 6) {
-              delay(300).then((value) async {
-                if (controllerPincodeN.text.isNotEmpty) {
-                  unFocus(context);
-                  // await nativeAddressCall();
-                }
-              });
-            }
-          },
-        ),
-        if (isNativeShow) ...[
-          sb(10),
-          SingleDropDownField(
-            context: context,
-            fieldKey: stateNKey,
-            textFieldName: AppConstants.stateN,
-            isSuffixImage: true,
-            suffixImage: Imagename.downArrow,
-            // selectedItem: state.stateIdN,
-            isSubType: true,
-            onChange: (v) {
-              // registerBloc.add(DropDownIDsEvent(stateIdN: v));
-              // clearDistrictN(state);
-            },
-          ),
-          sb(10),
-          SingleDropDownField(
-            context: context,
-            fieldKey: distictNKey,
-            textFieldName: AppConstants.districtN,
-            isSuffixImage: true,
-            suffixImage: Imagename.downArrow,
-            // selectedItem: state.distictIdN,
-            isSubType: true,
-            onChange: (v) {
-              // registerBloc.add(DropDownIDsEvent(distictIdN: v));
-              // clearDistrictN(state);
-            },
-          ),
-          sb(10),
-          SingleDropDownField(
-            context: context,
-            fieldKey: subDistictNKey,
-            textFieldName: AppConstants.subDistrictN,
-            isSuffixImage: true,
-            suffixImage: Imagename.downArrow,
-            isSubType: true,
-            // selectedItem: state.subDistictIdN,
-            onChange: (v) {
-              // registerBloc.add(DropDownIDsEvent(subDistictIdN: v));
-              // clearVillageN(state);
-            },
-          ),
-          sb(10),
-          SingleDropDownField(
-            context: context,
-            fieldKey: villageNKey,
-            textFieldName: AppConstants.villageN,
-            isSuffixImage: true,
-            suffixImage: Imagename.downArrow,
-            isSubType: true,
-            // isDisable: state.subDistictIdN == null,
-            // selectedItem: state.villageIdN,
-            onValidation: () {
-              okAlert(
-                context,
-                ValidationConst.pleaseSelectSubDistrict,
-              );
-            },
-            onChange: (v) {
-              // registerBloc.add(DropDownIDsEvent(villageIdN: v));
-            },
-          ),
-        ]
-      ],
     );
   }
 }

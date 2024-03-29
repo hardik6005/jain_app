@@ -1,16 +1,19 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
+import 'package:jain_app/componenets/loader_widget.dart';
 import 'package:jain_app/screens/business/add_business_screen.dart';
-import 'package:jain_app/screens/home/home_screen.dart';
-import 'package:jain_app/screens/member/add_member_screen.dart';
+import 'package:jain_app/screens/home/bloc/home_bloc.dart';
+import 'package:jain_app/screens/home/data/home_datasource.dart';
+import 'package:jain_app/screens/home/data/home_repository.dart';
+import 'package:jain_app/screens/member/model/business_list_model.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
-import 'package:jain_app/utils/string_constants.dart';
 import 'package:sizer/sizer.dart';
 
 class BusinessListScreen extends StatefulWidget {
@@ -69,49 +72,77 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
 
   bool isLoading = false;
 
+  HomeBloc profileBloc = HomeBloc(
+    repository: HomeRepository(
+      dataSource: HomeDataSource(),
+    ),
+  );
+
   @override
   void initState() {
     super.initState();
+    profileBloc.add(GetBusinessListAPIEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: whiteColor,
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
-          appBar: appBar(
-              context, "Business Directory", Imagename.icBack, "", whiteIntColor,
-              leadingAction: () {
-                pop(context);
-              }, action: [
-              homeWidget(context)
-          ],),
-        body: commonShapeContainer(bodyView()),
-        backgroundColor: clrOrange4,
-        resizeToAvoidBottomInset: false,
-      ),
-    ),);
+    return BlocListener<HomeBloc, HomeState>(
+      bloc: profileBloc,
+      listener: (context, state) {},
+      child: BlocBuilder<HomeBloc, HomeState>(
+          bloc: profileBloc,
+          builder: ((context, state) {
+            return Container(
+              color: whiteColor,
+              child: SafeArea(
+                top: false,
+                child: Scaffold(
+                  appBar: appBar(
+                    context,
+                    "Business Directory",
+                    Imagename.icBack,
+                    "",
+                    whiteIntColor,
+                    leadingAction: () {
+                      pop(context);
+                    },
+                    action: [homeWidget(context)],
+                  ),
+                  body: commonShapeContainer(bodyView(state)),
+                  backgroundColor: clrOrange4,
+                  resizeToAvoidBottomInset: false,
+                ),
+              ),
+            );
+          })),
+    );
   }
 
-  Widget bodyView() {
+  Widget bodyView(HomeState state) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5),
-      color: clrOrange4,
       child: Stack(
         children: [
           Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                    itemCount: 10,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return listItemView(index);
-                    }),
+                child: (state.businessCallState == ApiCallState.busy)
+                    ? const LoaderWidget()
+                    : (state.businessListModel != null &&
+                            state.businessListModel!.data != null &&
+                            state.businessListModel!.data!.memberList!
+                                .isNotEmpty)
+                        ? ListView.builder(
+                            itemCount: state
+                                .businessListModel!.data!.memberList!.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final model = state
+                                  .businessListModel!.data!.memberList![index];
+                              return listItemView(model, index);
+                            })
+                        : noDataView(),
               ),
-              sb(7.h),
             ],
           ),
           Container(
@@ -121,10 +152,7 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
                 callNextScreen(context, AddBusinessScreen());
               },
               child: Container(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(7)),
                     color: clrOrange),
@@ -157,26 +185,18 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
     );
   }
 
-  Widget listItemView(int index) {
+  Widget listItemView(MemberList member, int index) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 1.h, horizontal: 10)
           .copyWith(top: (index == 0) ? 2.h : 1.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        color: (index == 0)
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        color: member.status == 1
             ? whiteColor
-            : (index == 1)
-            ? lightRedColor
-            : (index == 2)
-            ? lightRedColor
-            : (index == 3)
-            ? whiteColor
-            : (index == 4)
-            ? lightRedColor
-            : (index == 5)
-            ? whiteColor
-            : whiteColor,
-        boxShadow: [
+            : (member.status == 0)
+                ? lightRedColor
+                : whiteColor,
+        boxShadow: const [
           BoxShadow(
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
@@ -192,7 +212,7 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TitleTextView(
-                "IT Infotech",
+                member.businessTitle ?? "",
                 fontFamily: FontName.nunitoSansBold,
                 fontWeight: FontWeight.w600,
                 fontSize: f18,
@@ -200,35 +220,19 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5)),
-                  color: (index == 0)
+                  color: member.status == 1
                       ? greenColor
-                      : (index == 1)
-                      ? redColor
-                      : (index == 2)
-                      ? redColor
-                      : (index == 3)
-                      ? greenColor
-                      : (index == 4)
-                      ? redColor
-                      : (index == 5)
-                      ? greenColor
-                      : greenColor,
+                      : (member.status == 0)
+                          ? redColor
+                          : Colors.yellow,
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 child: TitleTextView(
-                  (index == 0)
-                      ? "Active"
-                      : (index == 1)
-                      ? "Rejected"
-                      : (index == 2)
-                      ? "Rejected"
-                      : (index == 3)
-                      ? "Active"
-                      : (index == 4)
-                      ? "Rejected"
-                      : (index == 5)
-                      ? "Active"
-                      : "Active",
+                  member.status == 1
+                      ? "Approved"
+                      : (member.status == 0)
+                          ? "Rejected"
+                          : "Other",
                   color: whiteColor,
                   fontFamily: FontName.nunitoSansBold,
                   fontWeight: FontWeight.w600,
@@ -244,7 +248,10 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
                 height: 15,
               ),
               sbw(2.w),
-              TitleTextView("Harry Grey", fontFamily: FontName.nunitoSansBold, ),
+              TitleTextView(
+                member.ownerName ?? "",
+                fontFamily: FontName.nunitoSansBold,
+              ),
             ],
           ),
           sb(2.h),
@@ -255,19 +262,10 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
                 height: 15,
               ),
               sbw(2.w),
-              TitleTextView((index == 0)
-                  ? "9976236745"
-                  : (index == 1)
-                  ? "9978836745"
-                  : (index == 2)
-                  ? "9856236745"
-                  : (index == 3)
-                  ? "8876236745"
-                  : (index == 4)
-                  ? "8976236745"
-                  : (index == 5)
-                  ? "8976336745"
-                  : "8076236745", fontFamily: FontName.nunitoSansSemiBold,),
+              TitleTextView(
+                member.mobileNumber ?? "",
+                fontFamily: FontName.nunitoSansSemiBold,
+              ),
             ],
           ),
           sb(1.h),
@@ -281,7 +279,10 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
                       height: 15,
                     ),
                     sbw(2.w),
-                    TitleTextView(" IT Services", fontFamily: FontName.nunitoSansSemiBold,),
+                    TitleTextView(
+                      member.businessCategory!.name ?? "",
+                      fontFamily: FontName.nunitoSansSemiBold,
+                    ),
                   ],
                 ),
               ),

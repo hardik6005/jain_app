@@ -1048,7 +1048,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
           //     : null,
           onTap: () {},
           onChangeInt: (v) {
-            educationId = v;
+            // educationId = v;
             setState(() {});
           },
         ),
@@ -1071,7 +1071,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
           //     : null,
           onTap: () {},
           onChangeInt: (v) {
-            educationId = v;
+            // educationId = v;
             setState(() {});
           },
         ),
@@ -1094,7 +1094,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
           //     : null,
           onTap: () {},
           onChangeInt: (v) {
-            educationId = v;
+            // educationId = v;
             setState(() {});
           },
         ),
@@ -1190,7 +1190,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
           //     : null,
           onTap: () {},
           onChangeInt: (v) {
-            educationId = v;
+            // educationId = v;
             setState(() {});
           },
         ),
@@ -1216,7 +1216,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
           //     : null,
           onTap: () {},
           onChangeInt: (v) {
-            educationId = v;
+            // educationId = v;
             setState(() {});
           },
         ),
@@ -1242,7 +1242,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
           //     : null,
           onTap: () {},
           onChangeInt: (v) {
-            educationId = v;
+            // educationId = v;
             setState(() {});
           },
         ),
@@ -1265,7 +1265,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
           //     : null,
           onTap: () {},
           onChangeInt: (v) {
-            educationId = v;
+            // educationId = v;
             setState(() {});
           },
         ),
@@ -1288,7 +1288,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
           //     : null,
           onTap: () {},
           onChangeInt: (v) {
-            educationId = v;
+            // educationId = v;
             setState(() {});
           },
         ),

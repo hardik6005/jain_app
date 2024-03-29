@@ -3,6 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:jain_app/screens/business/business_list_screen.dart';
+import 'package:jain_app/screens/home/bloc/home_bloc.dart';
+import 'package:jain_app/screens/home/data/home_datasource.dart';
+import 'package:jain_app/screens/home/data/home_repository.dart';
 import 'package:jain_app/screens/home/widget/home_slider_widget.dart';
 import 'package:jain_app/screens/job/search_job_screen.dart';
 import 'package:jain_app/screens/matrimonial/matri_list_screen.dart';
@@ -29,8 +32,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:http/http.dart' as http;
 
 
-
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -52,9 +53,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return result;
   }
 
+  HomeBloc profileBloc = HomeBloc(
+    repository: HomeRepository(
+      dataSource: HomeDataSource(),
+    ),
+  );
+
   @override
   void initState() {
     super.initState();
+    profileBloc.add(DropDownAPIEvent());
   }
 
 

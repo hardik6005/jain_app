@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
+import 'package:jain_app/componenets/loader_widget.dart';
 import 'package:jain_app/screens/business/add_business_screen.dart';
+import 'package:jain_app/screens/home/bloc/home_bloc.dart';
+import 'package:jain_app/screens/home/data/home_datasource.dart';
+import 'package:jain_app/screens/home/data/home_repository.dart';
 import 'package:jain_app/screens/home/home_screen.dart';
 import 'package:jain_app/screens/matrimonial/add_matrimonial_profile.dart';
+import 'package:jain_app/screens/matrimonial/model/matri_list_model.dart';
 import 'package:jain_app/screens/matrimonial/search_matri_screen.dart';
 import 'package:jain_app/screens/member/add_member_screen.dart';
 import 'package:jain_app/utils/app_colors.dart';
@@ -14,6 +19,8 @@ import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
 import 'package:sizer/sizer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class MatriListScreen extends StatefulWidget {
   const MatriListScreen({Key? key}) : super(key: key);
@@ -71,49 +78,73 @@ class _MatriListScreenState extends State<MatriListScreen> {
 
   bool isLoading = false;
 
+  HomeBloc profileBloc = HomeBloc(
+    repository: HomeRepository(
+      dataSource: HomeDataSource(),
+    ),
+  );
+
+
   @override
   void initState() {
     super.initState();
+    profileBloc.add(GetMatriListAPIEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: whiteColor,
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
-          appBar: appBar(
-              context, "Matrimonial Directory", Imagename.icBack, "", whiteIntColor,
-              leadingAction: () {
-                pop(context);
-              }, action: [
-              homeWidget(context)
-          ],),
-        body: commonShapeContainer(bodyView()),
-        backgroundColor: clrOrange4,
-        resizeToAvoidBottomInset: false,
-      ),
-    ),);
+    return BlocListener<HomeBloc, HomeState>(
+      bloc: profileBloc,
+      listener: (context, state) {},
+      child: BlocBuilder<HomeBloc, HomeState>(
+          bloc: profileBloc,
+          builder: ((context, state) {
+            return Container(
+              color: whiteColor,
+              child: SafeArea(
+                top: false,
+                child: Scaffold(
+                  appBar: appBar(
+                    context, "Matrimonial Directory", Imagename.icBack, "", whiteIntColor,
+                    leadingAction: () {
+                      pop(context);
+                    }, action: [
+                    homeWidget(context)
+                  ],),
+                  body: commonShapeContainer(bodyView(state)),
+                  backgroundColor: clrOrange4,
+                  resizeToAvoidBottomInset: false,
+                ),
+              ),);
+          })),
+    );
   }
 
-  Widget bodyView() {
+  Widget bodyView(HomeState state) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5),
-      color: clrOrange4,
+      color: Colors.white,
       child: Stack(
         children: [
           Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                    itemCount: 10,
+                child: (state.matriCallState == ApiCallState.busy)
+                    ? const LoaderWidget()
+                    : (state.matriListModel != null &&
+                    state.matriListModel!.data != null &&
+                    state.matriListModel!.data!.memberList!
+                        .isNotEmpty)
+                    ? ListView.builder(
+                    itemCount: state
+                        .matriListModel!.data!.memberList!.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      return listItemView(index);
-                    }),
+                      final model = state.matriListModel!.data!.memberList![index];
+                      return listItemView(model, index);
+                    })
+                    : noDataView(),
               ),
-              sb(7.h),
             ],
           ),
           Container(
@@ -159,7 +190,7 @@ class _MatriListScreenState extends State<MatriListScreen> {
     );
   }
 
-  Widget listItemView(int index) {
+  Widget listItemView(MemberList model, int index) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 1.h, horizontal: 10)
           .copyWith(top: (index == 0) ? 2.h : 1.h),
@@ -194,7 +225,7 @@ class _MatriListScreenState extends State<MatriListScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TitleTextView(
-                "IT Infotech",
+                model.fullName,
                 fontFamily: FontName.nunitoSansBold,
                 fontWeight: FontWeight.w600,
                 fontSize: f18,
@@ -242,34 +273,11 @@ class _MatriListScreenState extends State<MatriListScreen> {
           Row(
             children: [
               Image.asset(
-                Imagename.icUser1,
+                Imagename.icGender,
                 height: 15,
               ),
               sbw(2.w),
-              TitleTextView("Harry Grey", fontFamily: FontName.nunitoSansBold, ),
-            ],
-          ),
-          sb(2.h),
-          Row(
-            children: [
-              Image.asset(
-                Imagename.icMobile,
-                height: 15,
-              ),
-              sbw(2.w),
-              TitleTextView((index == 0)
-                  ? "9976236745"
-                  : (index == 1)
-                  ? "9978836745"
-                  : (index == 2)
-                  ? "9856236745"
-                  : (index == 3)
-                  ? "8876236745"
-                  : (index == 4)
-                  ? "8976236745"
-                  : (index == 5)
-                  ? "8976336745"
-                  : "8076236745", fontFamily: FontName.nunitoSansSemiBold,),
+              TitleTextView(model.gender, fontFamily: FontName.nunitoSansSemiBold,),
             ],
           ),
           sb(1.h),
@@ -279,17 +287,18 @@ class _MatriListScreenState extends State<MatriListScreen> {
                 child: Row(
                   children: [
                     Image.asset(
-                      Imagename.icCateogry,
+                      Imagename.dateIcon,
                       height: 15,
+                      color: Colors.black,
                     ),
                     sbw(2.w),
-                    TitleTextView(" IT Services", fontFamily: FontName.nunitoSansSemiBold,),
+                    TitleTextView(model.dob, fontFamily: FontName.nunitoSansSemiBold,),
                   ],
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                  callNextScreen(context, AddMemberScreen());
+                  callNextScreen(context, AddMatrimonialScreen());
                 },
                 child: Container(
                   decoration: BoxDecoration(

@@ -15,6 +15,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 String baseUrl = "";
 UserDataModel userDataModel = UserDataModel();
+Map<String, dynamic> dropDownJson = {};
 
 
 void main() async{

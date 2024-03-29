@@ -85,9 +85,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final result = await _repository.loginAPI(event.phone!, event.password!, event.birthYear!);
     result.when(success: (LoginModel model) async{
       String jsonModel = json.encode(model);
-      // AppPreference.instance.savePref(jsonModel, Pref.userData);
       AppPreference.instance.savePref(model.token!, Pref.myToken);
-      // getUserData();
       emit(state.copyWith(loginDataModel: model));
 
       emit(state.copyWith(loginCallState: ApiCallState.success));

@@ -223,7 +223,6 @@ class CustomDropDownField extends StatelessWidget {
     this.isDropDownHint = AppConstants.pleaseSelect,
     this.style,
     required this.list,
-    this.apiCall,
     this.fieldKey,
     this.selectedItem,
     this.onChangeInt,
@@ -237,7 +236,7 @@ class CustomDropDownField extends StatelessWidget {
   final String textFieldName;
   final String? imageName;
   final Function(DropDownModel)? onChange;
-  final Function(int)? onChangeInt;
+  final Function(String)? onChangeInt;
   final Function()? onSuffixTap;
   final Function()? onTap;
   final bool? isImage;
@@ -253,7 +252,6 @@ class CustomDropDownField extends StatelessWidget {
   final String? isDropDownHint;
   final TextStyle? style;
   final List<DropDownModel> list;
-  final Future<List<DropDownModel>> Function(dynamic v)? apiCall;
   final GlobalKey<DropdownSearchState<DropDownModel>>? fieldKey;
   final DropDownModel? selectedItem;
   final bool? isSubType;
@@ -294,15 +292,16 @@ class CustomDropDownField extends StatelessWidget {
               ),
               child: DropdownSearch<DropDownModel>(
                 key: fieldKey,
-
-                compareFn: (i, s) => i.isEqual(s),
-                asyncItems: apiCall,
+                compareFn: (i, s) {
+                  print("DSDSDSDSDSDSDSDSDSD------------- ${i} ===== ${s}");
+                  return i.isEqual(s);
+                },
                 onChanged: (model) {
                   // if (model != null) {
                   if (isSubType!) {
                     onChange!(model ?? DropDownModel());
                   } else {
-                    onChangeInt!(model != null ? model.id! : 0);
+                    onChangeInt!(model != null ? model.id! : "0");
                   }
                   // }
                 },
@@ -374,7 +373,7 @@ class CustomDropDownField extends StatelessWidget {
                 popupProps: PopupProps.menu(
                   isFilterOnline: true,
                   showSelectedItems: true,
-                  showSearchBox: showSearch!,
+                  showSearchBox: false,
                   searchFieldProps: TextFieldProps(
                       decoration: InputDecoration(
                         labelStyle: const TextStyle(fontSize: 12.0),
@@ -416,32 +415,6 @@ class CustomDropDownField extends StatelessWidget {
                     );
                   },
                 ),
-                // popupItemBuilder: (context, isSelected){
-                //   return Container(
-                //     margin: const EdgeInsets.symmetric(horizontal: 8),
-                //     decoration: !isSelected
-                //         ? null
-                //         : BoxDecoration(
-                //       border: Border.all(color: Theme.of(context).primaryColor),
-                //       borderRadius: BorderRadius.circular(5),
-                //       color: Colors.white,
-                //     ),
-                //     child: ListTile(
-                //       title: Text(item.toString(),
-                //           style: const TextStyle(
-                //             fontSize: 14,
-                //             color: Color.fromARGB(255, 102, 100, 100),
-                //           )),
-                //     ),
-                //   );
-                // },
-
-                // onFind: (String? filter) => getData(filter ?? "", storeId: storeId),
-                // showClearButton: false,
-                // clearButtonBuilder: (_) => const Padding(
-                //   padding: EdgeInsets.all(8.0),
-                //   child: Icon(Icons.clear, size: 17, color: Colors.black),
-                // ),
               ),
             )
           ],
@@ -471,7 +444,7 @@ class CustomDropDownField extends StatelessWidget {
 }
 
 class DropDownModel {
-  final int? id;
+  final String? id;
   final String? name;
   final String? mainId;
 
@@ -500,176 +473,3 @@ class DropDownModel {
   }
 }
 
-class SingleDropDownField extends StatelessWidget {
-  const SingleDropDownField({
-    Key? key,
-    required this.context,
-    required this.textFieldName,
-    this.imageName,
-    this.onChange,
-    this.isImage = false,
-    this.height,
-    this.fontSize,
-    this.fillColor,
-    this.isSuffixImage = false,
-    this.suffixImage,
-    this.isObsecure = false,
-    this.onSuffixTap,
-    this.onTap,
-    this.allCaps = TextCapitalization.none,
-    this.hintText = "",
-    this.prefixWidget,
-    this.isDropDownHint = AppConstants.pleaseSelect,
-    this.style,
-    this.fieldKey,
-    this.selectedItem,
-    this.isSubType = false,
-    this.onValidation,
-    this.showSearch = true,
-  }) : super(key: key);
-
-  final BuildContext context;
-  final String textFieldName;
-  final String? imageName;
-  final Function(String)? onChange;
-  final Function()? onSuffixTap;
-  final Function()? onTap;
-  final bool? isImage;
-  final double? height;
-  final double? fontSize;
-  final Color? fillColor;
-  final bool? isSuffixImage;
-  final String? suffixImage;
-  final bool? isObsecure;
-  final TextCapitalization? allCaps;
-  final String hintText;
-  final Widget? prefixWidget;
-  final String? isDropDownHint;
-  final TextStyle? style;
-  final GlobalKey<DropdownSearchState<String>>? fieldKey;
-  final String? selectedItem;
-  final bool? isSubType;
-  final Function()? onValidation;
-  final bool? showSearch;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TitleTextView(
-          textFieldName,
-          fontSize: f13,
-        ),
-        sb(5),
-        Container(
-          // padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-          height: 40,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: clrAppLight4,
-              width: 0,
-            ),
-            color: clrAppLight5,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(4),
-            ),
-          ),
-          child: DropdownSearch<String>(
-            key: fieldKey,
-            compareFn: (i, s) => (i == s),
-            onChanged: (model) {
-              // if (model != null) {
-              onChange!(model ?? "");
-
-              // }
-            },
-            enabled: false,
-            dropdownDecoratorProps: DropDownDecoratorProps(
-              dropdownSearchDecoration: InputDecoration(
-                border: myinputborder(),
-                enabledBorder: myinputborder(),
-                disabledBorder: myinputborder(),
-                fillColor: Colors.pink,
-                iconColor: Colors.pink,
-                hoverColor: Colors.pink,
-                focusColor: Colors.pink,
-                focusedBorder: myfocusborder(),
-                // prefixIcon: Icon(Icons.restart_alt_outlined),
-                // labelText: "Complaints*",
-                // hintText: "Select an Int",
-                // suffix: Padding(
-                //   padding: const EdgeInsets.only(right: 5),
-                //   child: Image.asset(
-                //     suffixImage ?? "",
-                //     width: 29,
-                //     height: 12,
-                //     color: clrAppLight2,
-                //   ),
-                // ),
-                isDense: false,
-
-                contentPadding: const EdgeInsets.symmetric(vertical: -7),
-                suffixIconColor: Colors.pink,
-                suffixIconConstraints:
-                    const BoxConstraints(maxHeight: 0, maxWidth: 0),
-              ),
-            ),
-            selectedItem: selectedItem,
-            dropdownBuilder: (context, item) {
-              return Container(
-                child: (item == "")
-                    ? ListTile(
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 13),
-                        title: Text(
-                          isDropDownHint!,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            color: greyColorLight1,
-                            fontSize: fontSize ?? f15,
-                          ),
-                        ),
-                      )
-                    : ListTile(
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 13),
-                        title: Text(
-                          item ?? AppConstants.pleaseSelect,
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color:
-                                (item != null) ? blackColor : greyColorLight1,
-                            fontSize: f155,
-                            fontFamily: FontName.nunitoSansSemiBold,
-                          ),
-                        ),
-                      ),
-              );
-            },
-          ),
-        )
-      ],
-    );
-  }
-
-  OutlineInputBorder myinputborder() {
-    //return type is OutlineInputBorder
-    return OutlineInputBorder(
-        borderRadius: radius(4),
-        borderSide: BorderSide(
-          color: clrAppLight4,
-          width: 1,
-        ));
-  }
-
-  OutlineInputBorder myfocusborder() {
-    return OutlineInputBorder(
-        borderRadius: radius(4),
-        borderSide: BorderSide(
-          color: clrAppLight1,
-          width: 1,
-        ));
-  }
-}
