@@ -22,7 +22,9 @@ void main() async{
   await dotenv.load(fileName: ".env");
   baseUrl = dotenv.env['BASE_URL']!;
   String userData = await AppPreference.instance.getPref(Pref.userData);"";
-  userDataModel = UserDataModel.fromJson(json.decode(userData));
+  if(userData.isNotEmpty) {
+    userDataModel = UserDataModel.fromJson(json.decode(userData));
+  }
   runApp(const MyApp());
 }
 

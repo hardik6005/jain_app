@@ -46,9 +46,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    controllerMemberId.text = "9876543210";
-    controllerPassword.text = "Elitech123*";
-    controllerBirth.text = "1990";
+    // controllerMemberId.text = "9876543210";
+    // controllerPassword.text = "Elitech123*";
+    // controllerBirth.text = "1990";
   }
 
   @override
@@ -168,33 +168,28 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       CustomTextField(
                         context: context,
-                        isDropDown: true,
+                        // isDropDown: true,
                         textFieldName: AppConstants.birthYear,
                         hintText: AppConstants.selBirthYear,
                         numberOfLines: 1,
-                        controller: TextEditingController()
-                          ..text = selectedDate == ""
-                              ? ""
-                              : selectedDate.toFormatDate(
-                                  defaultFormat:
-                                      DateFormate.dateToFormatddMMMMYYYY,
-                                ),
+                        controller: controllerBirth,
+                        keboardType: TextInputType.phone,
                         isSuffixImage: true,
                         suffixImage: Imagename.dateIcon,
                         textInputAction: TextInputAction.next,
-                        enable: false,
+                        // enable: false,
                         onSumitted: () {},
                         onTap: () {
-                          bottomPicker(context, child: DatePickerView(
-                            (d) {
-                              dateTemp = d;
-                            },
-                          ), onTap: () {
-                            setState(() {
-                              selectedDate = dateTemp.toString();
-                              controllerBirth.text = selectedDate;
-                            });
-                          });
+                          // bottomPicker(context, child: DatePickerView(
+                          //   (d) {
+                          //     dateTemp = d;
+                          //   },
+                          // ), onTap: () {
+                          //   setState(() {
+                          //     selectedDate = dateTemp.toString();
+                          //     controllerBirth.text = selectedDate;
+                          //   });
+                          // });
                         },
                         onChange: (v) {
                           // authBloc.add(EmailEvent(controllerEmail.text.trim()));
