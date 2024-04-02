@@ -5,7 +5,7 @@ class MemberState {
   final ApiCallState? saveBusiProfileCallState;
   final ApiCallState? saveMatriProfileCallState;
   final ApiCallState? socialProfileCallState;
-  final ApiCallState? subDropCallState;
+  final ApiCallState? addBusinessState;
   final ApiCallState? memberCallState;
   final int? page;
   final bool? hasNextPage;
@@ -41,7 +41,7 @@ class MemberState {
     this.saveBusiProfileCallState = ApiCallState.none,
     this.saveMatriProfileCallState = ApiCallState.none,
     this.socialProfileCallState = ApiCallState.none,
-    this.subDropCallState = ApiCallState.none,
+    this.addBusinessState = ApiCallState.none,
     this.memberCallState = ApiCallState.none,
     this.page = 1,
     this.hasNextPage = true,
@@ -75,7 +75,7 @@ class MemberState {
         saveBusiProfileCallState!,
         saveMatriProfileCallState!,
         socialProfileCallState!,
-        subDropCallState!,
+        addBusinessState!,
         memberCallState!,
         page!,
         hasNextPage!,
@@ -109,7 +109,7 @@ class MemberState {
     ApiCallState? saveBusiProfileCallState,
     ApiCallState? saveMatriProfileCallState,
     ApiCallState? socialProfileCallState,
-    ApiCallState? subDropCallState,
+    ApiCallState? addBusinessState,
     ApiCallState? memberCallState,
     int? page,
     bool? hasNextPage,
@@ -140,7 +140,7 @@ class MemberState {
   }) {
     return MemberState(
       saveProfileCallState: saveProfileCallState ?? this.saveProfileCallState,
-      subDropCallState: subDropCallState ?? this.subDropCallState,
+      addBusinessState: addBusinessState ?? this.addBusinessState,
       saveBusiProfileCallState:
           saveBusiProfileCallState ?? this.saveBusiProfileCallState,
       saveMatriProfileCallState:

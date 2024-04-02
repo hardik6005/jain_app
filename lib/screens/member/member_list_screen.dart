@@ -302,7 +302,11 @@ class _MemberListScreenState extends State<MemberListScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  callNextScreen(context, AddMemberScreen());
+                  callNextScreenWithResult(context, AddMemberScreen(member: member,)).then((value){
+                    if(value!=null && value=="true"){
+                      profileBloc.add(GetMemberAPIEvent());
+                    }
+                  });
                 },
                 child: Container(
                   decoration: BoxDecoration(

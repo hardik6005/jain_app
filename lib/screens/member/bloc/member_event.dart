@@ -12,3 +12,9 @@ class AddMemberEvent extends MemberEvent {
   AddMemberEvent({this.request});
 }
 
+//Variable Event
+class AddBusinessEvent extends MemberEvent {
+  BusinessRequest? request;
+  AddBusinessEvent({this.request});
+}
+

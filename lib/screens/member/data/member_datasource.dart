@@ -1,6 +1,7 @@
 import 'package:jain_app/http_common/app_http.dart';
 import 'package:jain_app/http_common/app_http.dart';
 import 'package:jain_app/http_common/http_response.dart';
+import 'package:jain_app/screens/business/model/business_request_model.dart';
 import 'package:jain_app/screens/matrimonial/model/request_model.dart';
 import 'package:jain_app/screens/member/model/member_request_model.dart';
 import 'package:jain_app/utils/api_constant.dart';
@@ -12,8 +13,9 @@ class MemberDataSource extends HttpActions {
   Future<HttpResponse?> addMemberAPI(MemberRequest request) async {
 
     final response = await postMethod(
-      URLS.createMember,
+      (request.id!=null)?URLS.updateMember:URLS.createMember,
       data: {
+     "id" : request.id,
      "form_no" : request.form_no,
      "number_of_family_members" : request.number_of_family_members,
      "address" : request.address,
@@ -39,6 +41,30 @@ class MemberDataSource extends HttpActions {
      "mobile_no" : request.mobile_no,
      "marital_status" : request.marital_status,
       },
+    );
+    return response;
+  }
+
+
+  Future<HttpResponse?> addBusinessAPI(BusinessRequest request) async {
+
+    print("DDDDDDDDDD : ${request.business_title}");
+    final response = await postAPICallWithMultipartArray(
+      request.id!=null?URLS.baseUrl+URLS.updateBusinessDir+request.id!:URLS.baseUrl+URLS.createBusinessDir,
+      {
+        PARAMS.business_title : request.business_title,
+        PARAMS.owner_name : request.owner_name,
+        PARAMS.mobile_number : request.mobile_number,
+        PARAMS.business_category_id : request.business_category_id,
+        PARAMS.state_id : request.state_id,
+        PARAMS.city_id : request.city_id,
+        PARAMS.area : request.area,
+        PARAMS.address_line_1 : request.address_line_1,
+        PARAMS.address_line_2 : request.address_line_2,
+        PARAMS.pincode : request.pincode,
+      },
+      request.visiting_card,
+      "visiting_card",
     );
     return response;
   }

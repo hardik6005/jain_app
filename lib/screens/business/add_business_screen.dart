@@ -1,43 +1,43 @@
-import 'package:dropdown_search/dropdown_search.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jain_app/componenets/title_child_widget.dart';
-import 'package:jain_app/utils/app_colors.dart';
-import 'package:jain_app/utils/app_utils.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:jain_app/componenets/browse_dialog.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_button.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
+import 'package:jain_app/componenets/title_child_widget.dart';
+import 'package:jain_app/componenets/title_widget.dart';
+import 'package:jain_app/screens/business/model/business_request_model.dart';
+import 'package:jain_app/screens/member/bloc/member_bloc.dart';
+import 'package:jain_app/screens/member/data/member_datasource.dart';
+import 'package:jain_app/screens/member/data/member_repository.dart';
+import 'package:jain_app/screens/member/model/business_list_model.dart';
+import 'package:jain_app/utils/app_colors.dart';
+import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
-import 'package:jain_app/componenets/title_widget.dart';
-
 
 class AddBusinessScreen extends StatefulWidget {
-  const AddBusinessScreen({Key? key}) : super(key: key);
+  final MemberList? member;
+  const AddBusinessScreen({Key? key, this.member}) : super(key: key);
 
   @override
   State<AddBusinessScreen> createState() => _AddBusinessScreenState();
 }
 
 class _AddBusinessScreenState extends State<AddBusinessScreen> {
-  TextEditingController controllerName = TextEditingController();
-  TextEditingController controllerFatherName = TextEditingController();
-  TextEditingController controllerEmail = TextEditingController();
-  TextEditingController controllerPhone = TextEditingController();
-  TextEditingController controllerPincodeN = TextEditingController();
-  TextEditingController controllerPincodePR = TextEditingController();
-  TextEditingController controllerPincodeP = TextEditingController();
+  TextEditingController controllerBTitle = TextEditingController();
+  TextEditingController controllerOwnerName = TextEditingController();
+  TextEditingController controllerBobile = TextEditingController();
+  TextEditingController controllerArea = TextEditingController();
+  TextEditingController controllerAdd1 = TextEditingController();
+  TextEditingController controllerAdd2 = TextEditingController();
+  TextEditingController controllerPincode = TextEditingController();
 
-  //Native Address
-  TextEditingController controllerAddressN = TextEditingController();
-
-  //Permanant Address
-  TextEditingController controllerAddressP = TextEditingController();
-
-  //Present Address
-  TextEditingController controllerAddressPR = TextEditingController();
 
   bool passHide = true;
 
@@ -45,64 +45,99 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
   DateTime dateTemp = DateTime.now();
   String selectedDate = "";
 
+  ImagePicker picker = ImagePicker();
+  List<PickerModel> pickerModelList = [];
 
 
-  final subGotraKey = GlobalKey<DropdownSearchState<DropDownModel>>();
-  final subShakhaKey = GlobalKey<DropdownSearchState<DropDownModel>>();
-  final gotraKey = GlobalKey<DropdownSearchState<DropDownModel>>();
-
-  final distictPRKey = GlobalKey<DropdownSearchState<String>>();
-  final statePRKey = GlobalKey<DropdownSearchState<String>>();
-  final distictNKey = GlobalKey<DropdownSearchState<String>>();
-  final stateNKey = GlobalKey<DropdownSearchState<String>>();
-  final distictPKey = GlobalKey<DropdownSearchState<String>>();
-  final statePKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictPKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictPRKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictNKey = GlobalKey<DropdownSearchState<String>>();
-  final villageNKey = GlobalKey<DropdownSearchState<String>>();
-  final villagePKey = GlobalKey<DropdownSearchState<String>>();
-  final villagePRKey = GlobalKey<DropdownSearchState<String>>();
-
-  bool isNativeShow = false;
-  bool isPresentShow = false;
-  bool isPermenentShow = false;
-
-  bool? termAccept = false;
+  List<DropDownModel> stateDD = [];
+  String statee = "";
+  List<DropDownModel> cityDD = [];
+  String city = "";
+  List<DropDownModel> businessCategorieDD = [];
+  String bCategory = "";
 
 
-  bool isLoading = false;
 
-  List<PickerModel> cvModelList = [];
-
+  MemberBloc memberBloc = MemberBloc(
+    repository: MemberRepository(
+      dataSource: MemberDataSource(),
+    ),
+  );
 
   @override
   void initState() {
     super.initState();
+
+    stateDD = getDropDown("states");
+    cityDD = getDropDown("cities");
+    businessCategorieDD = getDropDown("businessCategories");
+
+    if (widget.member != null) {
+      final mem = widget.member;
+      controllerBTitle.text = mem!.businessTitle ?? "";
+      controllerOwnerName.text = mem!.ownerName.toString();
+      city = mem!.city!.id.toString();
+      statee = mem!.state!.id.toString();
+      controllerArea.text = mem!.area.toString();
+      controllerAdd1.text = mem!.addressLine1.toString();
+      controllerAdd2.text = mem!.addressLine2.toString();
+      controllerBobile.text = mem!.mobileNumber.toString();
+      bCategory = mem.businessCategory!.id.toString();
+      pickerModelList.add(PickerModel("", mem.visitingCardUrl!, mem.visitingCardUrl!, ""));
+
+    }
+
+
+    setState(() {});
+
+
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: whiteColor,
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
-          appBar: appBar(context, "Create Business Directory",
-              Imagename.icBack, "", whiteIntColor, leadingAction: () {
-                pop(context);
-              },action: [
-                homeWidget(context)
-              ],),
-          body: commonShapeContainer(bodyView()),
-          backgroundColor: clrApp,
-          resizeToAvoidBottomInset: false,
-        ),
+    return BlocListener<MemberBloc, MemberState>(
+      bloc: memberBloc,
+      listener: (context, state) {
+        if (state.addBusinessState == ApiCallState.success) {
+          okAlert(
+              GlobalVariable.navState.currentContext!,
+              isDismiss: false,
+              (widget.member!=null)?"Business directory created successfully.":"Business directory updated successfully.", onTap: () {
+            pop(context, data: "true");
+          });
+        }
+      },
+      child: BlocBuilder<MemberBloc, MemberState>(
+        bloc: memberBloc,
+        builder: ((context, state) {
+          return Container(
+            color: whiteColor,
+            child: SafeArea(
+              top: false,
+              child: Scaffold(
+                appBar: appBar(
+                  context,
+                  "Create Business Directory",
+                  Imagename.icBack,
+                  "",
+                  whiteIntColor,
+                  leadingAction: () {
+                    pop(context);
+                  },
+                  action: [homeWidget(context)],
+                ),
+                body: commonShapeContainer(bodyView(state)),
+                backgroundColor: clrApp,
+                resizeToAvoidBottomInset: false,
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
 
-  Widget bodyView() {
+  Widget bodyView(MemberState state) {
     return Container(
       color: whiteColor,
       margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -119,27 +154,26 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   const TitleWidget("Business Details"),
                   sb(10),
 
-
                   //Name
                   CustomTextField(
                     context: context,
                     textFieldName: "Business Title",
                     hintText: "Enter Business Title",
                     numberOfLines: 1,
-                    controller: controllerName,
+                    controller: controllerBTitle,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
 
                   sb(10),
 
-   //Name
+                  //Name
                   CustomTextField(
                     context: context,
                     textFieldName: "Owner Name",
                     hintText: "Enter Owner Name",
                     numberOfLines: 1,
-                    controller: controllerName,
+                    controller: controllerOwnerName,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -152,7 +186,7 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                     hintText: AppConstants.enterPhone,
                     numberOfLines: 1,
                     maxLenght: 10,
-                    controller: controllerPhone,
+                    controller: controllerBobile,
                     textInputAction: TextInputAction.done,
                     prefixWidget: TitleTextView(
                       "   +91  ",
@@ -160,27 +194,25 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                       fontSize: f155,
                     ),
                     keboardType: textInputType(),
-                    inputFormatters: <TextInputFormatter>[
-                      mobileInputFormatter
-                    ],
+                    inputFormatters: <TextInputFormatter>[mobileInputFormatter],
                     isImage: true,
                     onSumitted: () {
-                      if (controllerPhone.text.isNotEmpty) {
+                      if (controllerBobile.text.isNotEmpty) {
                         // registerBloc
                         //     .add(RegValidationEvent(validPhone: true));
                       }
                     },
                     onChange: (v) {
-                      controllerPhone.text = v;
-                      controllerPhone.selection = TextSelection.fromPosition(
-                          TextPosition(offset: controllerPhone.text.length));
+                      controllerBobile.text = v;
+                      controllerBobile.selection = TextSelection.fromPosition(
+                          TextPosition(offset: controllerBobile.text.length));
                       setState(() {});
                     },
                   ),
                   validationText(
-                    controllerPhone.text.isNotEmpty &&
+                    controllerBobile.text.isNotEmpty &&
                         /*state.validPhone! &&*/
-                        !isValidPhone(controllerPhone.text),
+                        !isValidPhone(controllerBobile.text),
                     ValidationConst.enterValidPhone,
                   ),
                   sb(10),
@@ -190,11 +222,16 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                     context: context,
                     textFieldName: "Business Category",
                     isDropDownHint: "Select Business Category",
-                    list: [DropDownModel(name: "Automobiles"), DropDownModel(name: "Hardware")],
+                    list: businessCategorieDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: bCategory.isNotEmpty
+                        ? DropDownModel(id: bCategory, name: dropDownName("businessCategories", bCategory))
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
+                      bCategory = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(genderId: v));
                       // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
@@ -206,11 +243,16 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                     context: context,
                     textFieldName: "State",
                     isDropDownHint: "Select State",
-                    list: [DropDownModel(name: "Gujarat"), DropDownModel(name: "Maharastra")],
+                    list: stateDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: statee.isNotEmpty
+                        ? DropDownModel(id: statee, name: dropDownName("states", statee))
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
+                      statee = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(genderId: v));
                       // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
@@ -222,11 +264,16 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                     context: context,
                     textFieldName: "City",
                     isDropDownHint: "Select City",
-                    list: [DropDownModel(name: "Gujarat"), DropDownModel(name: "Maharastra")],
+                    list: cityDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: city.isNotEmpty
+                        ? DropDownModel(id: city, name: dropDownName("cities", city))
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
+                      city = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(genderId: v));
                       // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
@@ -236,9 +283,9 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   CustomTextField(
                     context: context,
                     textFieldName: "Area",
-                    hintText: "Enter Owner Name",
+                    hintText: "Enter Area",
                     numberOfLines: 1,
-                    controller: controllerName,
+                    controller: controllerArea,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -250,7 +297,7 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                     textFieldName: "Address Line 1",
                     hintText: "Enter House No. Building Name",
                     numberOfLines: 3,
-                    controller: controllerName,
+                    controller: controllerAdd1,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -262,7 +309,7 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                     textFieldName: "Address Line 2",
                     hintText: "Enter Road Name, Colony",
                     numberOfLines: 3,
-                    controller: controllerName,
+                    controller: controllerAdd2,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -274,7 +321,7 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                     textFieldName: "Pincode",
                     hintText: "Enter Pincode",
                     numberOfLines: 1,
-                    controller: controllerName,
+                    controller: controllerPincode,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -286,7 +333,8 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                     title: "Visiting Card",
                     child: Container(
                       decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(4)),
                         border: Border.all(color: clrAppLight5, width: 1),
                         color: clrAppLight5,
                       ),
@@ -299,7 +347,9 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                                 vertical: 11,
                               ),
                               child: TitleTextView(
-                                cvModelList.isNotEmpty ? cvModelList[0].name : "No file chosen",
+                                pickerModelList.isNotEmpty
+                                    ? pickerModelList[0].name
+                                    : "No file chosen",
                               ),
                             ),
                           ),
@@ -311,8 +361,21 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                               backgroundColor: clrApp,
                               fontColor: whiteColor,
                               ontap: () async {
-                                await pickeFileWidget(cvModelList, TAG.document);
-                                setState(() {});
+                                showModalBottomSheet(
+                                  elevation: 10,
+                                  // backgroundColor: Colors.amber,
+                                  context: context,
+                                  builder: (ctx) => BrowseDialogue(
+                                    boolVideo: false,
+                                    value: (str) async {
+                                      //value!(str);
+                                      pop(context);
+                                      await pickerModesWidget(
+                                          picker, pickerModelList, str);
+                                      setState(() {});
+                                    },
+                                  ),
+                                );
                               },
                             ),
                           )
@@ -322,8 +385,10 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   ),
                   sb(10),
 
+                  spaceHeight(context),
 
-                  sb(100)
+                  sb(50)
+
                 ],
               ),
             ),
@@ -332,9 +397,26 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
             title: "Create Business Directory",
             fontColor: whiteColor,
             backgroundColor: clrOrange,
+            isLoading: state.addBusinessState==ApiCallState.busy,
             ontap: () {
               unFocus(context);
-              pop(context);
+
+              memberBloc.add(AddBusinessEvent(
+                request: BusinessRequest(
+                  id: widget.member!=null?widget.member!.id.toString():null,
+                  state_id: statee,
+                  address_line_1: controllerAdd1.text,
+                  address_line_2: controllerAdd2.text,
+                  area: controllerArea.text,
+                  business_category_id: bCategory,
+                  business_title: controllerBTitle.text,
+                  city_id: city,
+                  mobile_number: controllerBobile.text,
+                  owner_name: controllerOwnerName.text,
+                  pincode: controllerPincode.text,
+                  visiting_card: pickerModelList.isEmpty?"":pickerModelList[0].path
+                )
+              ));
             },
           ),
           sb(10)
@@ -342,7 +424,4 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
       ),
     );
   }
-
-
-
 }

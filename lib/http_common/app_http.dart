@@ -289,7 +289,7 @@ class HttpActions {
 
   Future<HttpResponse?> postAPICallWithMultipartArray(String url,
       Map<String, dynamic> body, String? filePath, String? fileName) async {
-    printLog("REQUEST_PARAMS $body");
+    printLog("REQUEST_PARAMS $url $body");
     var request = http.MultipartRequest("POST", Uri.parse(url));
     Map<String, String> header = await getSessionData({});
     for (var entry in body.entries) {
@@ -300,11 +300,10 @@ class HttpActions {
     for (var entry in header.entries) {
       request.headers[entry.key] = entry.value;
     }
-    print("DSDSDSDSDSD----3");
     if (filePath != null &&
         filePath.isNotEmpty &&
         fileName != null &&
-        fileName.isNotEmpty) {
+        fileName.isNotEmpty && !filePath.contains("http")) {
       http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
         fileName,
         filePath,
@@ -326,14 +325,26 @@ class HttpActions {
       var streamedResponse = await request.send().timeout(
             const Duration(seconds: 1400),
           );
+
+
       try {
+
+
         var response = await http.Response.fromStream(streamedResponse);
-        String enCodedStr = utf8.decode(response.bodyBytes);
-        HttpResponse resp = HttpResponse(response.statusCode);
-        if (enCodedStr.isNotEmpty) {
-          resp.data = jsonDecode(utf8.decode(response.bodyBytes));
+
+        if (response.statusCode == 200) {
+          String enCodedStr = utf8.decode(response.bodyBytes);
+          print("Response Body: $enCodedStr");
+          HttpResponse resp = HttpResponse(response.statusCode);
+
+          if (enCodedStr.isNotEmpty) {
+            resp.data = jsonDecode(enCodedStr);
+          }
+          return resp;
+        } else {
+          print("Error: HTTP status code ${response.statusCode}");
+          return Future.error("HTTP status code ${response.statusCode}");
         }
-        return resp;
       } catch (e) {
         return Future.error("somethingwentwrong");
       }

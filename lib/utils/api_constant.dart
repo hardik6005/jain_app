@@ -13,6 +13,9 @@ class URLS {
   static String matrimonial = "matrimonial";
   static String dropdowns = "dropdowns";
   static String createMember = "create-member";
+  static String updateMember = "update-member";
+  static String createBusinessDir = "member-business-directory/create";
+  static String updateBusinessDir = "member-business-directory/update/";
 
   //DropDown
   static String dynamicValue = "dynamicValue";
@@ -46,6 +49,7 @@ class URLS {
   static String mainBranchDetails = "mainBranchDetails";
   static String subBranchList = "subBranchList";
   static String subBranchDetails = "subBranchDetails";
+
 }
 
 class PARAMS {
@@ -270,4 +274,15 @@ class PARAMS {
   static String phone_number = "phone_number";
   static String password = "password";
   static String birth_year = "birth_year";
+
+  //Business
+  static String business_title = "business_title";
+  static String owner_name = "owner_name";
+  static String mobile_number = "mobile_number";
+  static String business_category_id = "business_category_id";
+  static String state_id = "state_id";
+  static String city_id = "city_id";
+  static String area = "area";
+  static String address_line_1 = "address_line_1";
+  static String address_line_2 = "address_line_2";
 }

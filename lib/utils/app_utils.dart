@@ -539,3 +539,15 @@ getDropDown(String name){
   });
   return relationHofDD;
 }
+
+dropDownName(String type, String id){
+  Map relationHOD = dropDownJson[type]??{};
+
+  // relationHOD.forEach((key, value) {
+  //   if(key.toString().isNotEmpty) {
+  //     relationHofDD.add(DropDownModel(id: key, name: value));
+  //   }
+  // });
+
+  return relationHOD[id]??"";
+}

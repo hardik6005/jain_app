@@ -149,7 +149,11 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
               onTap: () {
-                callNextScreen(context, AddBusinessScreen());
+                callNextScreenWithResult(context, AddBusinessScreen()).then((value){
+                  if(value!=null && value=="true"){
+                    profileBloc.add(GetBusinessListAPIEvent());
+                  }
+                });
               },
               child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -288,7 +292,11 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  callNextScreen(context, AddBusinessScreen());
+                  callNextScreenWithResult(context, AddBusinessScreen(member: member,)).then((value){
+                    if(value!=null && value=="true"){
+                      profileBloc.add(GetBusinessListAPIEvent());
+                    }
+                  });
                 },
                 child: Container(
                   decoration: BoxDecoration(

@@ -11,6 +11,7 @@ import 'package:jain_app/componenets/title_widget.dart';
 import 'package:jain_app/screens/member/bloc/member_bloc.dart';
 import 'package:jain_app/screens/member/data/member_datasource.dart';
 import 'package:jain_app/screens/member/data/member_repository.dart';
+import 'package:jain_app/screens/member/model/member_list_model.dart';
 import 'package:jain_app/screens/member/model/member_request_model.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
@@ -19,7 +20,9 @@ import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
 
 class AddMemberScreen extends StatefulWidget {
-  const AddMemberScreen({Key? key}) : super(key: key);
+  final Member? member;
+
+  const AddMemberScreen({Key? key, this.member}) : super(key: key);
 
   @override
   State<AddMemberScreen> createState() => _AddMemberScreenState();
@@ -99,7 +102,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   @override
   void initState() {
     super.initState();
-
     relationHofDD = getDropDown("relationWithHOFDropDown");
     maritalStatusDD = getDropDown("maritalStatusDropDown");
     bloodGroupDD = getDropDown("memberbloodGroupDropDown");
@@ -111,6 +113,32 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
     controllerFormNo.text = "1990";
     setState(() {});
+
+    if (widget.member != null) {
+      final mem = widget.member;
+      controllerAdhar.text = mem!.aadharCardNo ?? "";
+      bloodGroup = mem!.bloodGroup.toString();
+      city = mem!.city.toString();
+      state = mem!.stateId.toString();
+      country = mem!.countryId.toString();
+      profiession = mem!.profession.toString();
+      selectedDate = mem!.dob.toString();
+      eduQualifica = mem!.educationalQualification.toString();
+      controllerEletcion.text = mem!.electionCardNo ?? "";
+      controllerFormNo.text = mem!.formNo ?? "";
+      controllerName.text = mem!.fullName ?? "";
+      gender = mem!.gender.toString();
+      location = mem!.location.toString();
+      maritalStatus = mem!.maritalStatus.toString();
+      controllerPhone.text = mem!.mobileNo ?? "";
+      relationHOF = mem!.relationWithHod.toString();
+      controllerReligious.text = mem!.religiousEducation ?? "";
+      controllerSpecial1.text = mem!.socialGroup1 ?? "";
+      controllerSpecial2.text = mem!.socialGroup1 ?? "";
+      controllerSpecial3.text = mem!.socialGroup3 ?? "";
+      controllerSpecialAct.text = mem!.specialActivity ?? "";
+      controllerDesignation.text = mem!.designation ?? "";
+    }
   }
 
   @override
@@ -122,7 +150,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           okAlert(
               GlobalVariable.navState.currentContext!,
               isDismiss: false,
-              "Member created successfully.", onTap: () {
+              (widget.member != null)
+                  ? "Profile updated successfully!"
+                  : "Member created successfully.", onTap: () {
             pop(context, data: "true");
           });
         }
@@ -198,6 +228,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     showSearch: false,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: relationHOF.isNotEmpty
+                        ? DropDownModel(id: relationHOF, name: relationHOF)
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
                       relationHOF = v;
@@ -268,6 +301,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: gender.isNotEmpty
+                        ? DropDownModel(id: gender, name: gender)
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
                       print("DSDSDSDSD : ${v}");
@@ -287,6 +323,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     isSuffixImage: true,
                     showSearch: false,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: maritalStatus.isNotEmpty
+                        ? DropDownModel(id: maritalStatus, name: maritalStatus)
+                        : null,
                     onChangeInt: (v) {
                       maritalStatus = v;
                       setState(() {});
@@ -336,6 +375,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     list: bloodGroupDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: bloodGroup.isNotEmpty
+                        ? DropDownModel(id: bloodGroup, name: bloodGroup)
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
                       bloodGroup = v;
@@ -353,6 +395,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     list: eduQualificaDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: eduQualifica.isNotEmpty
+                        ? DropDownModel(id: eduQualifica, name: eduQualifica)
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
                       eduQualifica = v;
@@ -382,6 +427,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     list: profiessionDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: profiession.isNotEmpty
+                        ? DropDownModel(id: profiession, name: profiession)
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
                       profiession = v;
@@ -488,6 +536,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: location.isNotEmpty
+                        ? DropDownModel(id: location, name: location)
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
                       location = v;
@@ -505,6 +556,11 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     list: countryDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: country.isNotEmpty
+                        ? DropDownModel(
+                            id: country,
+                            name: dropDownName("countries", country))
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
                       country = v;
@@ -521,6 +577,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     isSuffixImage: true,
                     showSearch: false,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: state.isNotEmpty
+                        ? DropDownModel(
+                            id: state, name: dropDownName("states", state))
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
                       state = v;
@@ -537,6 +597,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     showSearch: false,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: city.isNotEmpty
+                        ? DropDownModel(
+                            id: city, name: dropDownName("cities", city))
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
                       city = v;
@@ -571,13 +635,16 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
               memberBloc.add(
                 AddMemberEvent(
                   request: MemberRequest(
+                    id: widget.member != null
+                        ? widget.member!.id.toString()
+                        : null,
                     address: state,
                     aadhar_card_no: controllerAdhar.text,
                     blood_group: bloodGroup,
                     city: city,
                     state_id: state,
                     country_id: country,
-                    designation: profiession,
+                    designation: controllerDesignation.text,
                     dob: selectedDate,
                     educational_qualification: eduQualifica,
                     election_card_no: controllerEletcion.text,
