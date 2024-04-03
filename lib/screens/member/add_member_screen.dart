@@ -306,7 +306,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                         : null,
                     onTap: () {},
                     onChangeInt: (v) {
-                      print("DSDSDSDSD : ${v}");
                       gender = v;
                       setState(() {});
                       // registerBloc.add(DropDownIDsEvent(genderId: v));

@@ -96,12 +96,6 @@ class GetBusinessProfileAPIEvent extends MatriEvent {
   GetBusinessProfileAPIEvent();
 }
 
-//Save Business Profile API
-class BusinessProfileAPIEvent extends MatriEvent {
-  BusinessRequestModel requestModel;
-  BuildContext context;
-  BusinessProfileAPIEvent(this.requestModel, this.context);
-}
 
 //Dynamic DropDown API
 class DropDownAPIEvent extends MatriEvent {

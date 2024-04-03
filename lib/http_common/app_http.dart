@@ -420,7 +420,7 @@ class HttpActions {
     var request = http.MultipartRequest("POST", Uri.parse(URLS.baseUrl + url));
     if (filePath1 != null && filePath1.isNotEmpty) {
       http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-        "upload_cv",
+        "photograph",
         filePath1,
         // contentType: MediaType('image', 'jpg'),
       );
@@ -428,7 +428,7 @@ class HttpActions {
     }
     if (filePath2 != null && filePath2.isNotEmpty) {
       http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-        "upload_document",
+        "photos",
         filePath2,
         // contentType: MediaType('image', 'jpg'),
       );

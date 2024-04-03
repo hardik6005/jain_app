@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
 import 'package:jain_app/screens/matrimonial/data/matri_repository.dart';
 import 'package:jain_app/screens/matrimonial/model/request_model.dart';
+import 'package:jain_app/screens/member/model/add_success_model.dart';
 import 'package:jain_app/utils/api_constant.dart';
 
 import 'package:jain_app/utils/app_utils.dart';
@@ -35,34 +36,25 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
       (event, emit) => saveProfileAPI(event, emit),
     );
 
-    on<StepPageEvent>(
-      (event, emit) => stepPageEvent(event, emit),
-    );
-
-    on<SaveMatriProfileAPI>(
-      (event, emit) => saveMatriProfileAPI(event, emit),
-    );
 
     on<SaveMatriProfileValidation>(
       (event, emit) => saveMatriProfileValidation(event, emit),
     );
 
-    on<BusinessProfileAPIEvent>(
-      (event, emit) => businessProfileAPIEvent(event, emit),
+    on<StepPageEvent>(
+      (event, emit) => stepPageEvent(event, emit),
     );
+
 
     on<StateSetEvent>(
       (event, emit) => stateSetEvent(event, emit),
     );
-
-    on<SubDropDownAccEvent>(
-      (event, emit) => subDropDownEvent(event, emit),
-    );
-    on<DropDownIDsAccEvent>(
-      (event, emit) => dropDownIDsEvent(event, emit),
-    );
     on<ValidateEvent>(
       (event, emit) => validateEvent(event, emit),
+    );
+
+    on<SaveMatriProfileAPI>(
+      (event, emit) => saveMatriProfileAPI(event, emit),
     );
   }
 
@@ -114,15 +106,47 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
     emit(state.copyWith(isValidate: false));
   }
 
+  //SaveProfileAPI
+  saveMatriProfileAPI(SaveMatriProfileAPI event, emit) async {
+    emit(state.copyWith(matriCallState: ApiCallState.busy));
+
+    final result = await _repository.matriProfileAPI(event.requestModel!);
+    result.when(success: (AddSuccessModel model) {
+
+      //Success
+      if(model.data.toString()=="[]"){
+
+        emit(state.copyWith(matriCallState: ApiCallState.success));
+        emit(state.copyWith(matriCallState: ApiCallState.none));
+
+      }else{
+        emit(state.copyWith(matriCallState: ApiCallState.none));
+        Map map = model.data;
+        List<String> errors = [];
+        map.forEach((key, value) {
+          errors.add(value.toString().replaceAll("[", "").replaceAll("]", ""));
+        });
+        okAlert(GlobalVariable.navState.currentContext!, errors[0].toString());
+      }
+
+    }, failure: (failure) async {
+      // await okAlert(event.context!, failure.toString());
+      // emit(state.copyWith(matriCallState: ApiCallState.failure));
+    });
+
+  }
+
   //SaveProfile Validation
   saveMatriProfileValidation(SaveMatriProfileValidation event, emit) async {
     String validationText = "";
     bool isValidate = true;
 
+    emit(state.copyWith(page: event.steps!+1));
+
     print("HERE----${event.steps}");
 
-    if (event.steps == 1) {
-     /* if (event.requestModel.profilePic!.isEmpty) {
+/*    if (event.steps == 1) {
+      if (event.requestModel.profilePic!.isEmpty) {
         validationText = "${AppConstants.pleaseSelect} ${AppConstants.profile}";
       } else if (event.requestModel.vanshId == null) {
         validationText = "${AppConstants.pleaseSelect} ${AppConstants.vansh}";
@@ -175,13 +199,13 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
       } else if (event.requestModel.bodyTypeId == null) {
         validationText =
             "${AppConstants.pleaseSelect} ${AppConstants.bodyType}";
-      } else {*/
+      } else {
         isValidate = false;
         emit(state.copyWith(isValidate: true));
       // }
     }
 
-    if (event.steps == 2) {/*
+    if (event.steps == 2) {
       if (event.requestModel.educationId == null) {
         validationText =
             "${AppConstants.pleaseSelect} ${AppConstants.education1}";
@@ -287,13 +311,14 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
       } else if (event.requestModel.sisterUnMarried == null) {
         validationText =
             "${AppConstants.pleaseSelect} ${AppConstants.sisterDatail}";
-      } else {*/
+      } else {
+    }
         isValidate = false;
         emit(state.copyWith(isValidate: true));
       // }
     }
 
-    if (event.steps == 3) {/*
+    if (event.steps == 3) {
       if (event.requestModel.patMaritalId == null) {
         validationText =
             "${AppConstants.pleaseSelect} ${AppConstants.selectMaritalStatus}";
@@ -320,13 +345,14 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
       } else if (event.requestModel.patIncome == "") {
         validationText =
             "${AppConstants.pleaseEnter} ${AppConstants.annualIncome}";
-      } else {*/
+      } else {
+    }
         isValidate = false;
         emit(state.copyWith(isValidate: true));
       // }
     }
 
-    if (event.steps == 4) {/*
+    if (event.steps == 4) {
       if (event.requestModel.otherInfo!.isEmpty) {
         validationText =
             "${AppConstants.pleaseEnter} ${AppConstants.otherInfo}";
@@ -340,7 +366,8 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
         validationText = AppConstants.pleaseAcceptTerm;
       } else if (event.requestModel.aggre3 == "0") {
         validationText = AppConstants.pleaseAcceptTerm;
-      } else {*/
+      } else {
+    }
         print("HEREEEEEE--------2");
         isValidate = false;
         emit(state.copyWith(isValidate: true));
@@ -371,129 +398,11 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
         okAlert(event.context!, validationText);
       });
     }
+  }*/
   }
 
-  //SaveProfileAPI
-  saveMatriProfileAPI(SaveMatriProfileAPI event, emit) async {
-    emit(state.copyWith(matriCallState: ApiCallState.busy));
-
-    // final result = await _repository.matriProfileAPI(event.requestModel!);
-    // result.when(success: (AddMatriMonialDataModel model) {
-    //   print("-------------------------");
-    //   emit(state.copyWith(matriCallState: ApiCallState.success));
-    //   emit(state.copyWith(matriCallState: ApiCallState.none));
-    // }, failure: (failure) async {
-    //   // await okAlert(event.context!, failure.toString());
-    //   // emit(state.copyWith(matriCallState: ApiCallState.failure));
-    // });
-
-  }
-
-  //Step Page Event
+  // //Step Page Event
   stepPageEvent(StepPageEvent event, emit) async {
     emit(state.copyWith(page: event.page));
-  }
-
-
-  //Business Profile API Event
-  businessProfileAPIEvent(BusinessProfileAPIEvent event, emit) async {
-    String validationText = "";
-    bool isValidate = true;
-
-    if (event.requestModel.firmName!.isEmpty) {
-      validationText = "${AppConstants.pleaseEnter} ${AppConstants.nameFirm}";
-    } else if (event.requestModel.description!.isEmpty) {
-      validationText = "${AppConstants.pleaseEnter} ${AppConstants.aboutFirm}";
-    } else if (event.requestModel.firmAddress!.isEmpty) {
-      validationText =
-          "${AppConstants.pleaseEnter} ${AppConstants.addressFirm}";
-    } else if (event.requestModel.phone!.isEmpty) {
-      validationText = "${AppConstants.pleaseEnter} ${AppConstants.contactNum}";
-    } else if (event.requestModel.firmAddress!.isEmpty) {
-      validationText =
-          "${AppConstants.pleaseEnter} ${AppConstants.addressFirm}";
-    } else if (event.requestModel.state == "") {
-      validationText = "${AppConstants.pleaseSearch} ${AppConstants.pincode}";
-    } else if (event.requestModel.distict == "") {
-      validationText = "${AppConstants.pleaseSearch} ${AppConstants.pincode}";
-    } else if (event.requestModel.subDistict == "") {
-      validationText = "${AppConstants.pleaseSearch} ${AppConstants.pincode}";
-    } else if (event.requestModel.village == "") {
-      validationText = "${AppConstants.pleaseSearch} ${AppConstants.pincode}";
-    } else if (event.requestModel.firmEmail!.isEmpty) {
-      validationText = "${AppConstants.pleaseEnter} ${AppConstants.emailId}";
-    } else if (!isValidEmail(event.requestModel.firmEmail!)) {
-      validationText =
-          "${AppConstants.pleaseEnter} ${AppConstants.validEmailId}";
-    } else if (event.requestModel.recruitAvail!.isEmpty) {
-      validationText =
-          "${AppConstants.pleaseSelect} ${AppConstants.recruitAvail}";
-    } else if (event.requestModel.noMale!.isEmpty) {
-      validationText = "${AppConstants.pleaseEnter} ${AppConstants.noMale}";
-    } else if (event.requestModel.noFeMale!.isEmpty) {
-      validationText = "${AppConstants.pleaseEnter} ${AppConstants.noFemale}";
-    } else if (event.requestModel.approxSalary!.isEmpty) {
-      validationText =
-          "${AppConstants.pleaseEnter} ${AppConstants.approxSalary}";
-    } else if (event.requestModel.jobTitle!.isEmpty) {
-      validationText = "${AppConstants.pleaseEnter} ${AppConstants.jobTitle}";
-    } else {
-      isValidate = false;
-
-      emit(state.copyWith(saveBusiProfileCallState: ApiCallState.busy));
-
-      // final result = await _repository.businessProfileAPI(event.requestModel);
-      // result.when(success: (BusinessProfileAddModel model) {
-      //   // emit(state.copyWith(successMsg: model.message!));
-      //   emit(state.copyWith(successMsg: model.message));
-      //   emit(state.copyWith(saveBusiProfileCallState: ApiCallState.success));
-      //   emit(state.copyWith(saveBusiProfileCallState: ApiCallState.none));
-      // }, failure: (failure) {
-      //   emit(state.copyWith(saveBusiProfileCallState: ApiCallState.failure));
-      //   okAlert(event.context, failure.toString());
-      // });
-    }
-
-    if (isValidate) {
-      delay(100).then((value) {
-        okAlert(event.context, validationText);
-      });
-    }
-  }
-
-  //Event for notes data
-  dropDownIDsEvent(DropDownIDsAccEvent event, emit) async {
-    //Address
-    if (event.stateId != null) {
-      emit(state.copyWith(stateId: event.stateId));
-    }
-    if (event.distictId != null) {
-      emit(state.copyWith(distictId: event.distictId));
-    }
-
-    if (event.subDistictId != null) {
-      emit(state.copyWith(subDistictId: event.subDistictId));
-    }
-
-    if (event.villageId != null) {
-      emit(state.copyWith(villageId: event.villageId));
-    }
-  }
-
-  subDropDownEvent(SubDropDownAccEvent event, emit) async {
-    if (event.type == PARAMS.state) {
-      emit(state.copyWith(stateList: event.list));
-    }
-    if (event.type == PARAMS.district) {
-      emit(state.copyWith(distictList: event.list));
-    }
-
-    if (event.type == PARAMS.subDistrict) {
-      emit(state.copyWith(subDistictList: event.list));
-    }
-
-    if (event.type == PARAMS.village) {
-      emit(state.copyWith(villageList: event.list));
-    }
   }
 }

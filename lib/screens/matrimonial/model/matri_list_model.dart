@@ -94,7 +94,7 @@ class MemberList {
   String? fullName;
   String? capitalizeFullName;
   String? photographUrl;
-  // List<String>? photosUrl;
+  List<String>? photosUrl;
   List<String>? encodePhotos;
 
   MemberList(
@@ -146,7 +146,7 @@ class MemberList {
         this.fullName,
         this.capitalizeFullName,
         this.photographUrl,
-        // this.photosUrl,
+        this.photosUrl,
         this.encodePhotos});
 
   MemberList.fromJson(Map<String, dynamic> json) {
@@ -198,7 +198,7 @@ class MemberList {
     fullName = json['full_name'];
     capitalizeFullName = json['capitalize_full_name'];
     photographUrl = json['photograph_url'];
-    // photosUrl = json['photos_url'].cast<String>();
+    photosUrl = json['photos_url']!=null?json['photos_url'].cast<String>():[];
     encodePhotos = json['encode_photos'].cast<String>();
   }
 
@@ -252,7 +252,7 @@ class MemberList {
     data['full_name'] = fullName;
     data['capitalize_full_name'] = capitalizeFullName;
     data['photograph_url'] = photographUrl;
-    // data['photos_url'] = photosUrl;
+    data['photos_url'] = photosUrl;
     data['encode_photos'] = encodePhotos;
     return data;
   }

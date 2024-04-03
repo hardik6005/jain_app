@@ -16,6 +16,8 @@ class URLS {
   static String updateMember = "update-member";
   static String createBusinessDir = "member-business-directory/create";
   static String updateBusinessDir = "member-business-directory/update/";
+  static String addMatrimonial = "add-matrimonial";
+  static String updateMatrimonial = "update-matrimonial/";
 
   //DropDown
   static String dynamicValue = "dynamicValue";

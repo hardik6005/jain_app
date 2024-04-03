@@ -1,26 +1,21 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
 import 'package:jain_app/componenets/loader_widget.dart';
-import 'package:jain_app/screens/business/add_business_screen.dart';
 import 'package:jain_app/screens/home/bloc/home_bloc.dart';
 import 'package:jain_app/screens/home/data/home_datasource.dart';
 import 'package:jain_app/screens/home/data/home_repository.dart';
-import 'package:jain_app/screens/home/home_screen.dart';
 import 'package:jain_app/screens/matrimonial/add_matrimonial_profile.dart';
 import 'package:jain_app/screens/matrimonial/model/matri_list_model.dart';
 import 'package:jain_app/screens/matrimonial/search_matri_screen.dart';
-import 'package:jain_app/screens/member/add_member_screen.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
-import 'package:jain_app/utils/string_constants.dart';
 import 'package:sizer/sizer.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 class MatriListScreen extends StatefulWidget {
   const MatriListScreen({Key? key}) : super(key: key);
@@ -84,7 +79,6 @@ class _MatriListScreenState extends State<MatriListScreen> {
     ),
   );
 
-
   @override
   void initState() {
     super.initState();
@@ -105,17 +99,22 @@ class _MatriListScreenState extends State<MatriListScreen> {
                 top: false,
                 child: Scaffold(
                   appBar: appBar(
-                    context, "Matrimonial Directory", Imagename.icBack, "", whiteIntColor,
+                    context,
+                    "Matrimonial Directory",
+                    Imagename.icBack,
+                    "",
+                    whiteIntColor,
                     leadingAction: () {
                       pop(context);
-                    }, action: [
-                    homeWidget(context)
-                  ],),
+                    },
+                    action: [homeWidget(context)],
+                  ),
                   body: commonShapeContainer(bodyView(state)),
                   backgroundColor: clrOrange4,
                   resizeToAvoidBottomInset: false,
                 ),
-              ),);
+              ),
+            );
           })),
     );
   }
@@ -132,18 +131,18 @@ class _MatriListScreenState extends State<MatriListScreen> {
                 child: (state.matriCallState == ApiCallState.busy)
                     ? const LoaderWidget()
                     : (state.matriListModel != null &&
-                    state.matriListModel!.data != null &&
-                    state.matriListModel!.data!.memberList!
-                        .isNotEmpty)
-                    ? ListView.builder(
-                    itemCount: state
-                        .matriListModel!.data!.memberList!.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      final model = state.matriListModel!.data!.memberList![index];
-                      return listItemView(model, index);
-                    })
-                    : noDataView(),
+                            state.matriListModel!.data != null &&
+                            state.matriListModel!.data!.memberList!.isNotEmpty)
+                        ? ListView.builder(
+                            itemCount:
+                                state.matriListModel!.data!.memberList!.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final model = state
+                                  .matriListModel!.data!.memberList![index];
+                              return listItemView(model, index);
+                            })
+                        : noDataView(),
               ),
             ],
           ),
@@ -151,13 +150,17 @@ class _MatriListScreenState extends State<MatriListScreen> {
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
               onTap: () {
-                callNextScreen(context, AddMatrimonialScreen());
+                callNextScreenWithResult(
+                  context,
+                  AddMatrimonialScreen(),
+                ).then((value) {
+                  if(value!=null) {
+                    profileBloc.add(GetMatriListAPIEvent());
+                  }
+                });
               },
               child: Container(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(7)),
                     color: clrOrange),
@@ -199,16 +202,16 @@ class _MatriListScreenState extends State<MatriListScreen> {
         color: (index == 0)
             ? whiteColor
             : (index == 1)
-            ? lightRedColor
-            : (index == 2)
-            ? lightRedColor
-            : (index == 3)
-            ? whiteColor
-            : (index == 4)
-            ? lightRedColor
-            : (index == 5)
-            ? whiteColor
-            : whiteColor,
+                ? lightRedColor
+                : (index == 2)
+                    ? lightRedColor
+                    : (index == 3)
+                        ? whiteColor
+                        : (index == 4)
+                            ? lightRedColor
+                            : (index == 5)
+                                ? whiteColor
+                                : whiteColor,
         boxShadow: [
           BoxShadow(
             color: Colors.grey,
@@ -236,32 +239,32 @@ class _MatriListScreenState extends State<MatriListScreen> {
                   color: (index == 0)
                       ? greenColor
                       : (index == 1)
-                      ? redColor
-                      : (index == 2)
-                      ? redColor
-                      : (index == 3)
-                      ? greenColor
-                      : (index == 4)
-                      ? redColor
-                      : (index == 5)
-                      ? greenColor
-                      : greenColor,
+                          ? redColor
+                          : (index == 2)
+                              ? redColor
+                              : (index == 3)
+                                  ? greenColor
+                                  : (index == 4)
+                                      ? redColor
+                                      : (index == 5)
+                                          ? greenColor
+                                          : greenColor,
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 child: TitleTextView(
                   (index == 0)
                       ? "Active"
                       : (index == 1)
-                      ? "Rejected"
-                      : (index == 2)
-                      ? "Rejected"
-                      : (index == 3)
-                      ? "Active"
-                      : (index == 4)
-                      ? "Rejected"
-                      : (index == 5)
-                      ? "Active"
-                      : "Active",
+                          ? "Rejected"
+                          : (index == 2)
+                              ? "Rejected"
+                              : (index == 3)
+                                  ? "Active"
+                                  : (index == 4)
+                                      ? "Rejected"
+                                      : (index == 5)
+                                          ? "Active"
+                                          : "Active",
                   color: whiteColor,
                   fontFamily: FontName.nunitoSansBold,
                   fontWeight: FontWeight.w600,
@@ -277,7 +280,10 @@ class _MatriListScreenState extends State<MatriListScreen> {
                 height: 15,
               ),
               sbw(2.w),
-              TitleTextView(model.gender, fontFamily: FontName.nunitoSansSemiBold,),
+              TitleTextView(
+                model.gender,
+                fontFamily: FontName.nunitoSansSemiBold,
+              ),
             ],
           ),
           sb(1.h),
@@ -292,13 +298,25 @@ class _MatriListScreenState extends State<MatriListScreen> {
                       color: Colors.black,
                     ),
                     sbw(2.w),
-                    TitleTextView(model.dob, fontFamily: FontName.nunitoSansSemiBold,),
+                    TitleTextView(
+                      model.dob,
+                      fontFamily: FontName.nunitoSansSemiBold,
+                    ),
                   ],
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                  callNextScreen(context, AddMatrimonialScreen());
+                  callNextScreenWithResult(
+                    context,
+                    AddMatrimonialScreen(
+                      member: model,
+                    ),
+                  ).then((value) {
+                    if(value!=null) {
+                      profileBloc.add(GetMatriListAPIEvent());
+                    }
+                  });
                 },
                 child: Container(
                   decoration: BoxDecoration(
