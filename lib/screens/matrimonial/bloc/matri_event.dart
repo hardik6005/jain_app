@@ -9,6 +9,7 @@ abstract class MatriEvent {
 //Variable Event
 class VariableEvent extends MatriEvent {
   final String? gender;
+
   VariableEvent({
     this.gender,
   });
@@ -19,6 +20,7 @@ class AddressSelectEvent extends MatriEvent {
   final bool? sameAsNative;
   final bool? sameAsPermanant;
   final bool? sameAsNative1;
+
   AddressSelectEvent({
     this.sameAsNative1,
     this.sameAsPermanant,
@@ -32,6 +34,7 @@ class ValidationAccEvent extends MatriEvent {
   final bool? validBusiPhone;
   final bool? validMatroEmail;
   final bool? validMatroPhone;
+
   ValidationAccEvent({
     this.validBusiEmail,
     this.validBusiPhone,
@@ -43,6 +46,7 @@ class ValidationAccEvent extends MatriEvent {
 //Step page event
 class StepPageEvent extends MatriEvent {
   final int page;
+
   StepPageEvent(this.page);
 }
 
@@ -51,10 +55,10 @@ class SaveProfileAPI extends MatriEvent {
   SaveProfileAPI();
 }
 
-
 //Validate Event
 class ValidateEvent extends MatriEvent {
   bool? isValidate;
+
   ValidateEvent(this.isValidate);
 }
 
@@ -63,19 +67,21 @@ class SaveMatriProfileValidation extends MatriEvent {
   MatriRequestModel? requestModel;
   BuildContext? context;
   int? steps;
-  SaveMatriProfileValidation(
-      {this.requestModel, this.context, this.steps});
+
+  SaveMatriProfileValidation({this.requestModel, this.context, this.steps});
 }
 
 //Save Business Profile API
 class SaveMatriProfileAPI extends MatriEvent {
   MatriRequestModel? requestModel;
   BuildContext? context;
+
   SaveMatriProfileAPI({this.requestModel, this.context});
 }
 
 class AllValidEvent extends MatriEvent {
   bool? allValid;
+
   AllValidEvent({this.allValid});
 }
 
@@ -83,6 +89,7 @@ class AllValidEvent extends MatriEvent {
 class SocialProfileAPIEvent extends MatriEvent {
   SocialRequestModel requestModel;
   BuildContext context;
+
   SocialProfileAPIEvent(this.requestModel, this.context);
 }
 
@@ -96,7 +103,6 @@ class GetBusinessProfileAPIEvent extends MatriEvent {
   GetBusinessProfileAPIEvent();
 }
 
-
 //Dynamic DropDown API
 class DropDownAPIEvent extends MatriEvent {
   DropDownAPIEvent();
@@ -105,6 +111,7 @@ class DropDownAPIEvent extends MatriEvent {
 //Dynamic DropDown API
 class StateSetEvent extends MatriEvent {
   List<DropDownModel>? stateList;
+
   StateSetEvent(this.stateList);
 }
 
@@ -119,6 +126,7 @@ class DropDownIDsAccEvent extends MatriEvent {
   String? distictId;
   String? subDistictId;
   String? villageId;
+
   DropDownIDsAccEvent({
     this.stateId,
     this.distictId,
@@ -131,5 +139,22 @@ class DropDownIDsAccEvent extends MatriEvent {
 class SubDropDownAccEvent extends MatriEvent {
   List<DropDownModel>? list;
   String? type;
+
   SubDropDownAccEvent({this.list, this.type});
+}
+
+//SubDropDown Set Event
+class SearchMatriPreferenceEvent extends MatriEvent {
+  String? member;
+  SearchMatriPreferenceEvent({
+    this.member,
+  });
+}
+
+//SubDropDown Set Event
+class SearchMatriListEvent extends MatriEvent {
+  SearchMatriRequestModel? requestModel;
+  SearchMatriListEvent({
+    this.requestModel,
+  });
 }

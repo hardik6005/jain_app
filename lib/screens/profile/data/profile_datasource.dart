@@ -27,6 +27,24 @@ class ProfileDataSource extends HttpActions {
   }
 
 
+ // profile add API
+  Future<HttpResponse?> updatePasswordAPI(
+    String name,
+    String email,
+  ) async {
+    final response = await postMethod(
+      URLS.updatePassword,
+     data:  {
+       "old_password": name,
+       "new_password": email,
+       "new_password_confirmation": email,
+     },
+    );
+
+    return response;
+  }
+
+
 
   // getProfile API
   Future<HttpResponse?> getProfilePI() async {
@@ -35,4 +53,6 @@ class ProfileDataSource extends HttpActions {
     );
     return response;
   }
+
+
 }

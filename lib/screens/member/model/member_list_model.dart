@@ -55,6 +55,7 @@ class Member {
   int? stateId;
   int? countryId;
   String? city;
+  bool? active;
 
   Member(
       {this.id,
@@ -83,7 +84,9 @@ class Member {
       this.location,
       this.stateId,
       this.countryId,
-      this.city});
+      this.city,
+      this.active,
+      });
 
   Member.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -113,6 +116,7 @@ class Member {
     stateId = json['state_id'];
     countryId = json['country_id'];
     city = json['city'];
+    active = json['active'];
   }
 
   Map<String, dynamic> toJson() {
@@ -144,6 +148,7 @@ class Member {
     data['state_id'] = stateId;
     data['country_id'] = countryId;
     data['city'] = city;
+    data['active'] = active;
     return data;
   }
 }

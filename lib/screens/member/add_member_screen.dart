@@ -76,6 +76,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
   List<DropDownModel> relationHofDD = [];
   String relationHOF = "";
+  List<DropDownModel> sanghsDD = [];
+  String sanghs = "";
   List<DropDownModel> maritalStatusDD = [];
   String maritalStatus = "";
   List<DropDownModel> bloodGroupDD = [];
@@ -103,6 +105,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   void initState() {
     super.initState();
     relationHofDD = getDropDown("relationWithHOFDropDown");
+    sanghsDD = getDropDown("sanghs");
     maritalStatusDD = getDropDown("maritalStatusDropDown");
     bloodGroupDD = getDropDown("memberbloodGroupDropDown");
     eduQualificaDD = getDropDown("educationalQualificationDropDown");
@@ -117,27 +120,28 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     if (widget.member != null) {
       final mem = widget.member;
       controllerAdhar.text = mem!.aadharCardNo ?? "";
-      bloodGroup = mem!.bloodGroup.toString();
-      city = mem!.city.toString();
-      state = mem!.stateId.toString();
-      country = mem!.countryId.toString();
-      profiession = mem!.profession.toString();
-      selectedDate = mem!.dob.toString();
-      eduQualifica = mem!.educationalQualification.toString();
-      controllerEletcion.text = mem!.electionCardNo ?? "";
-      controllerFormNo.text = mem!.formNo ?? "";
-      controllerName.text = mem!.fullName ?? "";
-      gender = mem!.gender.toString();
-      location = mem!.location.toString();
-      maritalStatus = mem!.maritalStatus.toString();
-      controllerPhone.text = mem!.mobileNo ?? "";
-      relationHOF = mem!.relationWithHod.toString();
-      controllerReligious.text = mem!.religiousEducation ?? "";
-      controllerSpecial1.text = mem!.socialGroup1 ?? "";
-      controllerSpecial2.text = mem!.socialGroup1 ?? "";
-      controllerSpecial3.text = mem!.socialGroup3 ?? "";
-      controllerSpecialAct.text = mem!.specialActivity ?? "";
-      controllerDesignation.text = mem!.designation ?? "";
+      bloodGroup = mem.bloodGroup.toString();
+      city = mem.city.toString();
+      // sanghs = mem..toString();
+      state = mem.stateId.toString();
+      country = mem.countryId.toString();
+      profiession = mem.profession.toString();
+      selectedDate = mem.dob.toString();
+      eduQualifica = mem.educationalQualification.toString();
+      controllerEletcion.text = mem.electionCardNo ?? "";
+      controllerFormNo.text = mem.formNo ?? "";
+      controllerName.text = mem.fullName ?? "";
+      gender = mem.gender.toString();
+      location = mem.location.toString();
+      maritalStatus = mem.maritalStatus.toString();
+      controllerPhone.text = mem.mobileNo ?? "";
+      relationHOF = mem.relationWithHod.toString();
+      controllerReligious.text = mem.religiousEducation ?? "";
+      controllerSpecial1.text = mem.socialGroup1 ?? "";
+      controllerSpecial2.text = mem.socialGroup1 ?? "";
+      controllerSpecial3.text = mem.socialGroup3 ?? "";
+      controllerSpecialAct.text = mem.specialActivity ?? "";
+      controllerDesignation.text = mem.designation ?? "";
     }
   }
 
@@ -223,10 +227,12 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   //Gender
                   CustomDropDownField(
                     context: context,
-                    textFieldName: "Relation With HOF",
+                    textFieldName: "Relation With HOF*",
+                    isValidate: statee.addMemberValidation,
                     list: relationHofDD,
                     showSearch: false,
                     isSuffixImage: true,
+                    isDisable: widget.member != null,
                     suffixImage: Imagename.downArrow,
                     selectedItem: relationHOF.isNotEmpty
                         ? DropDownModel(id: relationHOF, name: relationHOF)
@@ -244,7 +250,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   //Name
                   CustomTextField(
                     context: context,
-                    textFieldName: AppConstants.fullname,
+                    textFieldName: "${AppConstants.fullname}*",
+                    isValidate: statee.addMemberValidation,
                     hintText: AppConstants.enterName,
                     numberOfLines: 1,
                     controller: controllerName,
@@ -256,8 +263,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   //Contact No.
                   CustomTextField(
                     context: context,
-                    textFieldName: AppConstants.phone,
+                    textFieldName: "${AppConstants.phone}*",
                     hintText: AppConstants.enterPhone,
+                    isValidate: statee.addMemberValidation,
+                    enable: widget.member == null,
                     numberOfLines: 1,
                     maxLenght: 10,
                     controller: controllerPhone,
@@ -291,16 +300,42 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   ),
                   sb(10),
 
+                  if (widget.member == null) ...[
+
+                    CustomDropDownField(
+                      context: context,
+                      textFieldName: "Select Sangh",
+                      list: sanghsDD,
+                      showSearch: false,
+                      isSuffixImage: true,
+                      isDisable: widget.member != null,
+                      suffixImage: Imagename.downArrow,
+                      selectedItem: sanghs.isNotEmpty
+                          ? DropDownModel(id: sanghs, name: dropDownName("sanghs", sanghs))
+                          : null,
+                      onTap: () {},
+                      onChangeInt: (v) {
+                        sanghs = v;
+                        setState(() {});
+                        // registerBloc.add(DropDownIDsEvent(genderId: v));
+                        // authBloc.add(EmailEvent(controllerEmail.text.trim()));
+                      },
+                    ),
+                    sb(10),
+
+                  ],
+
                   //Gender
                   CustomDropDownField(
                     context: context,
-                    textFieldName: AppConstants.selectGender,
+                    textFieldName: "${AppConstants.selectGender}*",
                     list: [
                       DropDownModel(name: "Male", id: "Male"),
                       DropDownModel(name: "Female", id: "Female")
                     ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    isValidate: statee.addMemberValidation,
                     selectedItem: gender.isNotEmpty
                         ? DropDownModel(id: gender, name: gender)
                         : null,
@@ -318,8 +353,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   CustomDropDownField(
                     context: context,
                     list: maritalStatusDD,
-                    textFieldName: AppConstants.selectMaritalStatus,
+                    textFieldName: "${AppConstants.selectMaritalStatus}*",
                     isSuffixImage: true,
+                    isValidate: statee.addMemberValidation,
                     showSearch: false,
                     suffixImage: Imagename.downArrow,
                     selectedItem: maritalStatus.isNotEmpty
@@ -337,7 +373,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   CustomTextField(
                     context: context,
                     isDropDown: true,
-                    textFieldName: AppConstants.dob,
+                    textFieldName: "${AppConstants.dob}*",
+                    isValidate: statee.addMemberValidation,
                     numberOfLines: 1,
                     controller: TextEditingController()
                       ..text = selectedDate == ""
@@ -370,7 +407,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   //Gender
                   CustomDropDownField(
                     context: context,
-                    textFieldName: "Blood Group",
+                    textFieldName: "Blood Group" "*",
+                    isValidate: statee.addMemberValidation,
                     list: bloodGroupDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
@@ -390,12 +428,17 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   //Gender
                   CustomDropDownField(
                     context: context,
-                    textFieldName: "Educational Qualification",
+                    textFieldName: "Educational Qualification" "*",
                     list: eduQualificaDD,
+                    isValidate: statee.addMemberValidation,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     selectedItem: eduQualifica.isNotEmpty
-                        ? DropDownModel(id: eduQualifica, name: eduQualifica)
+                        ? DropDownModel(
+                            id: eduQualifica,
+                            name: dropDownName(
+                                "educationalQualificationDropDown",
+                                eduQualifica))
                         : null,
                     onTap: () {},
                     onChangeInt: (v) {
@@ -615,6 +658,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     });
                   }),
 */
+
                   spaceHeight(context),
 
                   sb(50)
@@ -661,6 +705,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     social_group2: controllerSpecial2.text,
                     social_group3: controllerSpecial3.text,
                     special_activity: controllerSpecialAct.text,
+                    sanghs: sanghs,
                     // country_id:
                   ),
                 ),

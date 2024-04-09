@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:jain_app/main.dart';
 import 'package:jain_app/screens/auth/model/user_data_model.dart';
+import 'package:jain_app/screens/member/model/add_success_model.dart';
 import 'package:jain_app/screens/profile/data/profile_repository.dart';
 import 'package:jain_app/screens/profile/model/common_model.dart';
 import 'package:jain_app/utils/app_preference.dart';
@@ -40,6 +41,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     on<GetProfileAPIEvent>(
           (event, emit) => getProfileAPIEvent(event, emit),
+    );
+    on<UpdatePassEvent>(
+          (event, emit) => updatePassEvent(event, emit),
     );
   }
 
@@ -126,6 +130,24 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(getProfileCallState: ApiCallState.none));
     }, failure: (failure) {
       emit(state.copyWith(getProfileCallState: ApiCallState.failure));
+      okAlert(GlobalVariable.navState.currentContext!, failure.toString());
+    });
+  }
+
+
+//Get Profile API event
+  updatePassEvent(UpdatePassEvent event, emit) async {
+    emit(state.copyWith(updatePassCallState: ApiCallState.busy));
+    final result = await _repository.updatePasswordAPI(event.name!, event.email!);
+    result.when(success: (AddSuccessModel model) {
+      // String jsonModel = json.encode(model);
+      // userDataModel = model;
+      // AppPreference.instance.savePref(jsonModel, Pref.userData);
+      emit(state.copyWith(updatePassCallState: ApiCallState.success));
+      emit(state.copyWith(updatePassCallState: ApiCallState.none));
+
+    }, failure: (failure) {
+      emit(state.copyWith(updatePassCallState: ApiCallState.failure));
       okAlert(GlobalVariable.navState.currentContext!, failure.toString());
     });
   }

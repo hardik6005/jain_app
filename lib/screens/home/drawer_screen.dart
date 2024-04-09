@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jain_app/screens/auth/login_screen.dart';
 import 'package:jain_app/screens/business/business_list_screen.dart';
 import 'package:jain_app/screens/job/job_list_screen.dart';
 import 'package:jain_app/screens/matrimonial/matri_list_screen.dart';
@@ -6,8 +7,11 @@ import 'package:jain_app/screens/member/add_member_screen.dart';
 import 'package:jain_app/screens/member/member_list_screen.dart';
 import 'package:jain_app/screens/profile/edit_profile_screen.dart';
 import 'package:jain_app/screens/profile/update_password_screen.dart';
+import 'package:jain_app/utils/app_preference.dart';
 import 'package:jain_app/utils/string_constants.dart';
 
+import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
@@ -177,7 +181,7 @@ class DrawerScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         pop(context);
-                        callNextScreen(context, UpdatePasswordScreen());
+                        callNextScreen(context, UpdatePasswordScreen(fromDrawer: true,));
                       },
                       child: Container(
                         padding: EdgeInsets.only(top: 10),
@@ -224,11 +228,16 @@ class DrawerScreen extends StatelessWidget {
                     ),
                     divider(color: clrAppLight4),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async{
                         pop(context);
                         // logout();
                         // callNextScreenAndClearStack(
                         //     context, const LoginScreen());
+                        SharedPreferences preferences = await SharedPreferences.getInstance();
+                        await preferences.clear().then((value){
+                          callNextScreenAndClearStack(context, const LoginScreen());
+                        });
+
                       },
                       child: Row(
                         children: [

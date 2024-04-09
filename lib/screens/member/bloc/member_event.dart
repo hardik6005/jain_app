@@ -18,3 +18,9 @@ class AddBusinessEvent extends MemberEvent {
   AddBusinessEvent({this.request});
 }
 
+//Variable Event
+class SearchJobSeekerEvent extends MemberEvent {
+  SearchJobRequest? request;
+  SearchJobSeekerEvent({this.request});
+}
+

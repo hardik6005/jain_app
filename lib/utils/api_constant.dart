@@ -18,6 +18,10 @@ class URLS {
   static String updateBusinessDir = "member-business-directory/update/";
   static String addMatrimonial = "add-matrimonial";
   static String updateMatrimonial = "update-matrimonial/";
+  static String searchJobSeeker = "search-job-seeker";
+  static String searchMatriMonialList = "search-matrimonial-list";
+  static String searchMatriMonialMembPref = "search-matrimonial-member-preference/";
+  static String updatePassword = "update-password";
 
   //DropDown
   static String dynamicValue = "dynamicValue";

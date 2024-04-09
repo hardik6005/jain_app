@@ -1,8 +1,8 @@
 import 'package:jain_app/http_common/app_http.dart';
-import 'package:jain_app/http_common/app_http.dart';
 import 'package:jain_app/http_common/http_response.dart';
 import 'package:jain_app/main.dart';
 import 'package:jain_app/screens/matrimonial/model/request_model.dart';
+import 'package:jain_app/screens/matrimonial/model/search_matri_request_model.dart';
 import 'package:jain_app/utils/api_constant.dart';
 
 class MatriDataSource extends HttpActions {
@@ -49,16 +49,40 @@ class MatriDataSource extends HttpActions {
     return response;
   }
 
+  // Get Business Profile API
+  Future<HttpResponse?> searchMatriMonialList(
+      SearchMatriRequestModel model) async {
+    final response = await getMethod(URLS.searchMatriMonialList, queryParam: {
+      "gender": model.gender,
+      "city_id": model.location=="0"?"":model.location,
+      "education_type": model.eduType=="All"?"":model.eduType,
+      "education_field": model.eduField=="All"?"":model.eduField,
+      "mother_tongue": model.motherToung=="All"?"":model.motherToung,
+      "marital_status": model.maritalStatus=="All"?"":model.maritalStatus,
+    });
+    return response;
+  }
+
+  // Get Business Profile API
+  Future<HttpResponse?> searchMatriMonialMembPref(String member) async {
+    final response = await getMethod(
+      URLS.searchMatriMonialMembPref+member,
+    );
+    return response;
+  }
+
   // Add matri profile API
   Future<HttpResponse?> matriProfileAPI(MatriRequestModel model) async {
     Map<String, dynamic> request = matriProfileRequest(model);
 
     final response = await postMultipartAPIFormDataCallArray(
-      (model.id!=null)?URLS.updateMatrimonial+model.id!:URLS.addMatrimonial,
+      (model.id != null)
+          ? URLS.updateMatrimonial + model.id!
+          : URLS.addMatrimonial,
       request,
       // data: request
-      filePath1: model.profilePic!.contains("http")?"":model.profilePic,
-      filePath2: model.otherPic!.contains("http")?"":model.otherPic,
+      filePath1: model.profilePic!.contains("http") ? "" : model.profilePic,
+      filePath2: model.otherPic!.contains("http") ? "" : model.otherPic,
     );
     return response;
   }
@@ -102,15 +126,11 @@ class MatriDataSource extends HttpActions {
       "expected_city_id": model.locationMatch.toString(),
       "expected_education_type": model.eduTypeMatch.toString(),
       "is_agreed": model.aggree.toString(),
-      "user_id": userDataModel.toString(),
+      // "user_id": userDataModel.toString(),
       'form_no': "1990",
       "status": "2",
       // "upload_cv": "",
       // "upload_document": "",
     };
   }
-
-
-
-
 }

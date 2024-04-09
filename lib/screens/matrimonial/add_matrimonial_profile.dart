@@ -1,4 +1,3 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,6 +22,8 @@ import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
 import 'package:sizer/sizer.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AddMatrimonialScreen extends StatefulWidget {
   MemberList? member;
@@ -143,48 +144,57 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
       final mem = widget.member;
 
       controllerFName.text = mem!.firstName ?? "";
-      controllerLName.text = mem!.lastName ?? "";
-      controllerMName.text = mem!.middleName ?? "";
-      controllerAge.text = mem!.age ?? "";
-      controllerWeight.text = mem!.weight.toString();
-      controllerBirthPlace.text = mem!.birthPlace ?? "";
-      controllerNoBrother.text = mem!.noBrother.toString();
-      controllerNoBroMar.text = mem!.brotherMarried.toString();
-      controllerNoSis.text = mem!.noSister.toString();
-      controllerNoSisMar.text = mem!.sisterMarried.toString();
-      controllerNatPlace.text = mem!.nativePlace ?? "";
-      controllerOtherDet.text = mem!.otherDetail ?? "";
-       gender = mem!.gender ?? "";
-       marital = mem!.maritalStatus ?? "";
-       height = mem!.height ?? "";
-       blood = mem!.bloodGroup ?? "";
-       complextion = mem!.complextion ?? "";
-       phyDisa = mem!.physicalDisability ?? "";
-       manglik = mem!.manglik ?? "";
-       rashi = mem!.rashi ?? "";
-       eduType = mem!.educationType ?? "";
-       eduField = mem!.educationField ?? "";
-       workWith = mem!.workingWith ?? "";
-       workAs = mem!.workingAs ?? "";
-       location = mem!.cityId.toString();
-       subComm = mem!.subCommunity ?? "";
-       fatherStatus = mem!.fatherStatus ?? "";
-       motherStatus = mem!.motherStatus ?? "";
-       motherToung = mem!.motherTongue ?? "";
-       motherToungMatch = mem!.expectedMotherTongue ?? "";
-       locationMatch = mem!.expectedCityId.toString();
-       eduTypeMatch = mem!.expectedEducationType ?? "";
-       eduFieldMatch = mem!.expectedEducationField ?? "";
-       genderMatch = mem!.expectedGender ?? "";
-       selectedDOB = mem.dob??"";
-       // _selectedTime = TimeOfDay(hour: hour, minute: minute);
-      profileImgModelList.add(PickerModel("", mem.photographUrl!, mem.photographUrl!, ""));
-      if(mem.photosUrl!=null && mem.photosUrl!.isNotEmpty) {
-        cvModelList.add(PickerModel("", mem.photosUrl![0], mem.photosUrl![0], ""));
+      controllerLName.text = mem.lastName ?? "";
+      controllerMName.text = mem.middleName ?? "";
+      controllerAge.text = mem.age ?? "";
+      controllerWeight.text = mem.weight.toString();
+      controllerBirthPlace.text = mem.birthPlace ?? "";
+      controllerNoBrother.text = mem.noBrother.toString();
+      controllerNoBroMar.text = mem.brotherMarried.toString();
+      controllerNoSis.text = mem.noSister.toString();
+      controllerNoSisMar.text = mem.sisterMarried.toString();
+      controllerNatPlace.text = mem.nativePlace ?? "";
+      controllerOtherDet.text = mem.otherDetail ?? "";
+      gender = mem.gender ?? "";
+      marital = mem.maritalStatus ?? "";
+      height = mem.height ?? "";
+      blood = mem.bloodGroup ?? "";
+      complextion = mem.complextion ?? "";
+      phyDisa = mem.physicalDisability ?? "";
+      manglik = mem.manglik ?? "";
+      rashi = mem.rashi ?? "";
+      eduType = mem.educationType ?? "";
+      eduField = mem.educationField ?? "";
+      workWith = mem.workingWith ?? "";
+      workAs = mem.workingAs ?? "";
+      location = mem.cityId.toString();
+      subComm = mem.subCommunity ?? "";
+      fatherStatus = mem.fatherStatus ?? "";
+      motherStatus = mem.motherStatus ?? "";
+      motherToung = mem.motherTongue ?? "";
+      motherToungMatch = mem.expectedMotherTongue ?? "";
+      locationMatch = mem.expectedCityId.toString();
+      eduTypeMatch = mem.expectedEducationType ?? "";
+      eduFieldMatch = mem.expectedEducationField ?? "";
+      genderMatch = mem.expectedGender ?? "";
+      selectedDOB = mem.dob ?? "";
+      // aggree1 = mem. ?? "";
+
+      // TimeOfDay time = parseTimeString(mem.birthTime!);
+
+      // DateTime date= DateFormat.jm().parse(mem.birthTime!);
+      DateTime date2= DateFormat("hh:mma").parse("6:45PM"); // think this will work better for you
+// format date
+//       print(DateFormat("HH:mm").format(date));
+//       print(DateFormat("HH:mm").format(date2));
+      _selectedTime = TimeOfDay(hour: date2.hour, minute: date2.minute);
+      profileImgModelList
+          .add(PickerModel("", mem.photographUrl!, mem.photographUrl!, ""));
+      if (mem.photosUrl != null && mem.photosUrl!.isNotEmpty) {
+        cvModelList
+            .add(PickerModel("", mem.photosUrl![0], mem.photosUrl![0], ""));
       }
-
-  }
-
+    }
   }
 
   void _scrollUp() {
@@ -505,17 +515,14 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
                       matriSetp1Widget(
                         state,
                       )
-                    else
-                      if (state.page == 2)
-                        matriStep2Widget(
-                          state,
-                        )
-                      else
-                        if (state.page == 3)
-                          matriSetp3Widget(state)
-                        else
-                          if (state.page == 4)
-                            matriStep4Widget(state),
+                    else if (state.page == 2)
+                      matriStep2Widget(
+                        state,
+                      )
+                    else if (state.page == 3)
+                      matriSetp3Widget(state)
+                    else if (state.page == 4)
+                      matriStep4Widget(state),
                     spaceHeight(context),
                   ],
                 ),
@@ -548,12 +555,70 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
                     isLoading: state.matriCallState == ApiCallState.busy,
                     backgroundColor: clrOrange,
                     ontap: () {
-                      if (state.page == 4) {
-                        typeAccountBloc.add(SaveMatriProfileAPI(
+                      // if (state.page == 4) {
+                      //   typeAccountBloc.add(
+                      //     SaveMatriProfileAPI(
+                      //       context: context,
+                      //       requestModel: MatriRequestModel(
+                      //         id: widget.member != null
+                      //             ? widget.member!.id.toString()
+                      //             : null,
+                      //         location: location,
+                      //         gender: gender,
+                      //         Age: controllerAge.text,
+                      //         aggree: aggree1 ? "1" : "0",
+                      //         BirthPlace: controllerBirthPlace.text,
+                      //         blood: blood,
+                      //         complextion: complextion,
+                      //         eduField: eduField,
+                      //         eduFieldMatch: eduFieldMatch,
+                      //         eduType: eduType,
+                      //         eduTypeMatch: eduTypeMatch,
+                      //         fatherStatus: fatherStatus,
+                      //         FName: controllerFName.text,
+                      //         genderMatch: genderMatch,
+                      //         height: height,
+                      //         LName: controllerLName.text,
+                      //         locationMatch: locationMatch,
+                      //         manglik: manglik,
+                      //         marital: marital,
+                      //         MName: controllerMName.text,
+                      //         motherStatus: motherStatus,
+                      //         motherToung: motherToung,
+                      //         motherToungMatch: motherToungMatch,
+                      //         NatPlace: controllerNatPlace.text,
+                      //         NoBroMar: controllerNoBroMar.text,
+                      //         NoBrother: controllerNoBrother.text,
+                      //         NoSis: controllerNoSis.text,
+                      //         NoSisMar: controllerNoSisMar.text,
+                      //         OtherDet: controllerOtherDet.text,
+                      //         otherPic: cvModelList.isNotEmpty
+                      //             ? cvModelList[0].path
+                      //             : "",
+                      //         profilePic: profileImgModelList.isNotEmpty
+                      //             ? profileImgModelList[0].path
+                      //             : "",
+                      //         phyDisa: phyDisa,
+                      //         rashi: rashi,
+                      //         selectedBTime: _selectedTime.toString(),
+                      //         selectedDOB: selectedDOB,
+                      //         subComm: subComm,
+                      //         Weight: controllerWeight.text,
+                      //         workAs: workAs,
+                      //         workWith: workWith,
+                      //       ),
+                      //     ),
+                      //   );
+                      // } else {
+                      typeAccountBloc.add(
+                        SaveMatriProfileValidation(
+                            // requestModel: matriRequestModel(state, stateReg),
                             context: context,
+                            steps: state.page,
                             requestModel: MatriRequestModel(
-                              id: widget.member != null ? widget.member!.id
-                                  .toString() : null,
+                              id: widget.member != null
+                                  ? widget.member!.id.toString()
+                                  : null,
                               location: location,
                               gender: gender,
                               Age: controllerAge.text,
@@ -583,8 +648,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
                               NoSis: controllerNoSis.text,
                               NoSisMar: controllerNoSisMar.text,
                               OtherDet: controllerOtherDet.text,
-                              otherPic: cvModelList.isNotEmpty ? cvModelList[0]
-                                  .path : "",
+                              otherPic: cvModelList.isNotEmpty
+                                  ? cvModelList[0].path
+                                  : "",
                               profilePic: profileImgModelList.isNotEmpty
                                   ? profileImgModelList[0].path
                                   : "",
@@ -596,15 +662,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
                               Weight: controllerWeight.text,
                               workAs: workAs,
                               workWith: workWith,
-                            )
-                        ));
-                      } else {
-                        typeAccountBloc.add(
-                            SaveMatriProfileValidation(
-                              // requestModel: matriRequestModel(state, stateReg),
-                                context: context,
-                                steps: state.page));
-                      }
+                            )),
+                      );
+                      // }
                     },
                   ),
                 ),
@@ -617,93 +677,6 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
       ),
     );
   }
-
-/*
-  MatriRequestModel matriRequestModel(
-      MatriState state, RegisterState stateReg) {
-    return MatriRequestModel(
-      id: id,
-      memberId: userDataModel!.data!.memberId,
-      name: controllerName.text,
-      village: state.villageId,
-      state: state.stateId,
-      distict: state.distictId,
-      subDistict: state.subDistictId,
-      profilePic: pickerModelList.isNotEmpty ? pickerModelList[0].path : "",
-      vanshId: stateReg.vanshId,
-      shakhaId: stateReg.shakhaId,
-      subShakha: stateReg.subshakhaId!.id,
-      gotraId: stateReg.gotraId,
-      subGotraId: stateReg.subgotraId!.id,
-      surnameId: stateReg.surnameId,
-      padviId: stateReg.padviId,
-      genderId: stateReg.genderId,
-      maritalId: int.parse(stateReg.maritalStatus!),
-      manglikEffectId: stateReg.manglikEffectId,
-      heightId: stateReg.heightId,
-      fatherName: controllerFName.text,
-      motherName: controllerMName.text,
-      phone: controllerPhoneH.text,
-      emailId: controllerEmailO.text,
-      address: controllerAddress.text,
-      skinToneId: stateReg.skinToneId,
-      bodyTypeId: stateReg.bodyTypeId,
-      educationId: educationId,
-      jobId: jobId,
-      income: controllerAnnIncome.text,
-      fatherOccId: foccupationId,
-      motherOccId: moccupationId,
-      aggre1: aggree1 ? "1" : "0",
-      aggre2: aggree2 ? "1" : "0",
-      aggre3: aggree3 ? "1" : "0",
-      brotherMarried: brotherMarriedCount,
-      brotherUnMarried: brotherUnMarriedCount,
-      cvPdf: cvModelList.isNotEmpty ? cvModelList[0] : null,
-      dadiGotraId: dadiGotraId,
-      dadiName: controllerDadiName.text,
-      dadiPadviId: dadiPadviId,
-      dadiPlace: controllerDadiPlace.text,
-      dadiShakhaId: dadiShakhaId,
-      dadiSubGotraId: dadiSubGotraId!.id,
-      dadiSubShakhaId: dadiSubShakhaId!.id,
-      dadiSurnameId: dadiSurnameId,
-      dadiVanshId: dadiVanshId,
-      docPdf: documentModelList.isNotEmpty ? documentModelList[0] : null,
-      motherGotraId: motherGotraId,
-      motherPadviId: motherPadviId,
-      motherPlace: controllerMotherPlace.text,
-      motherShakhaId: motherShakhaId,
-      motherSubShakhaId: motherSubShakhaId!.id,
-      motherSubGotraId: motherSubGotraId!.id,
-      motherSurnameId: motherSurnameId,
-      motherVanshId: motherVanshId,
-      naniName: controllerNaniName.text,
-      naniPadviId: naniPadviId,
-      naniPlace: controllerNaniPlace.text,
-      naniShakhaId: naniShakhaId,
-      naniSubGotraId: naniSubGotraId!.id,
-      naniSubShakhaId: naniSubShakhaId!.id,
-      naniSurnameId: naniSurnameId,
-      naniVanshId: naniVanshId,
-      naniGotraId: naniGotraId,
-      otherInfo: controllerOther.text,
-      patAgeF: controllerPatAgeF.text,
-      patAgeT: controllerPatAgeT.text,
-      patBodyTypeId: patBodyTypeId,
-      patEducationId: patEduId,
-      patHeightFId: controllerPatHeightF.text,
-      patHeightTId: controllerPatHeightT.text,
-      patIncome: controllerPatAnnIncome.text,
-      patjobId: patJobId,
-      patManglikEffectId: patManglikId,
-      patMaritalId: patMariStatusId,
-      patSkinToneId: patSkinToneId,
-      sisterMarried: sisterMarriedCount,
-      sisterUnMarried: sisterUnMarriedCount,
-      pincode: controllerPincodeN.text,
-    );
-  }
-*/
 
   //Matrimonial Step Page 1
   Widget matriSetp1Widget(MatriState state) {
@@ -720,17 +693,15 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
                   elevation: 10,
                   // backgroundColor: Colors.amber,
                   context: context,
-                  builder: (ctx) =>
-                      BrowseDialogue(
-                        boolVideo: false,
-                        value: (str) async {
-                          //value!(str);
-                          pop(context);
-                          await pickerModesWidget(
-                              picker, profileImgModelList, str);
-                          setState(() {});
-                        },
-                      ),
+                  builder: (ctx) => BrowseDialogue(
+                    boolVideo: false,
+                    value: (str) async {
+                      //value!(str);
+                      pop(context);
+                      await pickerModesWidget(picker, profileImgModelList, str);
+                      setState(() {});
+                    },
+                  ),
                 );
               },
               child: DisplayImage(
@@ -738,6 +709,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
                     ? profileImgModelList[0].path
                     : StaticList.url,
                 onPressed: () {},
+                isValidate: state.fistValidate,
               ),
             ),
           ],
@@ -750,48 +722,58 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         //Name
         CustomTextField(
           context: context,
-          textFieldName: "First Name",
+          textFieldName: "First Name" + "*",
           hintText: "Enter first name",
+          isValidate: state.fistValidate,
           numberOfLines: 1,
           controller: controllerFName,
           textInputAction: TextInputAction.next,
-          onChange: (v) {},
+          onChange: (v) {
+            setState(() {});
+          },
         ),
         sb(1.5.h),
 
         //Name
         CustomTextField(
           context: context,
-          textFieldName: "Middle Name",
+          textFieldName: "Middle Name" + "*",
+          isValidate: state.fistValidate,
           hintText: "Enter middle name",
           numberOfLines: 1,
           controller: controllerMName,
           textInputAction: TextInputAction.next,
-          onChange: (v) {},
+          onChange: (v) {
+            setState(() {});
+          },
         ),
         sb(1.5.h),
 
         //Name
         CustomTextField(
           context: context,
-          textFieldName: "Last Name",
+          textFieldName: "Last Name" + "*",
+          isValidate: state.fistValidate,
           hintText: "Enter last name",
           numberOfLines: 1,
           controller: controllerLName,
           textInputAction: TextInputAction.next,
-          onChange: (v) {},
+          onChange: (v) {
+            setState(() {});
+          },
         ),
         sb(1.5.h),
 
         //Gender
         CustomDropDownField(
           context: context,
-          textFieldName: AppConstants.selectGender,
+          textFieldName: AppConstants.selectGender + "*",
           list: [
             DropDownModel(name: "Male", id: "Male"),
             DropDownModel(name: "Female", id: "Female")
           ],
           isSuffixImage: true,
+          isValidate: state.fistValidate,
           suffixImage: Imagename.downArrow,
           selectedItem: gender.isNotEmpty
               ? DropDownModel(id: gender, name: gender)
@@ -810,14 +792,15 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomTextField(
           context: context,
           isDropDown: true,
-          textFieldName: AppConstants.dob,
+          textFieldName: AppConstants.dob + "*",
+          isValidate: state.fistValidate,
           numberOfLines: 1,
           controller: TextEditingController()
             ..text = selectedDOB == ""
                 ? ""
                 : selectedDOB.toFormatDate(
-              defaultFormat: DateFormate.dateToFormatddMMMMYYYY,
-            ),
+                    defaultFormat: DateFormate.dateToFormatddMMMMYYYY,
+                  ),
           isSuffixImage: true,
           suffixImage: Imagename.dateIcon,
           textInputAction: TextInputAction.next,
@@ -825,7 +808,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
           onSumitted: () {},
           onTap: () {
             bottomPicker(context, child: DatePickerView(
-                  (d) {
+              (d) {
                 dateTemp = d;
               },
             ), onTap: () {
@@ -844,7 +827,8 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomDropDownField(
           context: context,
           list: maritalDD,
-          textFieldName: AppConstants.selectMaritalStatus,
+          textFieldName: AppConstants.selectMaritalStatus + "*",
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
           selectedItem: marital.isNotEmpty
@@ -861,14 +845,17 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         //Name
         CustomTextField(
           context: context,
-          textFieldName: "Age",
+          textFieldName: "Age" + "*",
           hintText: "Enter age",
+          isValidate: state.fistValidate,
           numberOfLines: 1,
           controller: controllerAge,
           textInputAction: TextInputAction.next,
           keboardType: TextInputType.phone,
           maxLenght: 2,
-          onChange: (v) {},
+          onChange: (v) {
+            setState(() {});
+          },
         ),
         sb(1.5.h),
 
@@ -876,7 +863,8 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomDropDownField(
           context: context,
           list: heightDD,
-          textFieldName: AppConstants.selectMaritalStatus,
+          textFieldName: AppConstants.height + "*",
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
           selectedItem: height.isNotEmpty
@@ -894,27 +882,30 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         //Name
         CustomTextField(
           context: context,
-          textFieldName: "Weight",
+          textFieldName: "Weight" + "*",
           hintText: "Enter weight",
+          isValidate: state.fistValidate,
           numberOfLines: 1,
           controller: controllerWeight,
           textInputAction: TextInputAction.next,
           keboardType: TextInputType.phone,
           maxLenght: 3,
-          onChange: (v) {},
+          onChange: (v) {
+            setState(() {});
+          },
         ),
         sb(1.5.h),
 
         CustomDropDownField(
           context: context,
           list: bloodDD,
-          textFieldName: "Blood Group",
+          textFieldName: "Blood Group" + "*",
           isDropDownHint: "Select Blood Group",
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
-          selectedItem: blood.isNotEmpty
-              ? DropDownModel(id: blood, name: blood)
-              : null,
+          selectedItem:
+              blood.isNotEmpty ? DropDownModel(id: blood, name: blood) : null,
           onChangeInt: (v) {
             blood = v;
             setState(() {});
@@ -927,8 +918,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomDropDownField(
           context: context,
           list: complextionDD,
-          textFieldName: 'Complextion',
+          textFieldName: 'Complextion' + "*",
           isDropDownHint: 'Select Complextion',
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
           selectedItem: complextion.isNotEmpty
@@ -949,8 +941,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
             DropDownModel(name: "Yes", id: "Yes"),
             DropDownModel(name: "No", id: "No")
           ],
-          textFieldName: 'Physical Disability ',
+          textFieldName: 'Physical Disability' + "*",
           isDropDownHint: 'Select Physical Disability ',
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
           selectedItem: phyDisa.isNotEmpty
@@ -970,9 +963,10 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
             DropDownModel(name: "Yes", id: "Yes"),
             DropDownModel(name: "No", id: "No")
           ],
-          textFieldName: 'Manglik ',
+          textFieldName: 'Manglik' + "*",
           isDropDownHint: 'Select Manglik ',
           isSuffixImage: true,
+          isValidate: state.fistValidate,
           suffixImage: Imagename.downArrow,
           selectedItem: manglik.isNotEmpty
               ? DropDownModel(id: manglik, name: manglik)
@@ -988,13 +982,13 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomDropDownField(
           context: context,
           list: rashiDD,
-          textFieldName: 'Rashi ',
+          textFieldName: 'Rashi' + "*",
           isDropDownHint: 'Select Rashi ',
           isSuffixImage: true,
+          isValidate: state.fistValidate,
           suffixImage: Imagename.downArrow,
-          selectedItem: rashi.isNotEmpty
-              ? DropDownModel(id: rashi, name: rashi)
-              : null,
+          selectedItem:
+              rashi.isNotEmpty ? DropDownModel(id: rashi, name: rashi) : null,
           onChangeInt: (v) {
             rashi = v;
             setState(() {});
@@ -1006,8 +1000,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomDropDownField(
           context: context,
           list: eduTypeDD,
-          textFieldName: 'Education Type',
+          textFieldName: 'Education Type' + "*",
           isDropDownHint: 'Select Education Type',
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
           selectedItem: eduType.isNotEmpty
@@ -1024,8 +1019,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomDropDownField(
           context: context,
           list: eduFieldDD,
-          textFieldName: 'Education Field',
+          textFieldName: 'Education Field' + "*",
           isDropDownHint: 'Select Education Field',
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
           selectedItem: eduField.isNotEmpty
@@ -1042,8 +1038,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomDropDownField(
           context: context,
           list: workWithDD,
-          textFieldName: 'Working With',
+          textFieldName: 'Working With' + "*",
           isDropDownHint: 'Select Working With',
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
           selectedItem: workWith.isNotEmpty
@@ -1060,8 +1057,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomDropDownField(
           context: context,
           list: workAsDD,
-          textFieldName: 'Working As',
+          textFieldName: 'Working As' + "*",
           isDropDownHint: 'Select Working As',
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
           selectedItem: workAs.isNotEmpty
@@ -1078,7 +1076,8 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         //Name
         CustomTextField(
           context: context,
-          textFieldName: "Birth Place",
+          textFieldName: "Birth Place" + "*",
+          isValidate: state.fistValidate,
           hintText: "Enter Birth Place",
           numberOfLines: 1,
           controller: controllerBirthPlace,
@@ -1090,11 +1089,12 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomTextField(
           context: context,
           isDropDown: true,
-          textFieldName: "Birth Time",
+          textFieldName: "Birth Time" + "*",
+          isValidate: state.fistValidate,
           numberOfLines: 1,
           controller: TextEditingController()
             ..text =
-            _selectedTime == null ? "" : _selectedTime!.format(context),
+                _selectedTime == null ? "" : _selectedTime!.format(context),
           isSuffixImage: true,
           suffixImage: Imagename.dateIcon,
           textInputAction: TextInputAction.next,
@@ -1120,8 +1120,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomDropDownField(
           context: context,
           list: motherToungDD,
-          textFieldName: 'Mother Tongue',
+          textFieldName: 'Mother Tongue' + "*",
           isDropDownHint: 'Select Mother Tongue',
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
           selectedItem: motherToung.isNotEmpty
@@ -1138,13 +1139,14 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         CustomDropDownField(
           context: context,
           list: locationDD,
-          textFieldName: 'Location',
+          textFieldName: 'Location*',
           isDropDownHint: 'Select Location',
+          isValidate: state.fistValidate,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
           selectedItem: location.isNotEmpty
               ? DropDownModel(
-              id: location, name: dropDownName("cities", location))
+                  id: location, name: dropDownName("cities", location))
               : null,
           onChangeInt: (v) {
             location = v;
@@ -1165,8 +1167,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         sb(1.h),
         CustomDropDownField(
           context: context,
-          textFieldName: "Sub Community",
+          textFieldName: "Sub Community" + "*",
           isDropDownHint: "Select Sub Community",
+          isValidate: state.secondValidate,
           list: subCommDD,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
@@ -1184,8 +1187,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         sb(1.5.h),
         CustomDropDownField(
           context: context,
-          textFieldName: "Father Status",
+          textFieldName: "Father Status" + "*",
           isDropDownHint: "Select Father Status",
+          isValidate: state.secondValidate,
           list: fatherStatusDD,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
@@ -1202,8 +1206,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         sb(1.5.h),
         CustomDropDownField(
           context: context,
-          textFieldName: "Mother Status",
+          textFieldName: "Mother Status" + "*",
           isDropDownHint: "Select Mother Status",
+          isValidate: state.secondValidate,
           list: motherStatusDD,
           isSuffixImage: true,
           suffixImage: Imagename.downArrow,
@@ -1291,7 +1296,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
     );
   }
 
-  Widget matriSetp3Widget(MatriState state,) {
+  Widget matriSetp3Widget(
+    MatriState state,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1345,7 +1352,8 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
           suffixImage: Imagename.downArrow,
           selectedItem: locationMatch.isNotEmpty
               ? DropDownModel(
-              id: locationMatch, name: dropDownName("cities", locationMatch))
+                  id: locationMatch,
+                  name: dropDownName("cities", locationMatch))
               : null,
           onTap: () {},
           onChangeInt: (v) {
@@ -1400,9 +1408,19 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
 
         //Upload CV
         TitleChildWidget(
-          title: "Photos",
+          title: "Photos" + "*",
           child: Container(
-            decoration: myinputborder(),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(4)),
+              border: Border.all(
+                  color: (state.fourthValidate!)
+                      ? clrAppLight5
+                      : (cvModelList.isEmpty)
+                          ? redColor
+                          : clrAppLight5,
+                  width: 1),
+              color: clrAppLight5,
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -1432,17 +1450,15 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
                         elevation: 10,
                         // backgroundColor: Colors.amber,
                         context: context,
-                        builder: (ctx) =>
-                            BrowseDialogue(
-                              boolVideo: false,
-                              value: (str) async {
-                                //value!(str);
-                                pop(context);
-                                await pickerModesWidget(
-                                    picker, cvModelList, str);
-                                setState(() {});
-                              },
-                            ),
+                        builder: (ctx) => BrowseDialogue(
+                          boolVideo: false,
+                          value: (str) async {
+                            //value!(str);
+                            pop(context);
+                            await pickerModesWidget(picker, cvModelList, str);
+                            setState(() {});
+                          },
+                        ),
                       );
                       setState(() {});
                     },
@@ -1462,10 +1478,15 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         termWidget(
           "I agreed on terms & conditions and declared that I've shared correct information.",
           aggree1,
-              (v) {
+          (v) {
             aggree1 = !aggree1;
             setState(() {});
           },
+          (state.fourthValidate!)
+              ? Colors.black
+              : (aggree1 == false)
+                  ? redColor
+                  : Colors.black,
         ),
       ],
     );

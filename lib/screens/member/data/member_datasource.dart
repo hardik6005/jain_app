@@ -2,6 +2,7 @@ import 'package:jain_app/http_common/app_http.dart';
 import 'package:jain_app/http_common/app_http.dart';
 import 'package:jain_app/http_common/http_response.dart';
 import 'package:jain_app/screens/business/model/business_request_model.dart';
+import 'package:jain_app/screens/job/model/search_job_request.dart';
 import 'package:jain_app/screens/matrimonial/model/request_model.dart';
 import 'package:jain_app/screens/member/model/member_request_model.dart';
 import 'package:jain_app/utils/api_constant.dart';
@@ -40,6 +41,7 @@ class MemberDataSource extends HttpActions {
      "relation_with_hod" : request.relation_with_hod,
      "mobile_no" : request.mobile_no,
      "marital_status" : request.marital_status,
+     "sanghs" : request.sanghs,
       },
     );
     return response;
@@ -67,6 +69,23 @@ class MemberDataSource extends HttpActions {
       "visiting_card",
     );
     return response;
+  }
+
+
+ Future<HttpResponse?> searchJobSeeker(SearchJobRequest request) async {
+
+   final response = await postMethod(
+     URLS.searchJobSeeker,
+     data: {
+       "city_id" : request.city_id,
+       "category" : request.category,
+       "job_type" : request.job_type,
+       "educational_qualification" : request.educational_qualification,
+       "extra_details" : request.extra_details,
+
+     },
+   );
+   return response;
   }
 
 

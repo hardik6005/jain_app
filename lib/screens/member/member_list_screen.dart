@@ -71,7 +71,6 @@ class _MemberListScreenState extends State<MemberListScreen> {
 
   bool? termAccept = false;
 
-
   HomeBloc profileBloc = HomeBloc(
     repository: HomeRepository(
       dataSource: HomeDataSource(),
@@ -147,8 +146,9 @@ class _MemberListScreenState extends State<MemberListScreen> {
             alignment: Alignment.bottomCenter,
             child: GestureDetector(
               onTap: () {
-                callNextScreenWithResult(context, AddMemberScreen()).then((value){
-                  if(value!=null && value=="true"){
+                callNextScreenWithResult(context, const AddMemberScreen())
+                    .then((value) {
+                  if (value != null && value == "true") {
                     profileBloc.add(GetMemberAPIEvent());
                   }
                 });
@@ -218,35 +218,11 @@ class _MemberListScreenState extends State<MemberListScreen> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5)),
-                  color: (index == 0)
-                      ? greenColor
-                      : (index == 1)
-                          ? redColor
-                          : (index == 2)
-                              ? redColor
-                              : (index == 3)
-                                  ? greenColor
-                                  : (index == 4)
-                                      ? redColor
-                                      : (index == 5)
-                                          ? greenColor
-                                          : greenColor,
+                  color: member.active ?? false ?greenColor:redColor,
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 child: TitleTextView(
-                  (index == 0)
-                      ? "Active"
-                      : (index == 1)
-                          ? "Inactive"
-                          : (index == 2)
-                              ? "Inactive"
-                              : (index == 3)
-                                  ? "Active"
-                                  : (index == 4)
-                                      ? "Inactive"
-                                      : (index == 5)
-                                          ? "Active"
-                                          : "Active",
+                  member.active ?? false ? "Active" : "InActive",
                   color: whiteColor,
                   fontFamily: FontName.nunitoSansBold,
                   fontWeight: FontWeight.w600,
@@ -263,7 +239,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
               ),
               sbw(2.w),
               TitleTextView(
-                member.mobileNo??"",
+                member.mobileNo ?? "",
                 fontFamily: FontName.nunitoSansSemiBold,
               ),
             ],
@@ -280,7 +256,7 @@ class _MemberListScreenState extends State<MemberListScreen> {
                     ),
                     sbw(2.w),
                     TitleTextView(
-                      member.relationWithHod??"",
+                      member.relationWithHod ?? "",
                       fontFamily: FontName.nunitoSansSemiBold,
                     ),
                   ],
@@ -294,21 +270,25 @@ class _MemberListScreenState extends State<MemberListScreen> {
                       height: 15,
                     ),
                     sbw(2.w),
-                    TitleTextView(
-                        member.gender??"",
+                    TitleTextView(member.gender ?? "",
                         fontFamily: FontName.nunitoSansSemiBold),
                   ],
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                  callNextScreenWithResult(context, AddMemberScreen(member: member,)).then((value){
-                    if(value!=null && value=="true"){
+                  callNextScreenWithResult(
+                      context,
+                      AddMemberScreen(
+                        member: member,
+                      )).then((value) {
+                    if (value != null && value == "true") {
                       profileBloc.add(GetMemberAPIEvent());
                     }
                   });
                 },
                 child: Container(
+                  margin: EdgeInsets.all(5),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                       color: clrApp),

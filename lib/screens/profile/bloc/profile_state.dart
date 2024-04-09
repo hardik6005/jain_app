@@ -3,6 +3,7 @@ part of 'profile_bloc.dart';
 class ProfileState {
   final ApiCallState? saveProfileCallState;
   final ApiCallState? getProfileCallState;
+  final ApiCallState? updatePassCallState;
   final int? page;
   final bool? hasNextPage;
   final bool? isLoadMoreRunning;
@@ -40,6 +41,7 @@ class ProfileState {
     this.successMsg,
     this.jobId,
     this.educationId,
+    this.updatePassCallState,
   });
 
   List<Object> get props => [
@@ -60,6 +62,7 @@ class ProfileState {
         successMsg!,
         educationId!,
         jobId!,
+        updatePassCallState!,
       ];
 
   ProfileState copyWith({
@@ -81,9 +84,11 @@ class ProfileState {
     String? successMsg,
     String? jobId,
     String? educationId,
+    ApiCallState? updatePassCallState,
   }) {
     return ProfileState(
       saveProfileCallState: saveProfileCallState ?? this.saveProfileCallState,
+      updatePassCallState: updatePassCallState ?? this.updatePassCallState,
       getProfileCallState: getProfileCallState ?? this.getProfileCallState,
       page: page ?? this.page,
       hasNextPage: hasNextPage ?? this.hasNextPage,

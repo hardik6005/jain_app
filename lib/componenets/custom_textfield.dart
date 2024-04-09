@@ -1,15 +1,12 @@
-
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
-import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/string_constants.dart';
-import 'package:dropdown_search/dropdown_search.dart';
-
-
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -42,6 +39,7 @@ class CustomTextField extends StatelessWidget {
     this.isDropDownHint = AppConstants.pleaseSelect,
     this.isSearch = false,
     this.style,
+    this.isValidate = true,
   }) : super(key: key);
 
   final BuildContext context;
@@ -72,6 +70,7 @@ class CustomTextField extends StatelessWidget {
   final String? isDropDownHint;
   final bool? isSearch;
   final TextStyle? style;
+  final bool? isValidate;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +94,7 @@ class CustomTextField extends StatelessWidget {
             scrollPadding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom + 10),
             decoration: InputDecoration(
-              hintText: hintText=="" ? isDropDownHint : hintText,
+              hintText: hintText == "" ? isDropDownHint : hintText,
               isDense: true,
               enabled: enable ?? true,
               counterText: "",
@@ -185,7 +184,11 @@ class CustomTextField extends StatelessWidget {
     return OutlineInputBorder(
       borderRadius: radius(4),
       borderSide: BorderSide(
-        color: clrAppLight4,
+        color: (isValidate ?? true)
+            ? clrAppLight4
+            : controller.text.isNotEmpty
+                ? clrAppLight4
+                : redColor,
         width: 1,
       ),
     );
@@ -230,6 +233,7 @@ class CustomDropDownField extends StatelessWidget {
     this.isDisable = false,
     this.onValidation,
     this.showSearch = true,
+    this.isValidate = true,
   }) : super(key: key);
 
   final BuildContext context;
@@ -258,13 +262,16 @@ class CustomDropDownField extends StatelessWidget {
   final bool? isDisable;
   final Function()? onValidation;
   final bool? showSearch;
+  final bool? isValidate;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         if (isDisable!) {
-          onValidation!();
+          if(onValidation!=null) {
+            onValidation!();
+          }
         }
       },
       child: IgnorePointer(
@@ -305,7 +312,6 @@ class CustomDropDownField extends StatelessWidget {
                   }
                   // }
                 },
-
                 dropdownDecoratorProps: DropDownDecoratorProps(
                   dropdownSearchDecoration: InputDecoration(
                     border: myinputborder(),
@@ -428,7 +434,7 @@ class CustomDropDownField extends StatelessWidget {
     return OutlineInputBorder(
         borderRadius: radius(4),
         borderSide: BorderSide(
-          color: clrAppLight4,
+          color: isValidate??true?clrAppLight4:(selectedItem!=null)?clrAppLight4:redColor,
           width: 1,
         ));
   }
@@ -472,4 +478,3 @@ class DropDownModel {
     return this.id == model.id;
   }
 }
-

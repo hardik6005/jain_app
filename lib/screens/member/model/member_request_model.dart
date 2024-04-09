@@ -24,10 +24,12 @@ class MemberRequest{
   String? relation_with_hod;
   String? mobile_no;
   String? marital_status;
+  String? sanghs;
 
   MemberRequest(
       {this.id,
       this.form_no,
+      this.sanghs,
       this.number_of_family_members,
       this.address,
       this.full_name,

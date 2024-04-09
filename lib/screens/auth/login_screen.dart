@@ -243,18 +243,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       sb(2.h),
-                      InkWell(
-                        onTap: () {
-                          // callNextScreen(context, const ForgotPassScreen());
-                        },
-                        child: TitleTextView(
-                          AppConstants.forgotPassword,
-                          color: clrApp,
-                          textAlign: TextAlign.right,
-                          fontSize: f13,
-                          fontFamily: FontName.nunitoSansRegular,
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     // callNextScreen(context, const ForgotPassScreen());
+                      //   },
+                      //   child: TitleTextView(
+                      //     AppConstants.forgotPassword,
+                      //     color: clrApp,
+                      //     textAlign: TextAlign.right,
+                      //     fontSize: f13,
+                      //     fontFamily: FontName.nunitoSansRegular,
+                      //   ),
+                      // ),
                       sb(1.5.h),
 
                       //Signin Button

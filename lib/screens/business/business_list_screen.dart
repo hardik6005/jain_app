@@ -143,6 +143,7 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
                             })
                         : noDataView(),
               ),
+              sb(7.h),
             ],
           ),
           Container(
@@ -195,11 +196,9 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
           .copyWith(top: (index == 0) ? 2.h : 1.h),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
-        color: member.status == 1
-            ? whiteColor
-            : (member.status == 0)
-                ? lightRedColor
-                : whiteColor,
+        color: member.status == 0
+            ? lightRedColor
+            : (member.status == 1)?greenLightColor: whiteColor,
         boxShadow: const [
           BoxShadow(
             color: Colors.grey,
@@ -224,19 +223,16 @@ class _BusinessListScreenState extends State<BusinessListScreen> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5)),
-                  color: member.status == 1
-                      ? greenColor
-                      : (member.status == 0)
-                          ? redColor
-                          : Colors.yellow,
+                  color: member.status == 0
+                      ? redColor
+                      : (member.status == 1)
+                          ? greenColor
+                          : (member.status == 2)?blueColor:Colors.yellow,
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 child: TitleTextView(
-                  member.status == 1
-                      ? "Approved"
-                      : (member.status == 0)
-                          ? "Rejected"
-                          : "Other",
+                  member.status == 0
+                      ? "Rejected" : (member.status == 1)?"Approved":(member.status == 2)?"Awaiting For Approval":"",
                   color: whiteColor,
                   fontFamily: FontName.nunitoSansBold,
                   fontWeight: FontWeight.w600,

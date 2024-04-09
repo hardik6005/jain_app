@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:jain_app/screens/auth/model/login_model.dart';
 import 'package:jain_app/screens/auth/model/success_model.dart';
 import 'package:jain_app/screens/business/model/business_request_model.dart';
+import 'package:jain_app/screens/job/model/search_job_list_model.dart';
+import 'package:jain_app/screens/job/model/search_job_request.dart';
 import 'package:jain_app/screens/matrimonial/data/matri_datasource.dart';
 import 'package:jain_app/http_common/api_result.dart';
 import 'package:jain_app/http_common/app_http.dart';
@@ -49,6 +51,27 @@ class MemberRepository {
         AddSuccessModel response = AddSuccessModel.fromJson(result.data);
         if (response.status ?? false) {
           return checkResponseStatusCode<AddSuccessModel>(result, response);
+        } else {
+          return ApiResult.failure(error: response.message!);
+        }
+      } else {
+        return ApiResult.failure(error: result.data["message"]);
+      }
+    } catch (e) {
+      //final message = HandleAPI.handleAPIError(e);
+      return const ApiResult.failure(error: AppConstants.somethingwentwrong);
+    }
+  }
+
+  //Repository for Get Social Profile API
+  Future<ApiResult<SearchJobListModel>> searchJobSeeker(SearchJobRequest request) async {
+    try {
+      final result = await _dataSource.searchJobSeeker(request);
+
+      if (result!.statusCode == 200) {
+        SearchJobListModel response = SearchJobListModel.fromJson(result.data);
+        if (response.status ?? false) {
+          return checkResponseStatusCode<SearchJobListModel>(result, response);
         } else {
           return ApiResult.failure(error: response.message!);
         }

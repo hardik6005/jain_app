@@ -9,6 +9,9 @@ import 'package:jain_app/screens/home/bloc/home_bloc.dart';
 import 'package:jain_app/screens/home/data/home_datasource.dart';
 import 'package:jain_app/screens/home/data/home_repository.dart';
 import 'package:jain_app/screens/matrimonial/add_matrimonial_profile.dart';
+import 'package:jain_app/screens/matrimonial/bloc/matri_bloc.dart';
+import 'package:jain_app/screens/matrimonial/data/matri_datasource.dart';
+import 'package:jain_app/screens/matrimonial/data/matri_repository.dart';
 import 'package:jain_app/screens/matrimonial/model/matri_list_model.dart';
 import 'package:jain_app/screens/matrimonial/search_matri_screen.dart';
 import 'package:jain_app/utils/app_colors.dart';
@@ -79,6 +82,14 @@ class _MatriListScreenState extends State<MatriListScreen> {
     ),
   );
 
+  MatriBloc matriBloc = MatriBloc(
+    repository: MatriRepository(
+      dataSource: MatriDataSource(),
+    ),
+  );
+
+  int indexLoad = -1;
+
   @override
   void initState() {
     super.initState();
@@ -93,33 +104,55 @@ class _MatriListScreenState extends State<MatriListScreen> {
       child: BlocBuilder<HomeBloc, HomeState>(
           bloc: profileBloc,
           builder: ((context, state) {
-            return Container(
-              color: whiteColor,
-              child: SafeArea(
-                top: false,
-                child: Scaffold(
-                  appBar: appBar(
+            return BlocListener<MatriBloc, MatriState>(
+              bloc: matriBloc,
+              listener: (context, matristate) {
+                if (matristate.searchMatriPrefeCallState ==
+                    ApiCallState.success) {
+                  setState(() {
+                    indexLoad = -1;
+                  });
+                  callNextScreen(
                     context,
-                    "Matrimonial Directory",
-                    Imagename.icBack,
-                    "",
-                    whiteIntColor,
-                    leadingAction: () {
-                      pop(context);
-                    },
-                    action: [homeWidget(context)],
-                  ),
-                  body: commonShapeContainer(bodyView(state)),
-                  backgroundColor: clrOrange4,
-                  resizeToAvoidBottomInset: false,
-                ),
-              ),
+                    MatriSearchScreen(
+                      memberPreferenceModel: matristate.memberPreferenceModel,
+                    ),
+                  );
+                }
+              },
+              child: BlocBuilder<MatriBloc, MatriState>(
+                  bloc: matriBloc,
+                  builder: ((context, matristate) {
+                    return Container(
+                      color: whiteColor,
+                      child: SafeArea(
+                        top: false,
+                        child: Scaffold(
+                          appBar: appBar(
+                            context,
+                            "Matrimonial Directory",
+                            Imagename.icBack,
+                            "",
+                            whiteIntColor,
+                            leadingAction: () {
+                              pop(context);
+                            },
+                            action: [homeWidget(context)],
+                          ),
+                          body:
+                              commonShapeContainer(bodyView(state, matristate)),
+                          backgroundColor: clrOrange4,
+                          resizeToAvoidBottomInset: false,
+                        ),
+                      ),
+                    );
+                  })),
             );
           })),
     );
   }
 
-  Widget bodyView(HomeState state) {
+  Widget bodyView(HomeState state, MatriState matristate) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5),
       color: Colors.white,
@@ -140,10 +173,11 @@ class _MatriListScreenState extends State<MatriListScreen> {
                             itemBuilder: (context, index) {
                               final model = state
                                   .matriListModel!.data!.memberList![index];
-                              return listItemView(model, index);
+                              return listItemView(model, index, matristate);
                             })
                         : noDataView(),
               ),
+              sb(7.h),
             ],
           ),
           Container(
@@ -154,7 +188,7 @@ class _MatriListScreenState extends State<MatriListScreen> {
                   context,
                   AddMatrimonialScreen(),
                 ).then((value) {
-                  if(value!=null) {
+                  if (value != null) {
                     profileBloc.add(GetMatriListAPIEvent());
                   }
                 });
@@ -193,25 +227,17 @@ class _MatriListScreenState extends State<MatriListScreen> {
     );
   }
 
-  Widget listItemView(MemberList model, int index) {
+  Widget listItemView(MemberList model, int index, MatriState matristate) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 1.h, horizontal: 10)
           .copyWith(top: (index == 0) ? 2.h : 1.h),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        color: (index == 0)
-            ? whiteColor
-            : (index == 1)
-                ? lightRedColor
-                : (index == 2)
-                    ? lightRedColor
-                    : (index == 3)
-                        ? whiteColor
-                        : (index == 4)
-                            ? lightRedColor
-                            : (index == 5)
-                                ? whiteColor
-                                : whiteColor,
+        color: model.status == 0
+            ? lightRedColor
+            : (model.status == 1)
+                ? greenLightColor
+                : whiteColor,
         boxShadow: [
           BoxShadow(
             color: Colors.grey,
@@ -236,35 +262,23 @@ class _MatriListScreenState extends State<MatriListScreen> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5)),
-                  color: (index == 0)
-                      ? greenColor
-                      : (index == 1)
-                          ? redColor
-                          : (index == 2)
-                              ? redColor
-                              : (index == 3)
-                                  ? greenColor
-                                  : (index == 4)
-                                      ? redColor
-                                      : (index == 5)
-                                          ? greenColor
-                                          : greenColor,
+                  color: model.status == 0
+                      ? redColor
+                      : (model.status == 1)
+                          ? greenColor
+                          : (model.status == 2)
+                              ? blueColor
+                              : Colors.yellow,
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 child: TitleTextView(
-                  (index == 0)
-                      ? "Active"
-                      : (index == 1)
-                          ? "Rejected"
-                          : (index == 2)
-                              ? "Rejected"
-                              : (index == 3)
-                                  ? "Active"
-                                  : (index == 4)
-                                      ? "Rejected"
-                                      : (index == 5)
-                                          ? "Active"
-                                          : "Active",
+                  model.status == 0
+                      ? "Rejected"
+                      : (model.status == 1)
+                          ? "Approved"
+                          : (model.status == 2)
+                              ? "Awaiting For Approval"
+                              : "",
                   color: whiteColor,
                   fontFamily: FontName.nunitoSansBold,
                   fontWeight: FontWeight.w600,
@@ -313,16 +327,16 @@ class _MatriListScreenState extends State<MatriListScreen> {
                       member: model,
                     ),
                   ).then((value) {
-                    if(value!=null) {
+                    if (value != null) {
                       profileBloc.add(GetMatriListAPIEvent());
                     }
                   });
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                      borderRadius: const BorderRadius.all(Radius.circular(4)),
                       color: clrApp),
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   child: Image.asset(
                     Imagename.icEdit,
                     color: whiteColor,
@@ -331,22 +345,37 @@ class _MatriListScreenState extends State<MatriListScreen> {
                 ),
               ),
               sbw(10),
-              GestureDetector(
-                onTap: () {
-                  callNextScreen(context, MatriSearchScreen());
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      color: clrAppLight1),
-                  padding: EdgeInsets.all(5),
-                  child: Image.asset(
-                    Imagename.icSearch,
-                    color: whiteColor,
-                    height: 13,
+              if (model.status == 0)
+                GestureDetector(
+                  onTap: () {
+                    // callNextScreen(context, MatriSearchScreen());
+                    indexLoad = index;
+                    matriBloc.add(SearchMatriPreferenceEvent(
+                        member: model.id!.toString()));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                        color: clrAppLight1),
+                    padding: EdgeInsets.all(5),
+                    child: (matristate.searchMatriPrefeCallState ==
+                                ApiCallState.busy &&
+                            indexLoad == index)
+                        ? const SizedBox(
+                            height: 13,
+                            width: 13,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 3,
+                            ),
+                          )
+                        : Image.asset(
+                            Imagename.icSearch,
+                            color: whiteColor,
+                            height: 13,
+                          ),
                   ),
-                ),
-              )
+                )
             ],
           )
         ],

@@ -2,10 +2,12 @@ part of 'matri_bloc.dart';
 
 class MatriState {
   final ApiCallState? saveProfileCallState;
-  final ApiCallState? saveBusiProfileCallState;
+  final ApiCallState? searchMatriPrefeCallState;
+
   final ApiCallState? saveMatriProfileCallState;
   final ApiCallState? socialProfileCallState;
-  final ApiCallState? subDropCallState;
+  final ApiCallState? searchMatriListCallState;
+
   final ApiCallState? matriCallState;
   final int? page;
   final bool? hasNextPage;
@@ -24,6 +26,7 @@ class MatriState {
   final bool? sameAsNative1;
 
   final String? successMsg;
+
   // final SocialProfileDataModel? socialProfileDataModel;
   // final BusinessProfileAddModel? businessProfileAddModel;
   List<DropDownModel>? stateList;
@@ -36,12 +39,18 @@ class MatriState {
   String? villageId;
   final bool? isValidate;
 
+  final bool? fistValidate;
+  final bool? secondValidate;
+  final bool? fourthValidate;
+  final MemberPreferenceModel? memberPreferenceModel;
+  final MatchProfileListModel? matchProfileListModel;
+
   MatriState({
     this.saveProfileCallState = ApiCallState.none,
-    this.saveBusiProfileCallState = ApiCallState.none,
+    this.searchMatriPrefeCallState = ApiCallState.none,
     this.saveMatriProfileCallState = ApiCallState.none,
     this.socialProfileCallState = ApiCallState.none,
-    this.subDropCallState = ApiCallState.none,
+    this.searchMatriListCallState = ApiCallState.none,
     this.matriCallState = ApiCallState.none,
     this.page = 1,
     this.hasNextPage = true,
@@ -68,14 +77,19 @@ class MatriState {
     this.subDistictId,
     this.villageId,
     this.isValidate = false,
+    this.fistValidate = true,
+    this.secondValidate = true,
+    this.fourthValidate = true,
+    this.memberPreferenceModel,
+    this.matchProfileListModel,
   });
 
   List<Object> get props => [
         saveProfileCallState!,
-        saveBusiProfileCallState!,
+        searchMatriPrefeCallState!,
         saveMatriProfileCallState!,
         socialProfileCallState!,
-        subDropCallState!,
+        searchMatriListCallState!,
         matriCallState!,
         page!,
         hasNextPage!,
@@ -102,14 +116,19 @@ class MatriState {
         subDistictId!,
         villageId!,
         isValidate!,
+        fistValidate!,
+        secondValidate!,
+        fourthValidate!,
+    memberPreferenceModel!,
+    matchProfileListModel!,
       ];
 
   MatriState copyWith({
     ApiCallState? saveProfileCallState,
-    ApiCallState? saveBusiProfileCallState,
+    ApiCallState? searchMatriPrefeCallState,
     ApiCallState? saveMatriProfileCallState,
     ApiCallState? socialProfileCallState,
-    ApiCallState? subDropCallState,
+    ApiCallState? searchMatriListCallState,
     ApiCallState? matriCallState,
     int? page,
     bool? hasNextPage,
@@ -137,12 +156,23 @@ class MatriState {
     String? subDistictId,
     String? villageId,
     bool? isValidate,
+    bool? fistValidate,
+    bool? secondValidate,
+    bool? fourthValidate,
+    MemberPreferenceModel? memberPreferenceModel,
+    MatchProfileListModel? matchProfileListModel,
   }) {
     return MatriState(
+      matchProfileListModel: matchProfileListModel ?? this.matchProfileListModel,
+      memberPreferenceModel: memberPreferenceModel ?? this.memberPreferenceModel,
+      fistValidate: fistValidate ?? this.fistValidate,
+      secondValidate: secondValidate ?? this.secondValidate,
+      fourthValidate: fourthValidate ?? this.fourthValidate,
       saveProfileCallState: saveProfileCallState ?? this.saveProfileCallState,
-      subDropCallState: subDropCallState ?? this.subDropCallState,
-      saveBusiProfileCallState:
-          saveBusiProfileCallState ?? this.saveBusiProfileCallState,
+      searchMatriListCallState:
+          searchMatriListCallState ?? this.searchMatriListCallState,
+      searchMatriPrefeCallState:
+          searchMatriPrefeCallState ?? this.searchMatriPrefeCallState,
       saveMatriProfileCallState:
           saveMatriProfileCallState ?? this.saveMatriProfileCallState,
       page: page ?? this.page,

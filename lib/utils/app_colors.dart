@@ -6,6 +6,7 @@ Color whiteColor = Colors.white;
 Color blackColor = Colors.black;
 Color greyColor = const Color(0xff858584);
 Color greenColor = const Color(0xff149814);
+Color greenLightColor = const Color(0xfff2faf2);
 Color redColor = const Color(0xffbd2828);
 Color lightRedColor = const Color(0xfffcf7f7);
 Color greyColorLight1 = const Color(0xffbebebe);

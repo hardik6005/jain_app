@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +22,7 @@ import 'package:jain_app/utils/string_constants.dart';
 
 class AddBusinessScreen extends StatefulWidget {
   final MemberList? member;
+
   const AddBusinessScreen({Key? key, this.member}) : super(key: key);
 
   @override
@@ -38,7 +38,6 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
   TextEditingController controllerAdd2 = TextEditingController();
   TextEditingController controllerPincode = TextEditingController();
 
-
   bool passHide = true;
 
   //Date picker variable
@@ -48,15 +47,12 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
   ImagePicker picker = ImagePicker();
   List<PickerModel> pickerModelList = [];
 
-
   List<DropDownModel> stateDD = [];
   String statee = "";
   List<DropDownModel> cityDD = [];
   String city = "";
   List<DropDownModel> businessCategorieDD = [];
   String bCategory = "";
-
-
 
   MemberBloc memberBloc = MemberBloc(
     repository: MemberRepository(
@@ -75,22 +71,19 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
     if (widget.member != null) {
       final mem = widget.member;
       controllerBTitle.text = mem!.businessTitle ?? "";
-      controllerOwnerName.text = mem!.ownerName.toString();
-      city = mem!.city!.id.toString();
-      statee = mem!.state!.id.toString();
-      controllerArea.text = mem!.area.toString();
-      controllerAdd1.text = mem!.addressLine1.toString();
-      controllerAdd2.text = mem!.addressLine2.toString();
-      controllerBobile.text = mem!.mobileNumber.toString();
+      controllerOwnerName.text = mem.ownerName.toString();
+      city = mem.city!.id.toString();
+      statee = mem.state!.id.toString();
+      controllerArea.text = mem.area.toString();
+      controllerAdd1.text = mem.addressLine1.toString();
+      controllerAdd2.text = mem.addressLine2.toString();
+      controllerBobile.text = mem.mobileNumber.toString();
       bCategory = mem.businessCategory!.id.toString();
-      pickerModelList.add(PickerModel("", mem.visitingCardUrl!, mem.visitingCardUrl!, ""));
-
+      pickerModelList
+          .add(PickerModel("", mem.visitingCardUrl!, mem.visitingCardUrl!, ""));
     }
 
-
     setState(() {});
-
-
   }
 
   @override
@@ -102,7 +95,9 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
           okAlert(
               GlobalVariable.navState.currentContext!,
               isDismiss: false,
-              (widget.member!=null)?"Business directory created successfully.":"Business directory updated successfully.", onTap: () {
+              (widget.member == null)
+                  ? "Business directory created successfully."
+                  : "Business directory updated successfully.", onTap: () {
             pop(context, data: "true");
           });
         }
@@ -157,12 +152,15 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   //Name
                   CustomTextField(
                     context: context,
-                    textFieldName: "Business Title",
+                    textFieldName: "Business Title" + "*",
+                    isValidate: state.addBusinessValidation,
                     hintText: "Enter Business Title",
                     numberOfLines: 1,
                     controller: controllerBTitle,
                     textInputAction: TextInputAction.next,
-                    onChange: (v) {},
+                    onChange: (v) {
+                      setState(() {});
+                    },
                   ),
 
                   sb(10),
@@ -170,19 +168,23 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   //Name
                   CustomTextField(
                     context: context,
-                    textFieldName: "Owner Name",
+                    textFieldName: "Owner Name" + "*",
+                    isValidate: state.addBusinessValidation,
                     hintText: "Enter Owner Name",
                     numberOfLines: 1,
                     controller: controllerOwnerName,
                     textInputAction: TextInputAction.next,
-                    onChange: (v) {},
+                    onChange: (v) {
+                      setState(() {});
+                    },
                   ),
 
                   sb(10),
 
                   CustomTextField(
                     context: context,
-                    textFieldName: AppConstants.phone,
+                    textFieldName: AppConstants.phone + "*",
+                    isValidate: state.addBusinessValidation,
                     hintText: AppConstants.enterPhone,
                     numberOfLines: 1,
                     maxLenght: 10,
@@ -220,13 +222,16 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   //Gender
                   CustomDropDownField(
                     context: context,
-                    textFieldName: "Business Category",
+                    textFieldName: "Business Category" + "*",
+                    isValidate: state.addBusinessValidation,
                     isDropDownHint: "Select Business Category",
                     list: businessCategorieDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     selectedItem: bCategory.isNotEmpty
-                        ? DropDownModel(id: bCategory, name: dropDownName("businessCategories", bCategory))
+                        ? DropDownModel(
+                            id: bCategory,
+                            name: dropDownName("businessCategories", bCategory))
                         : null,
                     onTap: () {},
                     onChangeInt: (v) {
@@ -242,12 +247,14 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   CustomDropDownField(
                     context: context,
                     textFieldName: "State",
-                    isDropDownHint: "Select State",
+                    isDropDownHint: "Select State" + "*",
+                    isValidate: state.addBusinessValidation,
                     list: stateDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     selectedItem: statee.isNotEmpty
-                        ? DropDownModel(id: statee, name: dropDownName("states", statee))
+                        ? DropDownModel(
+                            id: statee, name: dropDownName("states", statee))
                         : null,
                     onTap: () {},
                     onChangeInt: (v) {
@@ -263,12 +270,14 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   CustomDropDownField(
                     context: context,
                     textFieldName: "City",
-                    isDropDownHint: "Select City",
+                    isDropDownHint: "Select City" + "*",
+                    isValidate: state.addBusinessValidation,
                     list: cityDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
                     selectedItem: city.isNotEmpty
-                        ? DropDownModel(id: city, name: dropDownName("cities", city))
+                        ? DropDownModel(
+                            id: city, name: dropDownName("cities", city))
                         : null,
                     onTap: () {},
                     onChangeInt: (v) {
@@ -282,36 +291,45 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
 
                   CustomTextField(
                     context: context,
-                    textFieldName: "Area",
+                    textFieldName: "Area" + "*",
                     hintText: "Enter Area",
+                    isValidate: state.addBusinessValidation,
                     numberOfLines: 1,
                     controller: controllerArea,
                     textInputAction: TextInputAction.next,
-                    onChange: (v) {},
+                    onChange: (v) {
+                      setState(() {});
+                    },
                   ),
 
                   sb(10),
 
                   CustomTextField(
                     context: context,
-                    textFieldName: "Address Line 1",
+                    textFieldName: "Address Line 1" + "*",
                     hintText: "Enter House No. Building Name",
+                    isValidate: state.addBusinessValidation,
                     numberOfLines: 3,
                     controller: controllerAdd1,
                     textInputAction: TextInputAction.next,
-                    onChange: (v) {},
+                    onChange: (v) {
+                      setState(() {});
+                    },
                   ),
 
                   sb(10),
 
                   CustomTextField(
                     context: context,
-                    textFieldName: "Address Line 2",
+                    textFieldName: "Address Line 2" + "*",
                     hintText: "Enter Road Name, Colony",
+                    isValidate: state.addBusinessValidation,
                     numberOfLines: 3,
                     controller: controllerAdd2,
                     textInputAction: TextInputAction.next,
-                    onChange: (v) {},
+                    onChange: (v) {
+                      setState(() {});
+                    },
                   ),
 
                   sb(10),
@@ -330,12 +348,18 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
 
                   //Upload CV
                   TitleChildWidget(
-                    title: "Visiting Card",
+                    title: "Visiting Card" + "*",
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(4)),
-                        border: Border.all(color: clrAppLight5, width: 1),
+                        border: Border.all(
+                            color: (state.addBusinessValidation!)
+                                ? clrAppLight5
+                                : (pickerModelList.isEmpty)
+                                    ? redColor
+                                    : clrAppLight5,
+                            width: 1),
                         color: clrAppLight5,
                       ),
                       child: Row(
@@ -388,7 +412,6 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   spaceHeight(context),
 
                   sb(50)
-
                 ],
               ),
             ),
@@ -397,26 +420,28 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
             title: "Create Business Directory",
             fontColor: whiteColor,
             backgroundColor: clrOrange,
-            isLoading: state.addBusinessState==ApiCallState.busy,
+            isLoading: state.addBusinessState == ApiCallState.busy,
             ontap: () {
               unFocus(context);
 
               memberBloc.add(AddBusinessEvent(
-                request: BusinessRequest(
-                  id: widget.member!=null?widget.member!.id.toString():null,
-                  state_id: statee,
-                  address_line_1: controllerAdd1.text,
-                  address_line_2: controllerAdd2.text,
-                  area: controllerArea.text,
-                  business_category_id: bCategory,
-                  business_title: controllerBTitle.text,
-                  city_id: city,
-                  mobile_number: controllerBobile.text,
-                  owner_name: controllerOwnerName.text,
-                  pincode: controllerPincode.text,
-                  visiting_card: pickerModelList.isEmpty?"":pickerModelList[0].path
-                )
-              ));
+                  request: BusinessRequest(
+                      id: widget.member != null
+                          ? widget.member!.id.toString()
+                          : null,
+                      state_id: statee,
+                      address_line_1: controllerAdd1.text,
+                      address_line_2: controllerAdd2.text,
+                      area: controllerArea.text,
+                      business_category_id: bCategory,
+                      business_title: controllerBTitle.text,
+                      city_id: city,
+                      mobile_number: controllerBobile.text,
+                      owner_name: controllerOwnerName.text,
+                      pincode: controllerPincode.text,
+                      visiting_card: pickerModelList.isEmpty
+                          ? ""
+                          : pickerModelList[0].path)));
             },
           ),
           sb(10)

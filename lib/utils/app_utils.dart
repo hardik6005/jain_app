@@ -321,14 +321,13 @@ okAlert(BuildContext context, String msg,
 okCancelAlert(BuildContext context, String msg,
     {Function? onTap, bool? isDismiss = true}) async {
   final result = await showOkCancelAlertDialog(
-    context: context,
-    title: AppConstants.appTitle,
-    message: msg.replaceAll(":", ""),
-    onWillPop: () => Future.value(isDismiss),
-    barrierDismissible: true,
-    okLabel: "Yes",
-    cancelLabel: "No"
-  );
+      context: context,
+      title: AppConstants.appTitle,
+      message: msg.replaceAll(":", ""),
+      onWillPop: () => Future.value(isDismiss),
+      barrierDismissible: true,
+      okLabel: "Yes",
+      cancelLabel: "No");
 
   if (result.name == "ok") {
     if (onTap != null) {
@@ -386,7 +385,7 @@ Widget termWidget1(String title, bool selected, Function(bool) onTap) {
 }
 
 //Agree Term Common Widget
-Widget termWidget(String title, bool selected, Function(bool) onTap) {
+Widget termWidget(String title, bool selected, Function(bool) onTap, Color backColor) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 7),
     child: Row(
@@ -395,11 +394,15 @@ Widget termWidget(String title, bool selected, Function(bool) onTap) {
       children: [
         Checkbox(
           visualDensity: const VisualDensity(horizontal: -4.0, vertical: -4.0),
-          checkColor: whiteColor,
+          // checkColor: backColor,
+          // overlayColor: MaterialStateProperty.all<Color>(backColor),
           fillColor: (selected)
               ? MaterialStateProperty.all<Color>(blackColor)
               : MaterialStateProperty.all<Color>(whiteColor),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+          side: MaterialStateBorderSide.resolveWith(
+                (states) => BorderSide(width: 2.0, color: backColor),
+          ),
           value: selected,
           onChanged: (v) {
             onTap(v!);
@@ -529,25 +532,147 @@ Future<ConnectivityResult> checkConnection() async {
   return connectivityResult;
 }
 
-getDropDown(String name){
+getDropDown(String name) {
   List<DropDownModel> relationHofDD = [];
-  Map relationHOD = dropDownJson[name]??{};
+  Map relationHOD = dropDownJson[name] ?? {};
   relationHOD.forEach((key, value) {
-    if(key.toString().isNotEmpty) {
+    if (key.toString().isNotEmpty) {
       relationHofDD.add(DropDownModel(id: key, name: value));
     }
   });
   return relationHofDD;
 }
 
-dropDownName(String type, String id){
-  Map relationHOD = dropDownJson[type]??{};
+dropDownName(String type, String id) {
+  Map relationHOD = dropDownJson[type] ?? {};
 
-  // relationHOD.forEach((key, value) {
-  //   if(key.toString().isNotEmpty) {
-  //     relationHofDD.add(DropDownModel(id: key, name: value));
-  //   }
-  // });
 
-  return relationHOD[id]??"";
+  return relationHOD[id] ?? "";
 }
+
+List<String> validationStrings = [
+  "Relation With HOF*",
+  "${AppConstants.fullname}*",
+  "${AppConstants.phone}*",
+  "${AppConstants.selectGender}*",
+  "${AppConstants.selectMaritalStatus}*",
+  "${AppConstants.dob}*",
+  "Blood Group" "*",
+  "Educational Qualification" "*",
+
+  "Business Title" "*",
+  "Owner Name" "*",
+  "${AppConstants.phone}*",
+  "Business Category" "*",
+  "Select State" "*",
+  "Select City" "*",
+  "Area" "*",
+  "Address Line 1" "*",
+  "Address Line 2" "*",
+  "Visiting Card" "*",
+  "First Name" "*",
+  "Middle Name" "*",
+  "Last Name" "*",
+  "${AppConstants.selectGender}*",
+  "${AppConstants.dob}*",
+  "${AppConstants.selectMaritalStatus}*",
+  "Age" "*",
+  "${AppConstants.height}*",
+  "Weight" "*",
+  "Blood Group" "*",
+  'Complextion' "*",
+  'Physical Disability' "*",
+  'Manglik' "*",
+  'Rashi' "*",
+  'Education Type' "*",
+  'Education Field' "*",
+  'Working With' "*",
+  'Working As' "*",
+  "Birth Place" "*",
+  "Birth Time" "*",
+  'Mother Tongue' "*",
+  "Sub Community" "*",
+  "Father Status" "*",
+  "Mother Status" "*",
+  "Photos" "*",
+  "I agreed on terms & conditions and declared that I've shared correct information.",
+];
+
+List<String> addMemberRequired = [
+  "Relation With HOF*",
+  "${AppConstants.fullname}*",
+  "${AppConstants.phone}*",
+  "${AppConstants.selectGender}*",
+  "${AppConstants.selectMaritalStatus}*",
+  "${AppConstants.dob}*",
+  "Blood Group" "*",
+  "Educational Qualification" "*"
+];
+
+List<String> addBusinessRequired = [
+  "Business Title" "*",
+  "Owner Name" "*",
+  "${AppConstants.phone}*",
+  "Business Category" "*",
+  "Select State" "*",
+  "Select City" "*",
+  "Area" "*",
+  "Address Line 1" "*",
+  "Address Line 2" "*",
+  "Visiting Card" "*",
+];
+
+List<String> addMatriRequired1 = [
+  "First Name" "*",
+  "Middle Name" "*",
+  "Last Name" "*",
+  "${AppConstants.selectGender}*",
+  "${AppConstants.dob}*",
+  "${AppConstants.selectMaritalStatus}*",
+  "Age" "*",
+  "${AppConstants.height}*",
+  "Weight" "*",
+  "Blood Group" "*",
+  'Complextion' "*",
+  'Physical Disability' "*",
+  'Manglik' "*",
+  'Rashi' "*",
+  'Education Type' "*",
+  'Education Field' "*",
+  'Working With' "*",
+  'Working As' "*",
+  "Birth Place" "*",
+  "Birth Time" "*",
+  'Mother Tongue' "*",
+];
+List<String> addMatriRequired2 = [
+  "Sub Community" "*",
+  "Father Status" "*",
+  "Mother Status" "*",
+];
+List<String> addMatriRequired4 = [
+  "Photos" "*",
+  "I agreed on terms & conditions and declared that I've shared correct information.",
+];
+
+
+checkNUaEM(String? value){
+  return value != null && value.isNotEmpty;
+}
+
+enum StatusMatrimonial{
+  Rejected, Approved, AwaitingForApproval
+}
+
+enum StatusUser{
+  Deleted, Active, Blocked
+}
+
+enum StatusJobPortal{
+  Rejected, Approved, AwaitingForApproval
+}
+
+enum StatusBusinessAdvert{
+  Rejected, Approved, AwaitingForApproval
+}
+

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
+import 'package:jain_app/screens/matrimonial/model/match_profile_list_model.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
@@ -11,64 +12,21 @@ import 'package:jain_app/utils/string_constants.dart';
 import 'package:sizer/sizer.dart';
 
 class MatriSearchListScreen extends StatefulWidget {
-  const MatriSearchListScreen({Key? key}) : super(key: key);
+  final MatchProfileListModel? matchProfileListModel;
+  const MatriSearchListScreen({Key? key, this.matchProfileListModel}) : super(key: key);
 
   @override
   State<MatriSearchListScreen> createState() => _MatriSearchListScreenState();
 }
 
 class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
-  TextEditingController controllerName = TextEditingController();
-  TextEditingController controllerFatherName = TextEditingController();
-  TextEditingController controllerEmail = TextEditingController();
-  TextEditingController controllerPhone = TextEditingController();
-  TextEditingController controllerPincodeN = TextEditingController();
-  TextEditingController controllerPincodePR = TextEditingController();
-  TextEditingController controllerPincodeP = TextEditingController();
 
-  //Native Address
-  TextEditingController controllerAddressN = TextEditingController();
-
-  //Permanant Address
-  TextEditingController controllerAddressP = TextEditingController();
-
-  //Present Address
-  TextEditingController controllerAddressPR = TextEditingController();
-
-  bool passHide = true;
-
-  //Date picker variable
-  DateTime dateTemp = DateTime.now();
-  String selectedDate = "";
-
-  final subGotraKey = GlobalKey<DropdownSearchState<DropDownModel>>();
-  final subShakhaKey = GlobalKey<DropdownSearchState<DropDownModel>>();
-  final gotraKey = GlobalKey<DropdownSearchState<DropDownModel>>();
-
-  final distictPRKey = GlobalKey<DropdownSearchState<String>>();
-  final statePRKey = GlobalKey<DropdownSearchState<String>>();
-  final distictNKey = GlobalKey<DropdownSearchState<String>>();
-  final stateNKey = GlobalKey<DropdownSearchState<String>>();
-  final distictPKey = GlobalKey<DropdownSearchState<String>>();
-  final statePKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictPKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictPRKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictNKey = GlobalKey<DropdownSearchState<String>>();
-  final villageNKey = GlobalKey<DropdownSearchState<String>>();
-  final villagePKey = GlobalKey<DropdownSearchState<String>>();
-  final villagePRKey = GlobalKey<DropdownSearchState<String>>();
-
-  bool isNativeShow = false;
-  bool isPresentShow = false;
-  bool isPermenentShow = false;
-
-  bool? termAccept = false;
-
-  bool isLoading = false;
+  List<MatchMatri> list = [];
 
   @override
   void initState() {
     super.initState();
+    list = widget.matchProfileListModel!.data!.data!;
   }
 
   @override
@@ -102,15 +60,17 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 5),
       color: clrOrange4,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          (list.isNotEmpty)?
           Expanded(
             child: ListView.builder(
-                itemCount: 10,
+                itemCount: list.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   return listItemView(index);
                 }),
-          ),
+          ):noDataView(),
         ],
       ),
     );
@@ -119,15 +79,17 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
   Widget listItemView(int index) {
     final image = NetworkImage(StaticList.url);
 
+    final model = list[index];
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 1.h, horizontal: 10)
           .copyWith(top: (index == 0) ? 2.h : 1.h),
       padding: EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(10), topRight: Radius.circular(10)),
         color: clrOrange4,
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.grey,
             offset: Offset(0.0, 1.0), //(x,y)
@@ -154,6 +116,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                         backgroundImage: image as ImageProvider,
                         radius: 50,
                         backgroundColor: clrApp,
+                        child: Image.network(model.photographUrl??"", fit: BoxFit.fill,),
                       ),
                     ),
                     sb(15),
@@ -197,7 +160,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TitleTextView(
-                            "Avani Nitin Shah",
+                            "${model.firstName!} ${model.middleName!} ${model.lastName!}",
                             fontFamily: FontName.nunitoSansExtraBold,
                             fontWeight: FontWeight.w600,
                             fontSize: f20,
@@ -217,7 +180,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                                 ),
                                 Expanded(
                                   child: TitleTextView(
-                                    "24",
+                                    model.age,
                                     fontFamily: FontName.nunitoSansRegular,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -235,7 +198,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                                 ),
                                 Expanded(
                                   child: TitleTextView(
-                                    "50",
+                                    model.weight.toString(),
                                     fontFamily: FontName.nunitoSansRegular,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -255,7 +218,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                           ),
                           Expanded(
                             child: TitleTextView(
-                              "5ft; 0inch; (1.52 mts)",
+                              model.height??"",
                               fontFamily: FontName.nunitoSansRegular,
                             ),
                           ),
@@ -271,7 +234,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                           ),
                           Expanded(
                             child: TitleTextView(
-                              "Never Married",
+                              model.maritalStatus??"",
                               fontFamily: FontName.nunitoSansRegular,
                             ),
                           ),
@@ -287,7 +250,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                           ),
                           Expanded(
                             child: TitleTextView(
-                              "Gujarati",
+                              model.motherTongue??"",
                               fontFamily: FontName.nunitoSansRegular,
                             ),
                           ),
@@ -303,7 +266,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                           ),
                           Expanded(
                             child: TitleTextView(
-                              "Ahmedabad",
+                              model.city!.name??"",
                               fontFamily: FontName.nunitoSansRegular,
                             ),
                           ),
@@ -319,7 +282,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                           ),
                           Expanded(
                             child: TitleTextView(
-                              "Bachelors",
+                              model.educationType??"",
                               fontFamily: FontName.nunitoSansRegular,
                             ),
                           ),
@@ -335,7 +298,7 @@ class _MatriSearchListScreenState extends State<MatriSearchListScreen> {
                           ),
                           Expanded(
                             child: TitleTextView(
-                              "Advertising/ Marketing",
+                              model.educationField??"",
                               fontFamily: FontName.nunitoSansRegular,
                             ),
                           ),

@@ -6,36 +6,42 @@ import 'package:jain_app/utils/app_colors.dart';
 class DisplayImage extends StatelessWidget {
   final String imagePath;
   final VoidCallback onPressed;
+  bool? isValidate;
 
   // Constructor
-  const DisplayImage({
+  DisplayImage({
     Key? key,
     required this.imagePath,
     required this.onPressed,
+    this.isValidate = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Stack(children: [
-      buildImage(clrApp),
-      Positioned(
-        right: 4,
-        top: 10,
-        child: buildEditIcon(clrApp),
-      )
-    ]));
+      child: Stack(
+        children: [
+          buildImage(clrApp),
+          Positioned(
+            right: 4,
+            top: 10,
+            child: buildEditIcon(clrApp),
+          )
+        ],
+      ),
+    );
   }
 
   // Builds Profile Image
   Widget buildImage(Color color) {
+    print("ddsdsdsdsdsd : "+imagePath.toString());
     final image = imagePath.contains('https://')
         ? NetworkImage(imagePath)
         : FileImage(File(imagePath));
 
     return CircleAvatar(
       radius: 75,
-      backgroundColor: clrApp,
+      backgroundColor: (isValidate!)?clrApp:(imagePath=="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250")?redColor:clrApp,
       child: CircleAvatar(
         backgroundImage: image as ImageProvider,
         radius: 70,

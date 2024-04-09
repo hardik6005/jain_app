@@ -1,20 +1,20 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
+import 'package:jain_app/screens/job/model/search_job_list_model.dart';
 import 'package:jain_app/screens/matrimonial/data/matri_repository.dart';
+import 'package:jain_app/screens/matrimonial/model/match_profile_list_model.dart';
+import 'package:jain_app/screens/matrimonial/model/member_preference_model.dart';
 import 'package:jain_app/screens/matrimonial/model/request_model.dart';
+import 'package:jain_app/screens/matrimonial/model/search_matri_request_model.dart';
 import 'package:jain_app/screens/member/model/add_success_model.dart';
-import 'package:jain_app/utils/api_constant.dart';
-
 import 'package:jain_app/utils/app_utils.dart';
-import 'package:jain_app/utils/string_constants.dart';
 
-
-part 'matri_event.dart';
-part 'matri_state.dart';
+part 'matri_event.dart';part 'matri_state.dart';
 
 class MatriBloc extends Bloc<MatriEvent, MatriState> {
   final MatriRepository _repository;
+
   // ModelAppliedFilter? modelAppliedFilters;
 
   MatriBloc({required MatriRepository repository})
@@ -36,6 +36,13 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
       (event, emit) => saveProfileAPI(event, emit),
     );
 
+    on<SearchMatriListEvent>(
+      (event, emit) => searchMatriListEvent(event, emit),
+    );
+
+    on<SearchMatriPreferenceEvent>(
+      (event, emit) => searchMatriPreferenceEvent(event, emit),
+    );
 
     on<SaveMatriProfileValidation>(
       (event, emit) => saveMatriProfileValidation(event, emit),
@@ -44,7 +51,6 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
     on<StepPageEvent>(
       (event, emit) => stepPageEvent(event, emit),
     );
-
 
     on<StateSetEvent>(
       (event, emit) => stateSetEvent(event, emit),
@@ -112,14 +118,11 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
 
     final result = await _repository.matriProfileAPI(event.requestModel!);
     result.when(success: (AddSuccessModel model) {
-
       //Success
-      if(model.data.toString()=="[]"){
-
+      if (model.data.toString() == "[]") {
         emit(state.copyWith(matriCallState: ApiCallState.success));
         emit(state.copyWith(matriCallState: ApiCallState.none));
-
-      }else{
+      } else {
         emit(state.copyWith(matriCallState: ApiCallState.none));
         Map map = model.data;
         List<String> errors = [];
@@ -128,12 +131,10 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
         });
         okAlert(GlobalVariable.navState.currentContext!, errors[0].toString());
       }
-
     }, failure: (failure) async {
       // await okAlert(event.context!, failure.toString());
       // emit(state.copyWith(matriCallState: ApiCallState.failure));
     });
-
   }
 
   //SaveProfile Validation
@@ -141,9 +142,80 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
     String validationText = "";
     bool isValidate = true;
 
-    emit(state.copyWith(page: event.steps!+1));
+    // emit(state.copyWith(page: event.steps!+1));
 
-    print("HERE----${event.steps}");
+    final req = event.requestModel;
+
+    if (event.steps == 1) {
+      if (checkNUaEM(req!.profilePic) &&
+          checkNUaEM(req.FName) &&
+          checkNUaEM(req.LName) &&
+          checkNUaEM(req.gender) &&
+          checkNUaEM(req.selectedDOB) &&
+          checkNUaEM(req.marital) &&
+          checkNUaEM(req.Age) &&
+          checkNUaEM(req.height) &&
+          checkNUaEM(req.Weight) &&
+          checkNUaEM(req.blood) &&
+          checkNUaEM(req.complextion) &&
+          checkNUaEM(req.phyDisa) &&
+          checkNUaEM(req.manglik) &&
+          checkNUaEM(req.rashi) &&
+          checkNUaEM(req.eduType) &&
+          checkNUaEM(req.eduField) &&
+          checkNUaEM(req.workWith) &&
+          checkNUaEM(req.workAs) &&
+          checkNUaEM(req.BirthPlace) &&
+          checkNUaEM(req.selectedBTime) &&
+          checkNUaEM(req.motherToung)) {
+        emit(state.copyWith(fistValidate: true));
+        emit(state.copyWith(page: event.steps! + 1));
+      } else {
+        emit(state.copyWith(fistValidate: false));
+      }
+    } else if (event.steps == 2) {
+      if (checkNUaEM(req!.subComm) &&
+          checkNUaEM(req.fatherStatus) &&
+          checkNUaEM(req.motherStatus)) {
+        emit(state.copyWith(fistValidate: true));
+        emit(state.copyWith(page: event.steps! + 1));
+      } else {
+        emit(state.copyWith(secondValidate: false));
+      }
+    } else if(event.steps == 3){
+      emit(state.copyWith(page: event.steps! + 1));
+    }
+    else if (event.steps == 4) {
+      if (checkNUaEM(req!.otherPic) && req.aggree == "1") {
+        emit(state.copyWith(fistValidate: true));
+
+
+        emit(state.copyWith(matriCallState: ApiCallState.busy));
+
+        final result = await _repository.matriProfileAPI(event.requestModel!);
+        result.when(success: (AddSuccessModel model) {
+          //Success
+          if (model.data.toString() == "[]") {
+            emit(state.copyWith(matriCallState: ApiCallState.success));
+            emit(state.copyWith(matriCallState: ApiCallState.none));
+          } else {
+            emit(state.copyWith(matriCallState: ApiCallState.none));
+            Map map = model.data;
+            List<String> errors = [];
+            map.forEach((key, value) {
+              errors.add(value.toString().replaceAll("[", "").replaceAll("]", ""));
+            });
+            okAlert(GlobalVariable.navState.currentContext!, errors[0].toString());
+          }
+        }, failure: (failure) async {
+          // await okAlert(event.context!, failure.toString());
+          // emit(state.copyWith(matriCallState: ApiCallState.failure));
+        });
+
+      } else {
+        emit(state.copyWith(fourthValidate: false));
+      }
+    }
 
 /*    if (event.steps == 1) {
       if (event.requestModel.profilePic!.isEmpty) {
@@ -404,5 +476,35 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
   // //Step Page Event
   stepPageEvent(StepPageEvent event, emit) async {
     emit(state.copyWith(page: event.page));
+  }
+
+  // //Step Page Event
+  searchMatriListEvent(SearchMatriListEvent event, emit) async {
+    emit(state.copyWith(searchMatriListCallState: ApiCallState.busy));
+    final result = await _repository.searchMatriMonialList(event.requestModel!);
+    result.when(success: (MatchProfileListModel model) {
+      emit(state.copyWith(matchProfileListModel: model));
+      emit(state.copyWith(searchMatriListCallState: ApiCallState.success));
+      emit(state.copyWith(searchMatriListCallState: ApiCallState.none));
+    }, failure: (failure) {
+      emit(state.copyWith(searchMatriListCallState: ApiCallState.failure));
+      okAlert(GlobalVariable.navState.currentContext!, failure.toString());
+    });
+  }
+
+  // //Step Page Event
+  searchMatriPreferenceEvent(SearchMatriPreferenceEvent event, emit) async {
+    emit(state.copyWith(searchMatriPrefeCallState: ApiCallState.busy));
+    final result = await _repository.searchMatriMonialMembPref(event.member!);
+    result.when(success: (MemberPreferenceModel model) {
+      // emit(state.copyWith(matriListModel: model));
+
+      emit(state.copyWith(memberPreferenceModel: model));
+      emit(state.copyWith(searchMatriPrefeCallState: ApiCallState.success));
+      emit(state.copyWith(searchMatriPrefeCallState: ApiCallState.none));
+    }, failure: (failure) {
+      emit(state.copyWith(searchMatriPrefeCallState: ApiCallState.failure));
+      okAlert(GlobalVariable.navState.currentContext!, failure.toString());
+    });
   }
 }

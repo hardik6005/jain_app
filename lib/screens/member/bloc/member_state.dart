@@ -4,7 +4,7 @@ class MemberState {
   final ApiCallState? saveProfileCallState;
   final ApiCallState? saveBusiProfileCallState;
   final ApiCallState? saveMatriProfileCallState;
-  final ApiCallState? socialProfileCallState;
+  final ApiCallState? searchJobCallState ;
   final ApiCallState? addBusinessState;
   final ApiCallState? memberCallState;
   final int? page;
@@ -17,6 +17,9 @@ class MemberState {
   late final bool? validBusiPhone;
   late final bool? validMatroEmail;
   late final bool? validMatroPhone;
+  late final bool? addMemberValidation;
+  late final bool? addBusinessValidation;
+
 
   //Addresss
   final bool? sameAsNative;
@@ -35,12 +38,13 @@ class MemberState {
   String? subDistictId;
   String? villageId;
   final bool? isValidate;
+  final SearchJobListModel? searchJobListModel;
 
   MemberState({
     this.saveProfileCallState = ApiCallState.none,
     this.saveBusiProfileCallState = ApiCallState.none,
     this.saveMatriProfileCallState = ApiCallState.none,
-    this.socialProfileCallState = ApiCallState.none,
+    this.searchJobCallState  = ApiCallState.none,
     this.addBusinessState = ApiCallState.none,
     this.memberCallState = ApiCallState.none,
     this.page = 1,
@@ -57,6 +61,7 @@ class MemberState {
     this.validMatroEmail = false,
     this.validMatroPhone = false,
     this.successMsg,
+    this.addBusinessValidation = true,
     // this.socialProfileDataModel,
     // this.businessProfileAddModel,
     this.stateList,
@@ -68,13 +73,15 @@ class MemberState {
     this.subDistictId,
     this.villageId,
     this.isValidate = false,
+    this.searchJobListModel,
+    this.addMemberValidation = true,
   });
 
   List<Object> get props => [
         saveProfileCallState!,
         saveBusiProfileCallState!,
         saveMatriProfileCallState!,
-        socialProfileCallState!,
+        searchJobCallState !,
         addBusinessState!,
         memberCallState!,
         page!,
@@ -102,13 +109,16 @@ class MemberState {
         subDistictId!,
         villageId!,
         isValidate!,
+        searchJobListModel!,
+    addMemberValidation!,
+    addBusinessValidation!,
       ];
 
   MemberState copyWith({
     ApiCallState? saveProfileCallState,
     ApiCallState? saveBusiProfileCallState,
     ApiCallState? saveMatriProfileCallState,
-    ApiCallState? socialProfileCallState,
+    ApiCallState? searchJobCallState ,
     ApiCallState? addBusinessState,
     ApiCallState? memberCallState,
     int? page,
@@ -137,6 +147,10 @@ class MemberState {
     String? subDistictId,
     String? villageId,
     bool? isValidate,
+    SearchJobListModel? searchJobListModel,
+    bool? addMemberValidation,
+    bool? addBusinessValidation,
+
   }) {
     return MemberState(
       saveProfileCallState: saveProfileCallState ?? this.saveProfileCallState,
@@ -158,8 +172,8 @@ class MemberState {
       validBusiPhone: validBusiPhone ?? this.validBusiPhone,
       validMatroPhone: validMatroPhone ?? this.validMatroPhone,
       validMatroEmail: validMatroEmail ?? this.validMatroEmail,
-      socialProfileCallState:
-          socialProfileCallState ?? this.socialProfileCallState,
+      searchJobCallState :
+          searchJobCallState  ?? this.searchJobCallState,
       successMsg: successMsg ?? this.successMsg,
       // socialProfileDataModel:
       //     socialProfileDataModel ?? this.socialProfileDataModel,
@@ -175,6 +189,9 @@ class MemberState {
       villageId: villageId ?? this.villageId,
       memberCallState: memberCallState ?? this.memberCallState,
       isValidate: isValidate ?? this.isValidate,
+      searchJobListModel: searchJobListModel ?? this.searchJobListModel,
+      addMemberValidation: addMemberValidation ?? this.addMemberValidation,
+      addBusinessValidation: addBusinessValidation ?? this.addBusinessValidation,
     );
   }
 }
