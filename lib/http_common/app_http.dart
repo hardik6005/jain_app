@@ -30,7 +30,7 @@ class HttpActions {
 
       printLog("URL-----> ${URLS.baseUrl + url} : POST ");
       printLog("REQUEST_HEADER-----> ${headers}");
-      printLog("REQUEST_PARAM-----> ${data}");
+      printLog("REQUEST_PARAM-----> ${enCodedData}");
 
       http.Response response = await http.post(Uri.parse(URLS.baseUrl + url),
           body: enCodedData, headers: headers);
@@ -317,7 +317,7 @@ class HttpActions {
 
     // request.fields["firm_visiting_card"] = newimageList[0].toString();
 
-    print("DSDSDSDSDSD----5-----${request.fields}");
+    print("DSDSDSDSDSD----5-----${jsonEncode(request.fields)}");
 
     // var streamedResponse = await request.send();
     // print("DSDSDSDSDSD----6------${streamedResponse}");
@@ -326,13 +326,11 @@ class HttpActions {
             const Duration(seconds: 1400),
           );
 
-
       try {
-
 
         var response = await http.Response.fromStream(streamedResponse);
 
-        if (response.statusCode == 200) {
+        // if (response.statusCode == 200) {
           String enCodedStr = utf8.decode(response.bodyBytes);
           print("Response Body: $enCodedStr");
           HttpResponse resp = HttpResponse(response.statusCode);
@@ -341,10 +339,11 @@ class HttpActions {
             resp.data = jsonDecode(enCodedStr);
           }
           return resp;
-        } else {
-          print("Error: HTTP status code ${response.statusCode}");
-          return Future.error("HTTP status code ${response.statusCode}");
-        }
+        // }
+        // else {
+        //   print("Error: HTTP status code ${response.body}");
+        //   return Future.error("HTTP status code ${response.statusCode}");
+        // }
       } catch (e) {
         return Future.error("somethingwentwrong");
       }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:jain_app/main.dart';
 import 'package:jain_app/screens/business/business_list_screen.dart';
 import 'package:jain_app/screens/home/bloc/home_bloc.dart';
 import 'package:jain_app/screens/home/data/home_datasource.dart';
@@ -30,6 +31,8 @@ import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:http/http.dart' as http;
+import 'package:auto_size_text/auto_size_text.dart';
+
 
 
 class HomeScreen extends StatefulWidget {
@@ -62,7 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    profileBloc.add(DropDownAPIEvent());
+    // profileBloc.add(DropDownAPIEvent());
+
   }
 
 
@@ -153,11 +157,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: whiteColor,
                 ),
                 sb(5),
-                TitleTextView(
-                  "Welcome, Elitech Head",
-                  fontFamily: FontName.nunitoSansBold,
-                  fontSize: 14,
-                  color: whiteColor,
+                AutoSizeText(
+                    "Welcome, ${userDataModel.data!.name??""}",
+                  style: TextStyle(
+                    fontFamily: FontName.nunitoSansBold,
+                    fontSize: 14,
+                    color: whiteColor,
+                  ),
+                  maxLines: 1,
                 ),
               ],
             ),

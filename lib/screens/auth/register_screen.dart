@@ -1,12 +1,15 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jain_app/componenets/custom_appbar.dart';
 import 'package:jain_app/componenets/custom_button.dart';
 import 'package:jain_app/componenets/custom_dialogue.dart';
 import 'package:jain_app/componenets/custom_lable.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
-import 'package:jain_app/componenets/title_widget.dart';
+import 'package:jain_app/screens/auth/bloc/login_bloc.dart';
+import 'package:jain_app/screens/auth/data/login_datasource.dart';
+import 'package:jain_app/screens/auth/data/login_repository.dart';
+import 'package:jain_app/screens/member/model/register_request_model.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/font_constants.dart';
@@ -22,75 +25,96 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  TextEditingController controllerName = TextEditingController();
-  TextEditingController controllerFatherName = TextEditingController();
-  TextEditingController controllerEmail = TextEditingController();
-  TextEditingController controllerPhone = TextEditingController();
-  TextEditingController controllerPincodeN = TextEditingController();
-  TextEditingController controllerPincodePR = TextEditingController();
-  TextEditingController controllerPincodeP = TextEditingController();
+  TextEditingController controllerFullName = TextEditingController();
+  TextEditingController controllerAddress = TextEditingController();
+  TextEditingController controllerMobile = TextEditingController();
+  TextEditingController controllerSamaj = TextEditingController();
+  TextEditingController controllerReligious = TextEditingController();
+  TextEditingController controllerDesignation = TextEditingController();
+  TextEditingController controllerAdharCard = TextEditingController();
+  TextEditingController controllerSpecialActivity = TextEditingController();
+  TextEditingController controllerCity = TextEditingController();
 
-  //Native Address
-  TextEditingController controllerAddressN = TextEditingController();
+  String noOfMember = "";
 
-  //Permanant Address
-  TextEditingController controllerAddressP = TextEditingController();
+  List<DropDownModel> sanghsDD = [];
+  String sanghs = "";
+  String gender = "";
+  List<DropDownModel> maritalStatusDD = [];
+  String maritalStatus = "";
+  List<DropDownModel> bloodGroupDD = [];
+  String bloodGroup = "";
+  List<DropDownModel> eduQualificaDD = [];
+  String eduQualifica = "";
+  List<DropDownModel> stateDD = [];
+  String statee = "";
 
-  //Present Address
-  TextEditingController controllerAddressPR = TextEditingController();
+  List<DropDownModel> profiessionDD = [];
+  String profiession = "";
 
-  bool passHide = true;
 
   //Date picker variable
   DateTime dateTemp = DateTime.now();
   String selectedDate = "";
 
-  final distictPRKey = GlobalKey<DropdownSearchState<String>>();
-  final statePRKey = GlobalKey<DropdownSearchState<String>>();
-  final distictNKey = GlobalKey<DropdownSearchState<String>>();
-  final stateNKey = GlobalKey<DropdownSearchState<String>>();
-  final distictPKey = GlobalKey<DropdownSearchState<String>>();
-  final statePKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictPKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictPRKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictNKey = GlobalKey<DropdownSearchState<String>>();
-  final villageNKey = GlobalKey<DropdownSearchState<String>>();
-  final villagePKey = GlobalKey<DropdownSearchState<String>>();
-  final villagePRKey = GlobalKey<DropdownSearchState<String>>();
+  String location = "";
 
-  bool isNativeShow = false;
-  bool isPresentShow = false;
-  bool isPermenentShow = false;
+  bool isAgree = false;
 
-  bool? termAccept = false;
-
-  bool isLoading = false;
+  LoginBloc loginBloc = LoginBloc(
+    repository: LoginRepository(
+      dataSource: LoginDataSource(),
+    ),
+  );
 
   @override
   void initState() {
     super.initState();
+
+    sanghsDD = getDropDown("sanghs");
+    maritalStatusDD = getDropDown("maritalStatusDropDown");
+    bloodGroupDD = getDropDown("memberbloodGroupDropDown");
+    eduQualificaDD = getDropDown("educationalQualificationDropDown");
+    stateDD = getDropDown("states");
+    profiessionDD = getDropDown("professions");
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: whiteColor,
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
-          appBar: appBar(context, AppConstants.register, Imagename.icBack, "",
-              whiteIntColor, leadingAction: () {
+    return BlocListener<LoginBloc, LoginState>(
+      bloc: loginBloc,
+      listener: (context, state) {
+        if (state.registerCallState == ApiCallState.success) {
+          okAlert(context, "Registration successful! Thank you for registering. Our executive will reach you within 48 hours.", onTap: (){
             pop(context);
-          }),
-          body: commonShapeContainer(bodyView()),
-          backgroundColor: clrApp,
-          resizeToAvoidBottomInset: false,
-        ),
-      ),
+            // pop(context);
+          });
+        }
+      },
+      child: BlocBuilder<LoginBloc, LoginState>(
+          bloc: loginBloc,
+          builder: ((context, state) {
+            return Container(
+              color: whiteColor,
+              child: SafeArea(
+                top: false,
+                child: Scaffold(
+                  appBar: appBar(context, AppConstants.register,
+                      Imagename.icBack, "", whiteIntColor, leadingAction: () {
+                    pop(context);
+                  }),
+                  body: commonShapeContainer(bodyView(state)),
+                  backgroundColor: clrApp,
+                  resizeToAvoidBottomInset: false,
+                ),
+              ),
+            );
+          })),
     );
   }
 
-  Widget bodyView() {
+  Widget bodyView(LoginState state) {
     return Container(
       color: whiteColor,
       margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -106,10 +130,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //Name
                   CustomTextField(
                     context: context,
-                    textFieldName: "Full Name",
+                    textFieldName: "Full Name*",
                     hintText: AppConstants.enterName,
                     numberOfLines: 1,
-                    controller: controllerName,
+                    isValidate: state.isRegValidate,
+                    controller: controllerFullName,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -117,25 +142,60 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   CustomDropDownField(
                     context: context,
-                    textFieldName: "Number Of Family Members",
+                    textFieldName: "Number Of Family Members*",
+                    isValidate: state.isRegValidate,
                     list: [
                       DropDownModel(
                         name: "1",
+                        id: "1",
                       ),
                       DropDownModel(
                         name: "2",
+                        id: "2",
                       ),
                       DropDownModel(
                         name: "3",
+                        id: "3",
                       ),
                       DropDownModel(
                         name: "4",
-                      )
+                        id: "4",
+                      ),
+                      DropDownModel(
+                        name: "5",
+                        id: "5",
+                      ),
+                      DropDownModel(
+                        name: "6",
+                        id: "6",
+                      ),
+                      DropDownModel(
+                        name: "7",
+                        id: "7",
+                      ),
+                      DropDownModel(
+                        name: "8",
+                        id: "8",
+                      ),
+                      DropDownModel(
+                        name: "9",
+                        id: "9",
+                      ),
+                      DropDownModel(
+                        name: "10",
+                        id: "10",
+                      ),
                     ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem:   DropDownModel(
+                      name: noOfMember,
+                      id: noOfMember,
+                    ),
                     onTap: () {},
                     onChangeInt: (v) {
+                      noOfMember = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(genderId: v));
                       // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
@@ -145,10 +205,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //Father Name
                   CustomTextField(
                     context: context,
-                    textFieldName: "Address",
+                    textFieldName: "Address*",
                     hintText: "Enter address",
+                    isValidate: state.isRegValidate,
                     numberOfLines: 3,
-                    controller: controllerFatherName,
+                    controller: controllerAddress,
                     textInputAction: TextInputAction.next,
                     onChange: (v) {},
                   ),
@@ -156,19 +217,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   CustomDropDownField(
                     context: context,
-                    textFieldName: "Select Sangh",
-                    list: [
-                      DropDownModel(
-                        name: "Navrangpura Jain Sangh",
-                      ),
-                      DropDownModel(
-                        name: "Shilekh Jain Sangh",
-                      )
-                    ],
+                    textFieldName: "Select Sangh*",
+                    isValidate: state.isRegValidate,
+                    list: sanghsDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: sanghs.isNotEmpty
+                        ? DropDownModel(
+                            id: sanghs, name: dropDownName("sanghs", sanghs))
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
+                      sanghs = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(genderId: v));
                       // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
@@ -178,11 +239,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //Contact No.
                   CustomTextField(
                     context: context,
-                    textFieldName: "Mobile Number",
+                    textFieldName: "Mobile Number*",
+                    isValidate: state.isRegValidate,
                     hintText: 'Enter mobile number',
                     numberOfLines: 1,
                     maxLenght: 10,
-                    controller: controllerPhone,
+                    controller: controllerMobile,
                     textInputAction: TextInputAction.done,
                     prefixWidget: TitleTextView(
                       "   +91  ",
@@ -199,9 +261,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // }
                     },
                     onChange: (v) {
-                      controllerPhone.text = v;
-                      controllerPhone.selection = TextSelection.fromPosition(
-                          TextPosition(offset: controllerPhone.text.length));
+                      controllerMobile.text = v;
+                      controllerMobile.selection = TextSelection.fromPosition(
+                          TextPosition(offset: controllerMobile.text.length));
                       setState(() {});
                     },
                   ),
@@ -210,16 +272,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //Gender
                   CustomDropDownField(
                     context: context,
-                    textFieldName: AppConstants.selectGender,
+                    textFieldName: AppConstants.selectGender+"*",
+                    isValidate: state.isRegValidate,
                     list: [
-                      DropDownModel(name: "Male"),
-                      DropDownModel(name: "Female"),
-                      DropDownModel(name: "Other")
+                      DropDownModel(name: "Male", id: "Male"),
+                      DropDownModel(name: "Female", id: "Female")
                     ],
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: gender.isNotEmpty
+                        ? DropDownModel(id: gender, name: gender)
+                        : null,
                     onTap: () {},
                     onChangeInt: (v) {
+                      gender = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(genderId: v));
                       // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
@@ -230,7 +297,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   CustomTextField(
                     context: context,
                     isDropDown: true,
-                    textFieldName: AppConstants.dob,
+                    textFieldName: AppConstants.dob+"*",
+                    isValidate: state.isRegValidate,
                     numberOfLines: 1,
                     controller: TextEditingController()
                       ..text = selectedDate == ""
@@ -263,15 +331,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //Marital Status
                   CustomDropDownField(
                     context: context,
-                    list: [
-                      DropDownModel(name: "Single"),
-                      DropDownModel(name: "Married"),
-                      DropDownModel(name: "Divorced")
-                    ],
-                    textFieldName: AppConstants.selectMaritalStatus,
+                    list: maritalStatusDD,
+                    textFieldName: AppConstants.selectMaritalStatus+"*",
                     isSuffixImage: true,
+                    isValidate: state.isRegValidate,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: maritalStatus.isNotEmpty
+                        ? DropDownModel(id: maritalStatus, name: maritalStatus)
+                        : null,
                     onChangeInt: (v) {
+                      maritalStatus = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(maritalId: v));
                     },
                   ),
@@ -280,14 +350,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //Marital Status
                   CustomDropDownField(
                     context: context,
-                    list: [
-                      DropDownModel(name: "A+ve"),
-                      DropDownModel(name: "A-ve")
-                    ],
-                    textFieldName: "Blood Group",
+                    list: bloodGroupDD,
+                    textFieldName: "Blood Group*",
+                    isValidate: state.isRegValidate,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: bloodGroup.isNotEmpty
+                        ? DropDownModel(id: bloodGroup, name: bloodGroup)
+                        : null,
+                    onTap: () {},
                     onChangeInt: (v) {
+                      bloodGroup = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(maritalId: v));
                     },
                   ),
@@ -296,10 +370,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //Email
                   CustomTextField(
                     context: context,
-                    textFieldName: "Samaj/Caste",
+                    textFieldName: "Samaj/Caste*",
                     hintText: "Enter samaj/caste",
+                    isValidate: state.isRegValidate,
                     numberOfLines: 1,
-                    controller: controllerEmail,
+                    controller: controllerSamaj,
                     textInputAction: TextInputAction.next,
                     onSumitted: () {},
                     onChange: (v) {
@@ -315,30 +390,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //Marital Status
                   CustomDropDownField(
                     context: context,
-                    list: [
-                      DropDownModel(name: "BE"),
-                      DropDownModel(name: "M.Com")
-                    ],
-                    textFieldName: "Educational Qualification",
+                    list: eduQualificaDD,
+                    textFieldName: "Educational Qualification*",
+                    isValidate: state.isRegValidate,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: eduQualifica.isNotEmpty
+                        ? DropDownModel(
+                            id: eduQualifica,
+                            name: dropDownName(
+                                "educationalQualificationDropDown",
+                                eduQualifica))
+                        : null,
+                    onTap: () {},
                     onChangeInt: (v) {
-                      // registerBloc.add(DropDownIDsEvent(maritalId: v));
-                    },
-                  ),
-                  sb(1.5.h),
-
-                  //Marital Status
-                  CustomDropDownField(
-                    context: context,
-                    list: [
-                      DropDownModel(name: "BE"),
-                      DropDownModel(name: "M.Com")
-                    ],
-                    textFieldName: "Educational Qualification",
-                    isSuffixImage: true,
-                    suffixImage: Imagename.downArrow,
-                    onChangeInt: (v) {
+                      eduQualifica = v;
+                      setState(() {});
                       // registerBloc.add(DropDownIDsEvent(maritalId: v));
                     },
                   ),
@@ -346,34 +413,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   CustomTextField(
                     context: context,
-                    textFieldName: "Religious Education",
+                    textFieldName: "Religious Education*",
                     hintText: "Enter religious education",
+                    isValidate: state.isRegValidate,
                     numberOfLines: 1,
-                    controller: controllerEmail,
+                    controller: controllerReligious,
                     textInputAction: TextInputAction.next,
                     onSumitted: () {},
                     onChange: (v) {},
                   ),
                   sb(1.5.h),
 
-                  CustomTextField(
+                  CustomDropDownField(
                     context: context,
                     textFieldName: "Profession",
-                    hintText: "Enter profession",
-                    numberOfLines: 1,
-                    controller: controllerEmail,
-                    textInputAction: TextInputAction.next,
-                    onSumitted: () {},
-                    onChange: (v) {},
+                    list: profiessionDD,
+                    isSuffixImage: true,
+                    suffixImage: Imagename.downArrow,
+                    selectedItem: profiession.isNotEmpty
+                        ? DropDownModel(id: profiession, name: profiession)
+                        : null,
+                    onTap: () {},
+                    onChangeInt: (v) {
+                      profiession = v;
+                      setState(() {});
+                      // registerBloc.add(DropDownIDsEvent(genderId: v));
+                      // authBloc.add(EmailEvent(controllerEmail.text.trim()));
+                    },
                   ),
-                  sb(1.5.h),
-
+                  sb(10),
                   CustomTextField(
                     context: context,
-                    textFieldName: "Designation",
+                    textFieldName: "Designation*",
                     hintText: "Enter designation",
+                    isValidate: state.isRegValidate,
                     numberOfLines: 1,
-                    controller: controllerEmail,
+                    controller: controllerDesignation,
                     textInputAction: TextInputAction.next,
                     onSumitted: () {},
                     onChange: (v) {},
@@ -382,10 +457,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   CustomTextField(
                     context: context,
-                    textFieldName: "Aadhar Card Number",
+                    textFieldName: "Aadhar Card Number*",
                     hintText: "Enter aadhar card number",
+                    isValidate: state.isRegValidate,
                     numberOfLines: 1,
-                    controller: controllerEmail,
+                    controller: controllerAdharCard,
                     textInputAction: TextInputAction.next,
                     onSumitted: () {},
                     onChange: (v) {},
@@ -394,10 +470,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   CustomTextField(
                     context: context,
-                    textFieldName: "Special Activity",
+                    textFieldName: "Special Activity*",
                     hintText: "Enter special activity",
                     numberOfLines: 1,
-                    controller: controllerEmail,
+                    isValidate: state.isRegValidate,
+                    controller: controllerSpecialActivity,
                     textInputAction: TextInputAction.next,
                     onSumitted: () {},
                     onChange: (v) {},
@@ -407,15 +484,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //Marital Status
                   CustomDropDownField(
                     context: context,
+                    textFieldName: "Location*",
+                    isValidate: state.isRegValidate,
                     list: [
-                      DropDownModel(name: "In India"),
-                      DropDownModel(name: "Out of India")
+                      DropDownModel(name: "In India", id: "In India"),
+                      DropDownModel(name: "Out of India", id: "Out of India")
                     ],
-                    textFieldName: "Location",
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: location.isNotEmpty
+                        ? DropDownModel(id: location, name: location)
+                        : null,
+                    onTap: () {},
                     onChangeInt: (v) {
-                      // registerBloc.add(DropDownIDsEvent(maritalId: v));
+                      location = v;
+                      setState(() {});
+                      // registerBloc.add(DropDownIDsEvent(genderId: v));
+                      // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
                   ),
                   sb(1.5.h),
@@ -423,38 +508,57 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   //Marital Status
                   CustomDropDownField(
                     context: context,
-                    list: [
-                      DropDownModel(name: "Gujarat"),
-                      DropDownModel(name: "Assam")
-                    ],
-                    textFieldName: "Select State",
+                    textFieldName: "State*",
+                    isDropDownHint: "Select State",
+                    isValidate: state.isRegValidate,
+                    // isValidate: state.addBusinessValidation,
+                    list: stateDD,
                     isSuffixImage: true,
                     suffixImage: Imagename.downArrow,
+                    selectedItem: statee.isNotEmpty
+                        ? DropDownModel(
+                            id: statee,
+                            name: dropDownName("states", statee),
+                          )
+                        : null,
+                    onTap: () {},
                     onChangeInt: (v) {
-                      // registerBloc.add(DropDownIDsEvent(maritalId: v));
+                      statee = v;
+                      setState(() {});
+                      // registerBloc.add(DropDownIDsEvent(genderId: v));
+                      // authBloc.add(EmailEvent(controllerEmail.text.trim()));
                     },
                   ),
                   sb(1.5.h),
 
                   CustomTextField(
                     context: context,
-                    textFieldName: "City Name",
+                    textFieldName: "City Name*",
                     hintText: "Enter city name",
+                    isValidate: state.isRegValidate,
                     numberOfLines: 1,
-                    controller: controllerEmail,
+                    controller: controllerCity,
                     textInputAction: TextInputAction.next,
                     onSumitted: () {},
                     onChange: (v) {},
                   ),
                   sb(1.5.h),
 
-
                   //Privacy Agree
-                  termWidget1("I agreed on terms & conditions and declared that I've shared correct information. Click Here to catch helpful instructions and guidelines for form filling of jain vasti ganatri", termAccept!, (v) {
+                  termWidget1(
+                      "I agreed on terms & conditions and declared that I've shared correct information. Click Here to catch helpful instructions and guidelines for form filling of jain vasti ganatri",
+                      isAgree,
+                        (v) {
                     setState(() {
-                      termAccept = !termAccept!;
+                      isAgree = !isAgree;
                     });
-                  }),
+                  },
+                    (state.isRegValidate!)
+                        ? Colors.black
+                        : (isAgree == false)
+                        ? redColor
+                        : Colors.black,
+                  ),
                   sb(1.h),
 
                   Row(
@@ -485,8 +589,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
             title: AppConstants.signUp,
             fontColor: whiteColor,
             backgroundColor: clrApp,
+            isLoading: state.registerCallState==ApiCallState.busy,
             ontap: () {
               unFocus(context);
+
+              loginBloc.add(
+                RegisterAPIEvent(
+                  RegisterReqModel(
+                    location: location,
+                    gender: gender,
+                    educational_qualification: eduQualifica,
+                    mobile_number: controllerMobile.text,
+                    state_id: statee,
+                    special_activity: controllerSpecialActivity.text,
+                    profession: profiession,
+                    number_of_family_members: noOfMember,
+                    marital_status: maritalStatus,
+                    designation: controllerDesignation.text,
+                    // country_id: coun
+                    city: controllerCity.text,
+                    blood_group: bloodGroup,
+                    aadhar_card_no: controllerAdharCard.text,
+                    address: controllerAddress.text,
+                    date_of_birth: selectedDate,
+                    head_off_family_full_name: controllerFullName.text,
+                    religious_qualification: controllerReligious.text,
+                    samaj_caste: controllerSamaj.text,
+                    sangh_id: sanghs,
+                    agree: isAgree?"1":"",
+                    // country_id: "",
+                  ),
+                ),
+              );
             },
           ),
           sb(10)

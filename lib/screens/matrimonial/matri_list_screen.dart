@@ -345,7 +345,7 @@ class _MatriListScreenState extends State<MatriListScreen> {
                 ),
               ),
               sbw(10),
-              if (model.status == 0)
+              if (model.status == 1)
                 GestureDetector(
                   onTap: () {
                     // callNextScreen(context, MatriSearchScreen());

@@ -3,17 +3,18 @@ part of 'login_bloc.dart';
 class LoginState {
   final ApiCallState? loginCallState;
   final ApiCallState? getProfileCallState;
-  final ApiCallState? forgotCallState;
+  final ApiCallState? registerCallState;
   final ApiCallState? resetPassCallState;
   final int? page;
   final bool? validEmail;
   final LoginModel? loginDataModel;
   final UserDataModel? userDataModel;
   final String? successMsg;
+  final bool? isRegValidate;
 
   LoginState({
     this.loginCallState = ApiCallState.none,
-    this.forgotCallState = ApiCallState.none,
+    this.registerCallState = ApiCallState.none,
     this.getProfileCallState = ApiCallState.none,
     this.resetPassCallState = ApiCallState.none,
     this.page = 0,
@@ -21,22 +22,24 @@ class LoginState {
     this.loginDataModel,
     this.successMsg,
     this.userDataModel,
+    this.isRegValidate = true,
   });
 
   List<Object> get props => [
         loginCallState!,
-        forgotCallState!,
+        registerCallState!,
         resetPassCallState!,
         page!,
         validEmail!,
         loginDataModel!,
         successMsg!,
-    userDataModel!,
+        userDataModel!,
+        isRegValidate!,
       ];
 
   LoginState copyWith({
     ApiCallState? loginCallState,
-    ApiCallState? forgotCallState,
+    ApiCallState? registerCallState,
     ApiCallState? resetPassCallState,
     ApiCallState? getProfileCallState,
     int? page,
@@ -44,11 +47,11 @@ class LoginState {
     LoginModel? loginDataModel,
     String? successMsg,
     UserDataModel? userDataModel,
-
+    bool? isRegValidate,
   }) {
     return LoginState(
       loginCallState: loginCallState ?? this.loginCallState,
-      forgotCallState: forgotCallState ?? this.forgotCallState,
+      registerCallState: registerCallState ?? this.registerCallState,
       page: page ?? this.page,
       validEmail: validEmail ?? this.validEmail,
       resetPassCallState: resetPassCallState ?? this.resetPassCallState,
@@ -56,6 +59,7 @@ class LoginState {
       getProfileCallState: getProfileCallState ?? this.getProfileCallState,
       successMsg: successMsg ?? this.successMsg,
       userDataModel: userDataModel ?? this.userDataModel,
+      isRegValidate: isRegValidate ?? this.isRegValidate,
     );
   }
 }

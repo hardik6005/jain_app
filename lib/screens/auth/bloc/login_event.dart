@@ -11,6 +11,7 @@ class ForgotAPIEvent extends LoginEvent {
   final BuildContext? context;
   final String? memebrId;
   final String? email;
+
   ForgotAPIEvent({this.context, this.email, this.memebrId});
 }
 
@@ -18,6 +19,7 @@ class ForgotAPIEvent extends LoginEvent {
 class ResetAPIEvent extends LoginEvent {
   final BuildContext? context;
   final ForgotRequestModel? requestModel;
+
   ResetAPIEvent({
     this.context,
     this.requestModel,
@@ -30,6 +32,7 @@ class ValidationEvent extends LoginEvent {
   String? password;
   String? birthYear;
   BuildContext? context;
+
   ValidationEvent({
     this.mobile,
     this.password,
@@ -44,6 +47,7 @@ class LoginAPIEvent extends LoginEvent {
   String? phone;
   String? password;
   String? birthYear;
+
   LoginAPIEvent({
     this.context,
     this.phone,
@@ -55,6 +59,12 @@ class LoginAPIEvent extends LoginEvent {
 //GetProfile API Event
 class GetProfileAPIEvent extends LoginEvent {
   GetProfileAPIEvent();
+}
+
+//GetProfile API Event
+class RegisterAPIEvent extends LoginEvent {
+  RegisterReqModel req;
+  RegisterAPIEvent(this.req);
 }
 
 //Stop Loader Event

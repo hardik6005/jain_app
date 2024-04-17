@@ -34,14 +34,17 @@ class DisplayImage extends StatelessWidget {
 
   // Builds Profile Image
   Widget buildImage(Color color) {
-    print("ddsdsdsdsdsd : "+imagePath.toString());
     final image = imagePath.contains('https://')
         ? NetworkImage(imagePath)
         : FileImage(File(imagePath));
 
     return CircleAvatar(
       radius: 75,
-      backgroundColor: (isValidate!)?clrApp:(imagePath=="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250")?redColor:clrApp,
+      backgroundColor: (isValidate!)
+          ? clrApp
+          : (imagePath == "")
+              ? redColor
+              : clrApp,
       child: CircleAvatar(
         backgroundImage: image as ImageProvider,
         radius: 70,

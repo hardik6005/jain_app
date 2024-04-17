@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:jain_app/componenets/custom_textfield.dart';
-import 'package:jain_app/screens/job/model/search_job_list_model.dart';
 import 'package:jain_app/screens/matrimonial/data/matri_repository.dart';
 import 'package:jain_app/screens/matrimonial/model/match_profile_list_model.dart';
 import 'package:jain_app/screens/matrimonial/model/member_preference_model.dart';
@@ -10,7 +9,9 @@ import 'package:jain_app/screens/matrimonial/model/search_matri_request_model.da
 import 'package:jain_app/screens/member/model/add_success_model.dart';
 import 'package:jain_app/utils/app_utils.dart';
 
-part 'matri_event.dart';part 'matri_state.dart';
+part 'matri_event.dart';
+
+part 'matri_state.dart';
 
 class MatriBloc extends Bloc<MatriEvent, MatriState> {
   final MatriRepository _repository;
@@ -167,7 +168,8 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
           checkNUaEM(req.workAs) &&
           checkNUaEM(req.BirthPlace) &&
           checkNUaEM(req.selectedBTime) &&
-          checkNUaEM(req.motherToung)) {
+          checkNUaEM(req.motherToung) &&
+          checkNUaEM(req.location)) {
         emit(state.copyWith(fistValidate: true));
         emit(state.copyWith(page: event.steps! + 1));
       } else {
@@ -176,19 +178,22 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
     } else if (event.steps == 2) {
       if (checkNUaEM(req!.subComm) &&
           checkNUaEM(req.fatherStatus) &&
-          checkNUaEM(req.motherStatus)) {
+          checkNUaEM(req.motherStatus) &&
+          checkNUaEM(req.NoBrother) &&
+          checkNUaEM(req.NoBroMar) &&
+          checkNUaEM(req.NoSis) &&
+          checkNUaEM(req.NoSisMar) &&
+          checkNUaEM(req.workAs)) {
         emit(state.copyWith(fistValidate: true));
         emit(state.copyWith(page: event.steps! + 1));
       } else {
         emit(state.copyWith(secondValidate: false));
       }
-    } else if(event.steps == 3){
+    } else if (event.steps == 3) {
       emit(state.copyWith(page: event.steps! + 1));
-    }
-    else if (event.steps == 4) {
+    } else if (event.steps == 4) {
       if (checkNUaEM(req!.otherPic) && req.aggree == "1") {
         emit(state.copyWith(fistValidate: true));
-
 
         emit(state.copyWith(matriCallState: ApiCallState.busy));
 
@@ -203,15 +208,16 @@ class MatriBloc extends Bloc<MatriEvent, MatriState> {
             Map map = model.data;
             List<String> errors = [];
             map.forEach((key, value) {
-              errors.add(value.toString().replaceAll("[", "").replaceAll("]", ""));
+              errors.add(
+                  value.toString().replaceAll("[", "").replaceAll("]", ""));
             });
-            okAlert(GlobalVariable.navState.currentContext!, errors[0].toString());
+            okAlert(
+                GlobalVariable.navState.currentContext!, errors[0].toString());
           }
         }, failure: (failure) async {
           // await okAlert(event.context!, failure.toString());
           // emit(state.copyWith(matriCallState: ApiCallState.failure));
         });
-
       } else {
         emit(state.copyWith(fourthValidate: false));
       }

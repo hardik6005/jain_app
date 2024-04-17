@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jain_app/main.dart';
 import 'package:jain_app/screens/auth/login_screen.dart';
 import 'package:jain_app/screens/business/business_list_screen.dart';
 import 'package:jain_app/screens/job/job_list_screen.dart';
@@ -20,6 +21,8 @@ import 'package:jain_app/utils/font_constants.dart';
 import 'package:jain_app/utils/image_constant.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
 
 
 class DrawerScreen extends StatelessWidget {
@@ -41,11 +44,18 @@ class DrawerScreen extends StatelessWidget {
                 commonClipOval("", 35,
                     placeHolder: Imagename.icProfileImage, padding: 0),
                 sbw(15),
-                TitleTextView(
-                  "Elitech Head",
-                  fontFamily: FontName.nunitoSansBold,
-                  fontSize: f22,
-                  color: blackColor,
+                Flexible(
+                  child: AutoSizeText(
+                    "${userDataModel.data!.name??""}",
+                    style: TextStyle(
+                      fontFamily: FontName.nunitoSansBold,
+                      // fontSize: f22,
+                      color: Colors.black,
+                    ),
+                    minFontSize: f14,
+                    
+                    // maxLines: 1,
+                  ),
                 ),
               ],
             ),
@@ -213,19 +223,19 @@ class DrawerScreen extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    divider(color: clrAppLight4),
-                    Row(
-                      children: [
-                        const Icon(Icons.share),
-                        sbw(10),
-                        TitleTextView(
-                          "Share",
-                          fontFamily: FontName.nunitoSansBold,
-                          fontSize: f18,
-                          color: blackColor,
-                        ),
-                      ],
-                    ),
+                    // divider(color: clrAppLight4),
+                    // Row(
+                    //   children: [
+                    //     const Icon(Icons.share),
+                    //     sbw(10),
+                    //     TitleTextView(
+                    //       "Share",
+                    //       fontFamily: FontName.nunitoSansBold,
+                    //       fontSize: f18,
+                    //       color: blackColor,
+                    //     ),
+                    //   ],
+                    // ),
                     divider(color: clrAppLight4),
                     GestureDetector(
                       onTap: () async{

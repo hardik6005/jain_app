@@ -22,6 +22,7 @@ class URLS {
   static String searchMatriMonialList = "search-matrimonial-list";
   static String searchMatriMonialMembPref = "search-matrimonial-member-preference/";
   static String updatePassword = "update-password";
+  static String register = "new-member-request-form";
 
   //DropDown
   static String dynamicValue = "dynamicValue";

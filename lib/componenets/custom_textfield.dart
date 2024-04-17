@@ -347,8 +347,7 @@ class CustomDropDownField extends StatelessWidget {
                   return Container(
                     child: (item == null)
                         ? ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 13),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 13),
                             title: Text(
                               isDropDownHint!,
                               textAlign: TextAlign.start,
@@ -380,6 +379,7 @@ class CustomDropDownField extends StatelessWidget {
                   isFilterOnline: true,
                   showSelectedItems: true,
                   showSearchBox: false,
+                  fit: FlexFit.loose,
                   searchFieldProps: TextFieldProps(
                       decoration: InputDecoration(
                         labelStyle: const TextStyle(fontSize: 12.0),

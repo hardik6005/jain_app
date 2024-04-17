@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:jain_app/componenets/custom_dialogue.dart';
 import 'package:jain_app/main.dart';
 import 'package:jain_app/screens/auth/login_screen.dart';
+import 'package:jain_app/screens/home/bloc/home_bloc.dart';
+import 'package:jain_app/screens/home/data/home_datasource.dart';
+import 'package:jain_app/screens/home/data/home_repository.dart';
 import 'package:jain_app/utils/app_colors.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/componenets/custom_button.dart';
@@ -25,12 +28,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
- 
+
+
+  HomeBloc profileBloc = HomeBloc(
+    repository: HomeRepository(
+      dataSource: HomeDataSource(),
+    ),
+  );
 
   @override
   void initState() {
     super.initState();
-    
+
+    profileBloc.add(DropDownAPIEvent());
+
     delay(1800).then((value){
       if(userDataModel.data!=null){
         callNextScreenAndClearStack(context, HomeScreen());

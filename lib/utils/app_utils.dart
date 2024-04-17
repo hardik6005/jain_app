@@ -207,7 +207,7 @@ Widget validationText(bool display, String text) {
       ? TitleTextView(
           text,
           fontSize: 12,
-          color: clrApp,
+          color: redColor,
         )
       : Container();
 }
@@ -353,7 +353,8 @@ Widget homeWidget(BuildContext context) {
 }
 
 //Agree Term Common Widget
-Widget termWidget1(String title, bool selected, Function(bool) onTap) {
+Widget termWidget1(
+    String title, bool selected, Function(bool) onTap, Color backColor) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 7),
     child: Row(
@@ -366,7 +367,12 @@ Widget termWidget1(String title, bool selected, Function(bool) onTap) {
           fillColor: (selected)
               ? MaterialStateProperty.all<Color>(blackColor)
               : MaterialStateProperty.all<Color>(whiteColor),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(2),
+          ),
+          side: MaterialStateBorderSide.resolveWith(
+            (states) => BorderSide(width: 2.0, color: backColor),
+          ),
           value: selected,
           onChanged: (v) {
             onTap(v!);
@@ -385,7 +391,8 @@ Widget termWidget1(String title, bool selected, Function(bool) onTap) {
 }
 
 //Agree Term Common Widget
-Widget termWidget(String title, bool selected, Function(bool) onTap, Color backColor) {
+Widget termWidget(
+    String title, bool selected, Function(bool) onTap, Color backColor) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 7),
     child: Row(
@@ -401,7 +408,7 @@ Widget termWidget(String title, bool selected, Function(bool) onTap, Color backC
               : MaterialStateProperty.all<Color>(whiteColor),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
           side: MaterialStateBorderSide.resolveWith(
-                (states) => BorderSide(width: 2.0, color: backColor),
+            (states) => BorderSide(width: 2.0, color: backColor),
           ),
           value: selected,
           onChanged: (v) {
@@ -510,11 +517,15 @@ Future<void> pickeFileWidget(List<PickerModel> pickerModel, String str) async {
 Future<void> pickerModesWidget(
     ImagePicker picker, List<PickerModel> pickerModel, String str) async {
   if (str == TAG.camera) {
-    final XFile? photo = await picker.pickImage(source: ImageSource.camera);
+    final XFile? photo = await picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     if (photo != null) {
       pickerModel.clear();
       pickerModel.add(PickerModel(
-          TAG.camera, photo.path, photo.name, photo.mimeType ?? ""));
+        TAG.camera,
+        photo.path,
+        photo.name,
+        photo.mimeType ?? "",
+      ));
     }
   } else if (str == TAG.gallery) {
     final XFile? photo = await picker.pickImage(source: ImageSource.gallery);
@@ -546,8 +557,13 @@ getDropDown(String name) {
 dropDownName(String type, String id) {
   Map relationHOD = dropDownJson[type] ?? {};
 
-
   return relationHOD[id] ?? "";
+}
+
+existDropDownName(String type, String value) {
+  Map relationHOD = dropDownJson[type] ?? {};
+
+  return relationHOD.toString().contains(value);
 }
 
 List<String> validationStrings = [
@@ -559,7 +575,6 @@ List<String> validationStrings = [
   "${AppConstants.dob}*",
   "Blood Group" "*",
   "Educational Qualification" "*",
-
   "Business Title" "*",
   "Owner Name" "*",
   "${AppConstants.phone}*",
@@ -655,24 +670,24 @@ List<String> addMatriRequired4 = [
   "I agreed on terms & conditions and declared that I've shared correct information.",
 ];
 
-
-checkNUaEM(String? value){
+checkNUaEM(String? value) {
   return value != null && value.isNotEmpty;
 }
 
-enum StatusMatrimonial{
-  Rejected, Approved, AwaitingForApproval
-}
+enum StatusMatrimonial { Rejected, Approved, AwaitingForApproval }
 
-enum StatusUser{
-  Deleted, Active, Blocked
-}
+enum StatusUser { Deleted, Active, Blocked }
 
-enum StatusJobPortal{
-  Rejected, Approved, AwaitingForApproval
-}
+enum StatusJobPortal { Rejected, Approved, AwaitingForApproval }
 
-enum StatusBusinessAdvert{
-  Rejected, Approved, AwaitingForApproval
-}
+enum StatusBusinessAdvert { Rejected, Approved, AwaitingForApproval }
 
+
+bool isDateFormatValid(String dateString) {
+  try {
+    DateTime.parse(dateString);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}

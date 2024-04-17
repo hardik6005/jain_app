@@ -19,7 +19,7 @@ class MemberRequest{
   String? special_activity;
   String? location;
   String? state_id;
-  String? country_id;
+  // String? country_id;
   String? city;
   String? relation_with_hod;
   String? mobile_no;
@@ -49,7 +49,7 @@ class MemberRequest{
       this.special_activity,
       this.location,
       this.state_id,
-      this.country_id,
+      // this.country_id,
       this.city,
       this.relation_with_hod,
       this.mobile_no});

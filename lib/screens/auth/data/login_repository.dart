@@ -5,6 +5,8 @@ import 'package:jain_app/screens/auth/model/forgot_request_model.dart';
 import 'package:jain_app/screens/auth/model/login_model.dart';
 import 'package:jain_app/screens/auth/model/success_model.dart';
 import 'package:jain_app/screens/auth/model/user_data_model.dart';
+import 'package:jain_app/screens/member/model/add_success_model.dart';
+import 'package:jain_app/screens/member/model/register_request_model.dart';
 import 'package:jain_app/utils/string_constants.dart';
 
 
@@ -25,6 +27,28 @@ class LoginRepository {
         LoginModel response = LoginModel.fromJson(result.data);
         if (response.status??false) {
           return checkResponseStatusCode<LoginModel>(result, response);
+        } else {
+          return ApiResult.failure(error: response.message!);
+        }
+      } else {
+        return ApiResult.failure(error: result.data["message"]);
+      }
+    } catch (e) {
+      //final message = HandleAPI.handleAPIError(e);
+      return const ApiResult.failure(error: AppConstants.somethingwentwrong);
+    }
+  }
+
+//Repository for Register API
+  Future<ApiResult<AddSuccessModel>> registerAPI(
+      RegisterReqModel req) async {
+    try {
+      final result = await _dataSource.regirsterAPI(req);
+
+      if (result!.statusCode == 200) {
+        AddSuccessModel response = AddSuccessModel.fromJson(result.data);
+        if (response.status??false) {
+          return checkResponseStatusCode<AddSuccessModel>(result, response);
         } else {
           return ApiResult.failure(error: response.message!);
         }

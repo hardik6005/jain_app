@@ -149,10 +149,18 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
       controllerAge.text = mem.age ?? "";
       controllerWeight.text = mem.weight.toString();
       controllerBirthPlace.text = mem.birthPlace ?? "";
-      controllerNoBrother.text = mem.noBrother.toString();
-      controllerNoBroMar.text = mem.brotherMarried.toString();
-      controllerNoSis.text = mem.noSister.toString();
-      controllerNoSisMar.text = mem.sisterMarried.toString();
+      if(mem.noBrother!=null) {
+        controllerNoBrother.text = mem.noBrother.toString();
+      }
+      if(mem.brotherMarried!=null) {
+        controllerNoBroMar.text = mem.brotherMarried.toString();
+      }
+      if(mem.noSister!=null) {
+        controllerNoSis.text = mem.noSister.toString();
+      }
+      if(mem.sisterMarried!=null) {
+        controllerNoSisMar.text = mem.sisterMarried.toString();
+      }
       controllerNatPlace.text = mem.nativePlace ?? "";
       controllerOtherDet.text = mem.otherDetail ?? "";
       gender = mem.gender ?? "";
@@ -166,7 +174,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
       eduType = mem.educationType ?? "";
       eduField = mem.educationField ?? "";
       workWith = mem.workingWith ?? "";
-      workAs = mem.workingAs ?? "";
+      if(mem.workingAs!=null) {
+        workAs = mem.workingAs ?? "";
+      }
       location = mem.cityId.toString();
       subComm = mem.subCommunity ?? "";
       fatherStatus = mem.fatherStatus ?? "";
@@ -177,7 +187,10 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
       eduTypeMatch = mem.expectedEducationType ?? "";
       eduFieldMatch = mem.expectedEducationField ?? "";
       genderMatch = mem.expectedGender ?? "";
-      selectedDOB = mem.dob ?? "";
+      if (isDateFormatValid(mem.dob??"")) {
+        selectedDOB = mem.dob ?? "";
+      }
+
       // aggree1 = mem. ?? "";
 
       // TimeOfDay time = parseTimeString(mem.birthTime!);
@@ -553,6 +566,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
                     title: AppConstants.next,
                     fontColor: whiteColor,
                     isLoading: state.matriCallState == ApiCallState.busy,
+                    isDisable: state.matriCallState == ApiCallState.busy,
                     backgroundColor: clrOrange,
                     ontap: () {
                       // if (state.page == 4) {
@@ -707,7 +721,7 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
               child: DisplayImage(
                 imagePath: profileImgModelList.isNotEmpty
                     ? profileImgModelList[0].path
-                    : StaticList.url,
+                    : "",
                 onPressed: () {},
                 isValidate: state.fistValidate,
               ),
@@ -1225,8 +1239,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         sb(1.5.h),
         CustomTextField(
           context: context,
-          textFieldName: "No. Of Brother",
+          textFieldName: "No. Of Brother*",
           hintText: "Enter No. Of Brother",
+          isValidate: state.secondValidate,
           numberOfLines: 1,
           controller: controllerNoBrother,
           textInputAction: TextInputAction.next,
@@ -1237,8 +1252,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         sb(1.5.h),
         CustomTextField(
           context: context,
-          textFieldName: "No. Of Brother Married",
+          textFieldName: "No. Of Brother Married*",
           hintText: "Enter No. Of Brother Married",
+          isValidate: state.secondValidate,
           numberOfLines: 1,
           controller: controllerNoBroMar,
           textInputAction: TextInputAction.next,
@@ -1249,8 +1265,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         sb(1.5.h),
         CustomTextField(
           context: context,
-          textFieldName: "No. Of Sister",
+          textFieldName: "No. Of Sister*",
           hintText: "Enter No. Of Sister",
+          isValidate: state.secondValidate,
           numberOfLines: 1,
           controller: controllerNoSis,
           keboardType: TextInputType.phone,
@@ -1261,8 +1278,9 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
         sb(1.5.h),
         CustomTextField(
           context: context,
-          textFieldName: "No. Of Sister Married",
+          textFieldName: "No. Of Sister Married*",
           hintText: "Enter No. Of Sister Married",
+          isValidate: state.secondValidate,
           numberOfLines: 1,
           controller: controllerNoSisMar,
           keboardType: TextInputType.phone,

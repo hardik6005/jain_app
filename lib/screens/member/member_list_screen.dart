@@ -208,12 +208,15 @@ class _MemberListScreenState extends State<MemberListScreen> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TitleTextView(
-                member.fullName,
-                fontFamily: FontName.nunitoSansBold,
-                fontWeight: FontWeight.w600,
-                fontSize: f18,
+              Expanded(
+                child: TitleTextView(
+                  member.fullName,
+                  fontFamily: FontName.nunitoSansBold,
+                  fontWeight: FontWeight.w600,
+                  fontSize: f18,
+                ),
               ),
               Container(
                 decoration: BoxDecoration(

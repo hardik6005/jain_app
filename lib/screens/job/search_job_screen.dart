@@ -218,6 +218,7 @@ class _JobSearchScreenState extends State<JobSearchScreen> {
             fontColor: whiteColor,
             backgroundColor: clrOrange,
             isLoading: state.searchJobCallState == ApiCallState.busy,
+            isDisable: state.searchJobCallState == ApiCallState.busy,
             ontap: () {
               unFocus(context);
 

@@ -9,7 +9,6 @@ import 'package:jain_app/screens/member/model/member_request_model.dart';
 import 'package:jain_app/utils/app_utils.dart';
 
 part 'member_event.dart';
-
 part 'member_state.dart';
 
 class MemberBloc extends Bloc<MemberEvent, MemberState> {
@@ -43,7 +42,10 @@ class MemberBloc extends Bloc<MemberEvent, MemberState> {
         checkNUaEM(req!.marital_status) &&
         checkNUaEM(req!.dob) &&
         checkNUaEM(req!.blood_group) &&
-        checkNUaEM(req!.educational_qualification)) {
+        checkNUaEM(req!.educational_qualification) &&
+        checkNUaEM(req.location) &&
+        checkNUaEM(req.state_id) &&
+        checkNUaEM(req.city) && isValidPhone(req!.mobile_no??"")) {
       emit(state.copyWith(memberCallState: ApiCallState.busy));
       final result = await _repository.addMemberAPI(event.request!);
       result.when(success: (AddSuccessModel model) {
@@ -68,8 +70,7 @@ class MemberBloc extends Bloc<MemberEvent, MemberState> {
         emit(state.copyWith(memberCallState: ApiCallState.failure));
         okAlert(GlobalVariable.navState.currentContext!, failure.toString());
       });
-    }else{
-      print("DDDDDDDD");
+    } else {
       emit(state.copyWith(addMemberValidation: false));
     }
   }
@@ -86,7 +87,7 @@ class MemberBloc extends Bloc<MemberEvent, MemberState> {
         checkNUaEM(req.area) &&
         checkNUaEM(req.address_line_1) &&
         checkNUaEM(req.address_line_2) &&
-        checkNUaEM(req.visiting_card)) {
+        checkNUaEM(req.visiting_card) && isValidPhone(req!.mobile_number??"")) {
       emit(state.copyWith(addBusinessState: ApiCallState.busy));
       final result = await _repository.addBusinessAPI(event.request!);
       result.when(success: (AddSuccessModel model) {
@@ -112,7 +113,6 @@ class MemberBloc extends Bloc<MemberEvent, MemberState> {
         okAlert(GlobalVariable.navState.currentContext!, failure.toString());
       });
     } else {
-      print("cxcxcxcxc");
       emit(state.copyWith(addBusinessValidation: false));
     }
   }
@@ -128,7 +128,7 @@ class MemberBloc extends Bloc<MemberEvent, MemberState> {
       emit(state.copyWith(searchJobCallState: ApiCallState.success));
       emit(state.copyWith(searchJobCallState: ApiCallState.none));
     }, failure: (failure) {
-      emit(state.copyWith(addBusinessState: ApiCallState.failure));
+      emit(state.copyWith(searchJobCallState: ApiCallState.failure));
       okAlert(GlobalVariable.navState.currentContext!, failure.toString());
     });
   }

@@ -1,4 +1,3 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,27 +48,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   DateTime dateTemp = DateTime.now();
   String selectedDate = "";
 
-  final subGotraKey = GlobalKey<DropdownSearchState<DropDownModel>>();
-  final subShakhaKey = GlobalKey<DropdownSearchState<DropDownModel>>();
-  final gotraKey = GlobalKey<DropdownSearchState<DropDownModel>>();
-
-  final distictPRKey = GlobalKey<DropdownSearchState<String>>();
-  final statePRKey = GlobalKey<DropdownSearchState<String>>();
-  final distictNKey = GlobalKey<DropdownSearchState<String>>();
-  final stateNKey = GlobalKey<DropdownSearchState<String>>();
-  final distictPKey = GlobalKey<DropdownSearchState<String>>();
-  final statePKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictPKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictPRKey = GlobalKey<DropdownSearchState<String>>();
-  final subDistictNKey = GlobalKey<DropdownSearchState<String>>();
-  final villageNKey = GlobalKey<DropdownSearchState<String>>();
-  final villagePKey = GlobalKey<DropdownSearchState<String>>();
-  final villagePRKey = GlobalKey<DropdownSearchState<String>>();
-
-  bool isNativeShow = false;
-  bool isPresentShow = false;
-  bool isPermenentShow = false;
-
   bool? termAccept = false;
 
   bool isLoading = false;
@@ -90,8 +68,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   String state = "";
   List<DropDownModel> countryDD = [];
   String country = "";
-  List<DropDownModel> cityDD = [];
-  String city = "";
+  // List<DropDownModel> cityDD = [];
+  // String city = "";
   String gender = "";
   String location = "";
 
@@ -112,7 +90,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     profiessionDD = getDropDown("professions");
     stateDD = getDropDown("states");
     countryDD = getDropDown("countries");
-    cityDD = getDropDown("cities");
+    // cityDD = getDropDown("cities");
 
     controllerFormNo.text = "1990";
     setState(() {});
@@ -120,22 +98,45 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     if (widget.member != null) {
       final mem = widget.member;
       controllerAdhar.text = mem!.aadharCardNo ?? "";
-      bloodGroup = mem.bloodGroup.toString();
-      city = mem.city.toString();
+      if (mem.bloodGroup != null) {
+        bloodGroup = mem.bloodGroup.toString();
+      }
+      if (mem.city != null) {
+        controllerCity.text = mem.city.toString();
+      }
       // sanghs = mem..toString();
-      state = mem.stateId.toString();
-      country = mem.countryId.toString();
-      profiession = mem.profession.toString();
-      selectedDate = mem.dob.toString();
-      eduQualifica = mem.educationalQualification.toString();
+      if (mem.stateId != null) {
+        state = mem.stateId.toString();
+      }
+      if (mem.countryId != null) {
+        country = mem.countryId.toString();
+      }
+      if (mem.profession != null) {
+        profiession = mem.profession.toString();
+      }
+
+      if (isDateFormatValid(mem.dob??"")) {
+        selectedDate = mem.dob.toString();
+      }
+
+      if (existDropDownName("educationalQualificationDropDown",
+          mem.educationalQualification ?? "")) {
+        eduQualifica = mem.educationalQualification!;
+      }
       controllerEletcion.text = mem.electionCardNo ?? "";
       controllerFormNo.text = mem.formNo ?? "";
       controllerName.text = mem.fullName ?? "";
       gender = mem.gender.toString();
-      location = mem.location.toString();
-      maritalStatus = mem.maritalStatus.toString();
+      if (mem.location != null) {
+        location = mem.location.toString();
+      }
+      if (mem.maritalStatus != null) {
+        maritalStatus = mem.maritalStatus.toString();
+      }
       controllerPhone.text = mem.mobileNo ?? "";
-      relationHOF = mem.relationWithHod.toString();
+      if (mem.relationWithHod != null) {
+        relationHOF = mem.relationWithHod.toString();
+      }
       controllerReligious.text = mem.religiousEducation ?? "";
       controllerSpecial1.text = mem.socialGroup1 ?? "";
       controllerSpecial2.text = mem.socialGroup1 ?? "";
@@ -171,7 +172,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 child: Scaffold(
                   appBar: appBar(
                     context,
-                    "Create Member",
+                    (widget.member != null) ? "Update Member" : "Create Member",
                     Imagename.icBack,
                     "",
                     whiteIntColor,
@@ -266,7 +267,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     textFieldName: "${AppConstants.phone}*",
                     hintText: AppConstants.enterPhone,
                     isValidate: statee.addMemberValidation,
-                    enable: widget.member == null,
+                    // enable: widget.member == null,
                     numberOfLines: 1,
                     maxLenght: 10,
                     controller: controllerPhone,
@@ -292,6 +293,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       setState(() {});
                     },
                   ),
+                  sb(3),
                   validationText(
                     controllerPhone.text.isNotEmpty &&
                         /*state.validPhone! &&*/
@@ -301,7 +303,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   sb(10),
 
                   if (widget.member == null) ...[
-
                     CustomDropDownField(
                       context: context,
                       textFieldName: "Select Sangh",
@@ -311,7 +312,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       isDisable: widget.member != null,
                       suffixImage: Imagename.downArrow,
                       selectedItem: sanghs.isNotEmpty
-                          ? DropDownModel(id: sanghs, name: dropDownName("sanghs", sanghs))
+                          ? DropDownModel(
+                          id: sanghs, name: dropDownName("sanghs", sanghs))
                           : null,
                       onTap: () {},
                       onChangeInt: (v) {
@@ -322,7 +324,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       },
                     ),
                     sb(10),
-
                   ],
 
                   //Gender
@@ -380,8 +381,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       ..text = selectedDate == ""
                           ? ""
                           : selectedDate.toFormatDate(
-                              defaultFormat: DateFormate.dateToFormatddMMMMYYYY,
-                            ),
+                        defaultFormat: DateFormate.dateToFormatddMMMMYYYY,
+                      ),
                     isSuffixImage: true,
                     suffixImage: Imagename.dateIcon,
                     textInputAction: TextInputAction.next,
@@ -389,12 +390,14 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     onSumitted: () {},
                     onTap: () {
                       bottomPicker(context, child: DatePickerView(
-                        (d) {
+                            (d) {
                           dateTemp = d;
                         },
                       ), onTap: () {
                         setState(() {
                           selectedDate = dateTemp.toString();
+
+                          print("selectedDate $selectedDate");
                         });
                       });
                     },
@@ -435,10 +438,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     suffixImage: Imagename.downArrow,
                     selectedItem: eduQualifica.isNotEmpty
                         ? DropDownModel(
-                            id: eduQualifica,
-                            name: dropDownName(
-                                "educationalQualificationDropDown",
-                                eduQualifica))
+                        id: eduQualifica,
+                        name: dropDownName(
+                            "educationalQualificationDropDown",
+                            eduQualifica))
                         : null,
                     onTap: () {},
                     onChangeInt: (v) {
@@ -571,12 +574,13 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   //Gender
                   CustomDropDownField(
                     context: context,
-                    textFieldName: "Location",
+                    textFieldName: "Location*",
                     list: [
                       DropDownModel(name: "In India", id: "In India"),
                       DropDownModel(name: "Out of India", id: "Out of India")
                     ],
                     isSuffixImage: true,
+                    isValidate: statee.addMemberValidation,
                     suffixImage: Imagename.downArrow,
                     selectedItem: location.isNotEmpty
                         ? DropDownModel(id: location, name: location)
@@ -591,49 +595,67 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   ),
                   sb(10),
 
-                  CustomDropDownField(
+                  if (location == "Out of India")...[
+                    CustomDropDownField(
+                      context: context,
+                      textFieldName: "Country*",
+                      isDropDownHint: "Select Country",
+                      isValidate: statee.addMemberValidation,
+                      list: countryDD,
+                      isSuffixImage: true,
+                      suffixImage: Imagename.downArrow,
+                      selectedItem: country.isNotEmpty
+                          ? DropDownModel(
+                          id: country,
+                          name: dropDownName("countries", country))
+                          : null,
+                      onTap: () {},
+                      onChangeInt: (v) {
+                        country = v;
+                        setState(() {});
+                      },
+                    ),
+                    sb(10),
+                  ],
+
+                  if (location == "In India")...[
+                    CustomDropDownField(
+                      context: context,
+                      textFieldName: "State*",
+                      isDropDownHint: "Select State",
+                      isValidate: statee.addMemberValidation,
+                      list: stateDD,
+                      isSuffixImage: true,
+                      showSearch: false,
+                      suffixImage: Imagename.downArrow,
+                      selectedItem: state.isNotEmpty
+                          ? DropDownModel(
+                          id: state, name: dropDownName("states", state))
+                          : null,
+                      onTap: () {},
+                      onChangeInt: (v) {
+                        state = v;
+                        setState(() {});
+                      },
+                    ),
+                    sb(10),
+                  ],
+
+                  CustomTextField(
                     context: context,
-                    textFieldName: "Country",
-                    isDropDownHint: "Select Country",
-                    list: countryDD,
-                    isSuffixImage: true,
-                    suffixImage: Imagename.downArrow,
-                    selectedItem: country.isNotEmpty
-                        ? DropDownModel(
-                            id: country,
-                            name: dropDownName("countries", country))
-                        : null,
-                    onTap: () {},
-                    onChangeInt: (v) {
-                      country = v;
-                      setState(() {});
-                    },
+                    textFieldName: "City*",
+                    hintText: "Enter City",
+                    numberOfLines: 1,
+                    isValidate: statee.addMemberValidation,
+                    controller: controllerCity,
+                    textInputAction: TextInputAction.next,
+                    onChange: (v) {},
                   ),
                   sb(10),
 
-                  CustomDropDownField(
+               /*   CustomDropDownField(
                     context: context,
-                    textFieldName: "State",
-                    isDropDownHint: "Select State",
-                    list: stateDD,
-                    isSuffixImage: true,
-                    showSearch: false,
-                    suffixImage: Imagename.downArrow,
-                    selectedItem: state.isNotEmpty
-                        ? DropDownModel(
-                            id: state, name: dropDownName("states", state))
-                        : null,
-                    onTap: () {},
-                    onChangeInt: (v) {
-                      state = v;
-                      setState(() {});
-                    },
-                  ),
-                  sb(10),
-
-                  CustomDropDownField(
-                    context: context,
-                    textFieldName: "City",
+                    textFieldName: "City*",
                     isDropDownHint: "Select City",
                     list: cityDD,
                     showSearch: false,
@@ -641,7 +663,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     suffixImage: Imagename.downArrow,
                     selectedItem: city.isNotEmpty
                         ? DropDownModel(
-                            id: city, name: dropDownName("cities", city))
+                        id: city, name: dropDownName("cities", city))
                         : null,
                     onTap: () {},
                     onChangeInt: (v) {
@@ -649,7 +671,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       setState(() {});
                     },
                   ),
-                  sb(10),
+                  sb(10),*/
 
                   /*  //Privacy Agree
                   termWidget1(AppConstants.agreeTerm, termAccept!, (v) {
@@ -667,10 +689,11 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
             ),
           ),
           Button(
-            title: "Create Member",
+            title: (widget.member != null) ? "Update Member" : "Create Member",
             fontColor: whiteColor,
             backgroundColor: clrOrange,
             isLoading: statee.memberCallState == ApiCallState.busy,
+            isDisable: statee.memberCallState == ApiCallState.busy,
             ontap: () {
               unFocus(context);
               // pop(context);
@@ -684,11 +707,15 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     address: state,
                     aadhar_card_no: controllerAdhar.text,
                     blood_group: bloodGroup,
-                    city: city,
-                    state_id: state,
-                    country_id: country,
+                    city: controllerCity.text,
+                    state_id: (location == "In India")?state:country,
+                    // country_id: country,
                     designation: controllerDesignation.text,
-                    dob: selectedDate,
+                    dob: selectedDate.isEmpty
+                        ? ""
+                        : selectedDate.toFormatDate(
+                      defaultFormat: DateFormate.dateToFormatyyyyMMdd,
+                    ),
                     educational_qualification: eduQualifica,
                     election_card_no: controllerEletcion.text,
                     form_no: controllerFormNo.text,

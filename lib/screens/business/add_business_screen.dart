@@ -112,7 +112,8 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
               child: Scaffold(
                 appBar: appBar(
                   context,
-                  "Create Business Directory",
+                  (widget.member == null)
+                      ? "Create Business Directory":"Update Business Directory",
                   Imagename.icBack,
                   "",
                   whiteIntColor,
@@ -246,8 +247,8 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   //Gender
                   CustomDropDownField(
                     context: context,
-                    textFieldName: "State",
-                    isDropDownHint: "Select State" + "*",
+                    textFieldName: "State" + "*",
+                    isDropDownHint: "Select State" ,
                     isValidate: state.addBusinessValidation,
                     list: stateDD,
                     isSuffixImage: true,
@@ -269,8 +270,8 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
                   //Gender
                   CustomDropDownField(
                     context: context,
-                    textFieldName: "City",
-                    isDropDownHint: "Select City" + "*",
+                    textFieldName: "City" + "*",
+                    isDropDownHint: "Select City",
                     isValidate: state.addBusinessValidation,
                     list: cityDD,
                     isSuffixImage: true,
@@ -417,10 +418,12 @@ class _AddBusinessScreenState extends State<AddBusinessScreen> {
             ),
           ),
           Button(
-            title: "Create Business Directory",
+            title: (widget.member == null)
+                ?"Create Business Directory":"Update Business Directory",
             fontColor: whiteColor,
             backgroundColor: clrOrange,
             isLoading: state.addBusinessState == ApiCallState.busy,
+            isDisable: state.addBusinessState == ApiCallState.busy,
             ontap: () {
               unFocus(context);
 

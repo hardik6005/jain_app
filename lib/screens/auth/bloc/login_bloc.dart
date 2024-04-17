@@ -10,6 +10,8 @@ import 'package:jain_app/screens/auth/model/login_model.dart';
 import 'package:jain_app/screens/auth/model/success_model.dart';
 import 'package:jain_app/screens/auth/model/user_data_model.dart';
 import 'package:jain_app/screens/home/home_screen.dart';
+import 'package:jain_app/screens/member/model/add_success_model.dart';
+import 'package:jain_app/screens/member/model/register_request_model.dart';
 import 'package:jain_app/utils/app_preference.dart';
 import 'package:jain_app/utils/app_utils.dart';
 import 'package:jain_app/utils/string_constants.dart';
@@ -29,9 +31,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       (event, emit) => loginAPIEvent(event, emit),
     );
 
-    on<ForgotAPIEvent>(
-      (event, emit) => forgotAPIEvent(event, emit),
-    );
     on<ResetAPIEvent>(
       (event, emit) => resetAPIEvent(event, emit),
     );
@@ -46,6 +45,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     on<StopLoaderEvent>(
       (event, emit) => stopLoaderEvent(event, emit),
+    );
+    on<RegisterAPIEvent>(
+      (event, emit) => registerAPIEvent(event, emit),
     );
   }
   //Event for validation Login API
@@ -96,47 +98,75 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
   }
 
+
+  //Login API event
+  registerAPIEvent(RegisterAPIEvent event, emit) async {
+
+    if (checkNUaEM(event.req!.head_off_family_full_name) &&
+        checkNUaEM(event.req!.number_of_family_members) &&
+        checkNUaEM(event.req!.address) &&
+        checkNUaEM(event.req!.sangh_id) &&
+        checkNUaEM(event.req!.mobile_number) &&
+        checkNUaEM(event.req!.gender) &&
+        checkNUaEM(event.req!.date_of_birth) &&
+        checkNUaEM(event.req!.marital_status) &&
+        checkNUaEM(event.req!.blood_group) &&
+        checkNUaEM(event.req!.samaj_caste) &&
+        checkNUaEM(event.req!.educational_qualification) &&
+        checkNUaEM(event.req!.religious_qualification) &&
+        checkNUaEM(event.req!.profession) &&
+        checkNUaEM(event.req!.designation) &&
+        checkNUaEM(event.req!.aadhar_card_no) &&
+        checkNUaEM(event.req!.special_activity) &&
+        checkNUaEM(event.req!.location) &&
+        checkNUaEM(event.req!.state_id) &&
+        checkNUaEM(event.req!.city) &&
+        checkNUaEM(event.req!.agree)
+    ) {
+      emit(state.copyWith(registerCallState: ApiCallState.busy));
+      print("DSDSDSDSSD");
+      final result = await _repository.registerAPI(event.req);
+      result.when(success: (AddSuccessModel model) async{
+
+        // String jsonModel = json.encode(model);
+        // AppPreference.instance.savePref(model.token!, Pref.myToken);
+        // emit(state.copyWith(loginDataModel: model));
+
+        //Success
+        if (model.data.toString() == "[]") {
+          emit(state.copyWith(registerCallState: ApiCallState.success));
+          emit(state.copyWith(registerCallState: ApiCallState.none));
+        } else {
+          emit(state.copyWith(registerCallState: ApiCallState.none));
+          Map map = model.data;
+          List<String> errors = [];
+          map.forEach((key, value) {
+            errors
+                .add(value.toString().replaceAll("[", "").replaceAll("]", ""));
+          });
+          okAlert(
+              GlobalVariable.navState.currentContext!, errors[0].toString());
+        }
+
+
+      }, failure: (failure) {
+        emit(state.copyWith(registerCallState: ApiCallState.failure));
+        // okAlert(event.context!, failure.toString());
+      });
+
+    }else{
+
+      emit(state.copyWith(isRegValidate: false));
+
+    }
+
+  }
+
   //Stop Loader event
   stopLoaderEvent(StopLoaderEvent event, emit) async {
     emit(state.copyWith(getProfileCallState: ApiCallState.none));
   }
 
-  //Forgot pass API event
-  forgotAPIEvent(ForgotAPIEvent event, emit) async {
-    String validationText = "";
-    bool isValidate = true;
-
-    if (event.memebrId!.isEmpty) {
-      validationText = "${AppConstants.pleaseEnter} ${AppConstants.memberId}";
-    } else if (event.memebrId!.length < 5) {
-      validationText =
-          "${AppConstants.pleaseEnter} ${AppConstants.validmemberId}";
-    } else if (event.email!.isEmpty) {
-      validationText = "${AppConstants.pleaseEnter} ${AppConstants.email}";
-    } else if (!isValidEmail(event.email!)) {
-      validationText =
-          "${AppConstants.pleaseEnter} ${AppConstants.validEmailId}";
-    } else {
-      isValidate = false;
-
-      emit(state.copyWith(forgotCallState: ApiCallState.busy));
-      final result =
-          await _repository.forgotPasswordAPI(event.memebrId!, event.email!);
-      result.when(success: (SuccessModel model) {
-        // emit(state.copyWith(registerModel: model));
-        emit(state.copyWith(successMsg: model.message));
-        emit(state.copyWith(forgotCallState: ApiCallState.success));
-        emit(state.copyWith(forgotCallState: ApiCallState.none));
-      }, failure: (failure) {
-        emit(state.copyWith(forgotCallState: ApiCallState.failure));
-        okAlert(event.context!, failure.toString());
-      });
-    }
-
-    if (isValidate) {
-      okAlert(event.context!, validationText);
-    }
-  }
 
   //Reset pass API event
   resetAPIEvent(ResetAPIEvent event, emit) async {
