@@ -60,7 +60,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     controllerEmail.text = userDataModel.data!.email ?? "";
     controllerPhone.text = userDataModel.data!.phoneNumber ?? "";
     controllerAddress.text = userDataModel.data!.address ?? "";
-    urlProfile = userDataModel.data!.profilePic ?? "";
+    urlProfile = userDataModel.data!.profile_pic_url ?? "";
   }
 
   @override
@@ -138,11 +138,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             );
                           },
                           child: DisplayImage(
-                            imagePath: pickerModelList.isNotEmpty
-                                ? pickerModelList[0].path
-                                : urlProfile.isNotEmpty
+                            networkImage: urlProfile.isNotEmpty && urlProfile.toString().contains("http")
                                     ? urlProfile
-                                    : StaticList.url,
+                                    : "",
+                            captureImage: pickerModelList.isNotEmpty
+                                ? pickerModelList[0].path:"",
                             onPressed: () {},
                           ),
                         ),

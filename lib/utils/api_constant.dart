@@ -2,7 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class URLS {
   /* Client End Server*/
-  static String baseUrl = "${dotenv.env['BASE_URL']!}/public/api/";
+  static String baseUrl = "${dotenv.env['BASE_URL']!}/api/";
   static String imageUrl = dotenv.env['IMAGE_URL']!;
 
   //APIs

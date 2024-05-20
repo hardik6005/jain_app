@@ -2,7 +2,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="jain_app"
+        android:label="JainMahaSangh"
         android:name="${applicationName}"
         android:icon="@drawable/ic_logo">
         <activity

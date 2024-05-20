@@ -116,7 +116,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         checkNUaEM(event.req!.religious_qualification) &&
         checkNUaEM(event.req!.profession) &&
         checkNUaEM(event.req!.designation) &&
-        checkNUaEM(event.req!.aadhar_card_no) &&
+        // checkNUaEM(event.req!.aadhar_card_no) &&
         checkNUaEM(event.req!.special_activity) &&
         checkNUaEM(event.req!.location) &&
         checkNUaEM(event.req!.state_id) &&
@@ -124,7 +124,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         checkNUaEM(event.req!.agree)
     ) {
       emit(state.copyWith(registerCallState: ApiCallState.busy));
-      print("DSDSDSDSSD");
       final result = await _repository.registerAPI(event.req);
       result.when(success: (AddSuccessModel model) async{
 
@@ -218,8 +217,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(userDataModel: model));
       emit(state.copyWith(getProfileCallState: ApiCallState.success));
       emit(state.copyWith(getProfileCallState: ApiCallState.none));
-      emit(state.copyWith(loginCallState: ApiCallState.success));
-      emit(state.copyWith(loginCallState: ApiCallState.none));
+      // emit(state.copyWith(loginCallState: ApiCallState.success));
+      // emit(state.copyWith(loginCallState: ApiCallState.none));
     }, failure: (failure) {
       emit(state.copyWith(getProfileCallState: ApiCallState.failure));
       okAlert(GlobalVariable.navState.currentContext!, failure.toString());

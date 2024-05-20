@@ -30,7 +30,7 @@ class BasicConfig {
 
 // //Labels
 class AppConstants {
-  static const String appTitle = "Jain App";
+  static const String appTitle = "JainMahaSangh";
   static const String ok = "Okay";
   static const String cancel = "Cancle";
   static const String nointernet = "No Internet";

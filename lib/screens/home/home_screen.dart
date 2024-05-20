@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TitleTextView(
-                  "Jain App",
+                  AppConstants.appTitle,
                   fontFamily: FontName.nunitoSansBold,
                   fontSize: 22,
                   color: whiteColor,

@@ -104,6 +104,8 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
   List<PickerModel> profileImgModelList = [];
   List<PickerModel> cvModelList = [];
 
+  String networkUrl = "";
+
   late ScrollController controller;
 
   MatriBloc typeAccountBloc = MatriBloc(
@@ -201,8 +203,8 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
 //       print(DateFormat("HH:mm").format(date));
 //       print(DateFormat("HH:mm").format(date2));
       _selectedTime = TimeOfDay(hour: date2.hour, minute: date2.minute);
-      profileImgModelList
-          .add(PickerModel("", mem.photographUrl!, mem.photographUrl!, ""));
+      profileImgModelList.add(PickerModel("", mem.photographUrl!, mem.photographUrl!, ""));
+      networkUrl = mem.photographUrl??"";
       if (mem.photosUrl != null && mem.photosUrl!.isNotEmpty) {
         cvModelList
             .add(PickerModel("", mem.photosUrl![0], mem.photosUrl![0], ""));
@@ -719,7 +721,8 @@ class _AddMatrimonialScreenState extends State<AddMatrimonialScreen> {
                 );
               },
               child: DisplayImage(
-                imagePath: profileImgModelList.isNotEmpty
+                networkImage: networkUrl,
+                captureImage: profileImgModelList.isNotEmpty
                     ? profileImgModelList[0].path
                     : "",
                 onPressed: () {},

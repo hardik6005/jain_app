@@ -457,9 +457,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   CustomTextField(
                     context: context,
-                    textFieldName: "Aadhar Card Number*",
+                    textFieldName: "Aadhar Card Number",
                     hintText: "Enter aadhar card number",
-                    isValidate: state.isRegValidate,
+                    // isValidate: state.isRegValidate,
                     numberOfLines: 1,
                     controller: controllerAdharCard,
                     textInputAction: TextInputAction.next,

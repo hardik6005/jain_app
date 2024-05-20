@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
       return MaterialApp(
-        title: 'Jain Community',
+        title: 'JainMahaSangh',
         navigatorKey: GlobalVariable.navState,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: clrApp),
