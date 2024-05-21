@@ -16,12 +16,8 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 
-Member Login
+## Key Store Credential
 
-Url : https://jainmahasangh.tolobolo.com/public/sign-in
-
-Birth Year: 1990
-
-Username: 9876543210
-
-Password : Elitech123*
+located - project/android/Untitled
+keyname - key0
+password - jain123

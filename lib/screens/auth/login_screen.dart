@@ -50,9 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
     // controllerMemberId.text = "9925854381";
     // controllerPassword.text = "9925854381";
     // controllerBirth.text = "1957";
-    controllerMemberId.text = "9876543210";
-    controllerPassword.text = "Elitech123*";
-    controllerBirth.text = "1990";
+    // controllerMemberId.text = "9876543210";
+    // controllerPassword.text = "Elitech123*";
+    // controllerBirth.text = "1990";
   }
 
   @override
