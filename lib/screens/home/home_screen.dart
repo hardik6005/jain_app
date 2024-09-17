@@ -171,18 +171,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Row(
             children: [
-              GestureDetector(
-                onTap: () {
-                  // callNextScreen(context, const NotificationScreen());
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Image.asset(
-                    Imagename.icNotification,
-                    height: f21,
-                  ),
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: () {
+              //     callNextScreen(context, const NotificationScreen());
+              //   },
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(15),
+              //     child: Image.asset(
+              //       Imagename.icNotification,
+              //       height: f21,
+              //     ),
+              //   ),
+              // ),
               sbw(7),
               Padding(
                   padding: const EdgeInsets.only(right: 10),
